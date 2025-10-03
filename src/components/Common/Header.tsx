@@ -11,38 +11,60 @@ interface NavButtonProps extends ButtonProps {
 const StyledButton = styled((props: NavButtonProps) => {
   const { selected, accent, ...rest } = props;
   return <Button {...rest} />;
-})<NavButtonProps>(({ selected, accent }) => ({
+})<NavButtonProps>(({ selected }) => ({
   margin: '0 8px',
-  padding: '10px 22px',
-  borderRadius: '999px',
-  fontWeight: 600,
+  padding: '12px 28px',
+  borderRadius: '12px',
+  fontWeight: 700,
   textTransform: 'none',
-  fontSize: '1rem',
-  letterSpacing: '0.3px',
-  backgroundColor: selected ? 'rgba(255,255,255,0.08)' : 'transparent',
-  color: selected ? '#ffffff' : 'rgba(255,255,255,0.85)',
-  border: `1.5px solid ${selected ? (accent || 'rgba(255,255,255,0.48)') : 'rgba(255,255,255,0.28)'}`,
-  boxShadow: selected ? '0 8px 16px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.06)' : 'none',
-  transform: selected ? 'translateY(-1px)' : 'none',
-  transition: 'all 0.25s ease',
+  fontSize: '1.1rem',
+  letterSpacing: '0.5px',
+  backgroundColor: selected ? '#4CAF50' : '#6B7280',
+  color: '#ffffff',
+  border: 'none',
+  boxShadow: selected 
+    ? '0 8px 20px rgba(76, 175, 80, 0.4), 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)' 
+    : '0 4px 12px rgba(107, 114, 128, 0.3), 0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1)',
+  transform: selected ? 'translateY(-2px)' : 'translateY(0px)',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   position: 'relative',
   overflow: 'hidden',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '2px',
+    background: selected 
+      ? 'linear-gradient(90deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%)'
+      : 'linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%)',
+    opacity: 1,
+  },
   '&::after': {
     content: '""',
     position: 'absolute',
+    bottom: 0,
     left: 0,
     right: 0,
-    bottom: 0,
-    height: '3px',
-    background: selected ? (accent || '#ffffff') : 'transparent',
-    opacity: selected ? 0.9 : 0,
-    transition: 'opacity 0.25s ease',
+    height: '2px',
+    background: selected 
+      ? 'linear-gradient(90deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 100%)'
+      : 'linear-gradient(90deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.15) 100%)',
+    opacity: 1,
   },
   '&:hover': {
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    transform: 'translateY(-2px)',
-    boxShadow: '0 6px 14px rgba(0,0,0,0.35)',
-    borderColor: accent || 'rgba(255,255,255,0.45)',
+    backgroundColor: selected ? '#45A049' : '#5B6470',
+    transform: selected ? 'translateY(-3px)' : 'translateY(-1px)',
+    boxShadow: selected 
+      ? '0 12px 28px rgba(76, 175, 80, 0.5), 0 6px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3)' 
+      : '0 6px 16px rgba(107, 114, 128, 0.4), 0 3px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)',
+  },
+  '&:active': {
+    transform: selected ? 'translateY(-1px)' : 'translateY(0px)',
+    boxShadow: selected 
+      ? '0 4px 12px rgba(76, 175, 80, 0.3), 0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1)' 
+      : '0 2px 8px rgba(107, 114, 128, 0.2), 0 1px 2px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.05)',
   },
 }));
 
@@ -75,28 +97,19 @@ const Header: React.FC = () => {
         
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <StyledButton
-            selected={isSelected('/')}
-            onClick={() => handleNavigation('/')}
-          >
-            Dashboard
-          </StyledButton>
-          <StyledButton
             selected={isSelected('/dsp')}
-            accent="#4CAF50"
             onClick={() => handleNavigation('/dsp')}
           >
             DSP
           </StyledButton>
           <StyledButton
             selected={isSelected('/cd')}
-            accent="#FFC107"
             onClick={() => handleNavigation('/cd')}
           >
             C&D
           </StyledButton>
           <StyledButton
             selected={isSelected('/mrs')}
-            accent="#2196F3"
             onClick={() => handleNavigation('/mrs')}
           >
             MRS
