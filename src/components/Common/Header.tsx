@@ -11,7 +11,7 @@ interface NavButtonProps extends ButtonProps {
 const StyledButton = styled((props: NavButtonProps) => {
   const { selected, accent, ...rest } = props;
   return <Button {...rest} />;
-})<NavButtonProps>(({ selected }) => ({
+})<NavButtonProps>(({ selected }: { selected?: boolean }) => ({
   margin: '0 8px',
   padding: '12px 28px',
   borderRadius: '12px',
@@ -72,7 +72,11 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleNavigation = (path: string) => {
+  const handleNavigation = (path: string, event?: React.MouseEvent<HTMLButtonElement>) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     navigate(path);
   };
 
@@ -97,20 +101,23 @@ const Header: React.FC = () => {
         
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <StyledButton
+            type="button"
             selected={isSelected('/dsp')}
-            onClick={() => handleNavigation('/dsp')}
+            onClick={(event) => handleNavigation('/dsp', event)}
           >
             DSP
           </StyledButton>
           <StyledButton
+            type="button"
             selected={isSelected('/cd')}
-            onClick={() => handleNavigation('/cd')}
+            onClick={(event) => handleNavigation('/cd', event)}
           >
             C&D
           </StyledButton>
           <StyledButton
+            type="button"
             selected={isSelected('/mrs')}
-            onClick={() => handleNavigation('/mrs')}
+            onClick={(event) => handleNavigation('/mrs', event)}
           >
             MRS
           </StyledButton>
