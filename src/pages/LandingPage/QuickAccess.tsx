@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Card, CardContent, Grid, Button } from '@mui/material';
+import { Box, Typography, Card, Grid, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -9,7 +9,7 @@ import {
   Dashboard as DashboardIcon 
 } from '@mui/icons-material';
 
-const StyledCard = styled(Card)(({ theme }) => ({
+const StyledCard = styled(Card)(() => ({
   height: '180px',
   borderRadius: '16px',
   boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
@@ -21,7 +21,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const StyledButton = styled(Button)(({ theme }) => ({
+const StyledButton = styled(Button)(() => ({
   width: '100%',
   height: '100%',
   display: 'flex',

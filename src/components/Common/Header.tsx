@@ -1,9 +1,17 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Box, ButtonProps } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 
-const StyledButton = styled(Button)(({ theme, selected, accent }: { theme?: any; selected?: boolean; accent?: string }) => ({
+interface NavButtonProps extends ButtonProps {
+  selected?: boolean;
+  accent?: string;
+}
+
+const StyledButton = styled((props: NavButtonProps) => {
+  const { selected, accent, ...rest } = props;
+  return <Button {...rest} />;
+})<NavButtonProps>(({ selected, accent }) => ({
   margin: '0 8px',
   padding: '10px 22px',
   borderRadius: '999px',
