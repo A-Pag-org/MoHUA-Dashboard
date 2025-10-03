@@ -13,7 +13,8 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "react",
+    "types": ["react", "react-dom"],
 
     /* Linting */
     "strict": true,
