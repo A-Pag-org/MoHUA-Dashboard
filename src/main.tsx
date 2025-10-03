@@ -1,21 +1,20 @@
-<<<<<<< HEAD
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
-import App from './App.tsx'
+import App from './App'
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#4CAF50', // Green for satisfactory
+      main: '#4CAF50',
     },
     secondary: {
-      main: '#FFC107', // Amber for average
+      main: '#FFC107',
     },
     error: {
-      main: '#F44336', // Red for unsatisfactory
+      main: '#F44336',
     },
     background: {
       default: '#f5f5f5',
@@ -48,15 +47,3 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </React.StrictMode>,
 )
-=======
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App'
-
-	createRoot(document.getElementById('root') as HTMLElement).render(
-	<StrictMode>
-		<App />
-	</StrictMode>
-)
-
->>>>>>> b921ad9a7fcd48acf18f26d1c7e0abb207243286

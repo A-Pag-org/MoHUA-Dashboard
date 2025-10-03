@@ -5,7 +5,7 @@ import { styled } from '@mui/material/styles';
 import { ProgramStats } from '../../types';
 import { MOCK_PROGRAM_STATS, DSP_COLORS } from '../../utils/constants';
 
-const StyledCard = styled(Card)(({ theme }) => ({
+const StyledCard = styled(Card)(() => ({
   height: '400px',
   borderRadius: '16px',
   boxShadow: '0 4px 20px rgba(0,0,0,0.1)',

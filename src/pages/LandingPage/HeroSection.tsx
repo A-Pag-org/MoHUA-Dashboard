@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import { LeadingCity } from '../../types';
 import { MOCK_LEADING_CITIES } from '../../utils/constants';
 
-const StyledCard = styled(Card)(({ theme }) => ({
+const StyledCard = styled(Card)(() => ({
   height: '200px',
   display: 'flex',
   flexDirection: 'column',
@@ -21,7 +21,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const ProgramChip = styled(Chip)(({ theme, program }: { theme?: any; program: string }) => ({
+const ProgramChip = styled(Chip)<{ program: string }>(({ program }) => ({
   backgroundColor: program === 'DSP' ? '#4CAF50' : program === 'C&D' ? '#FFC107' : '#2196F3',
   color: 'white',
   fontWeight: 'bold',
