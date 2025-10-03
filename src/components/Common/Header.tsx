@@ -11,7 +11,7 @@ interface NavButtonProps extends ButtonProps {
 const StyledButton = styled((props: NavButtonProps) => {
   const { selected, accent, ...rest } = props;
   return <Button {...rest} />;
-})<NavButtonProps>(({ selected, accent }) => ({
+})<NavButtonProps>(({ selected }) => ({
   margin: '0 8px',
   padding: '12px 28px',
   borderRadius: '12px',
