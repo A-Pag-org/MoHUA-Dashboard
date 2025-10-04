@@ -185,33 +185,42 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           zIndex: 1,
         }}
       >
-        {/* Header with city name and status */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 700,
-                color: '#ffffff',
-                fontSize: '1.1rem',
-                lineHeight: 1.2,
-                textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-              }}
-            >
-              {city.name}
-            </Typography>
-            <Chip
-              label={city.program}
-              size="small"
-              sx={{
-                background: 'rgba(255,255,255,0.08)',
-                color: '#e6edf3',
-                fontWeight: 600,
-                height: '22px',
-              }}
-            />
-          </Box>
-          <StatusChip label={status} status={status} size="small" />
+        {/* Program label in top left corner */}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 1 }}>
+          <Chip
+            label={city.program}
+            size="small"
+            sx={{
+              background: 'rgba(255,255,255,0.12)',
+              color: '#e6edf3',
+              fontWeight: 700,
+              fontSize: '0.75rem',
+              height: '26px',
+              borderRadius: '8px',
+              border: '1px solid rgba(255,255,255,0.15)',
+            }}
+          />
+        </Box>
+
+        {/* City name in top middle - highlighted and prominent */}
+        <Box sx={{ textAlign: 'center', mb: 2 }}>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 900,
+              color: '#ffffff',
+              fontSize: '1.5rem',
+              lineHeight: 1.2,
+              textShadow: '0 3px 8px rgba(0,0,0,0.4), 0 0 20px rgba(255,255,255,0.1)',
+              background: `linear-gradient(135deg, ${color} 0%, #ffffff 100%)`,
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              letterSpacing: '0.5px',
+            }}
+          >
+            {city.name}
+          </Typography>
         </Box>
 
         {/* Circular Progress Indicator */}
@@ -219,21 +228,25 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           <CircularProgressIndicator percentage={city.value} color={color} />
         </Box>
 
-        {/* Footer info */}
+        {/* Footer with metric info and status badge */}
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
+            justifyContent: 'space-between',
             mt: 1,
             pt: 1,
             borderTop: '1px solid rgba(255, 255, 255, 0.08)',
           }}
         >
-          <InfoIcon sx={{ fontSize: '15px', color: 'rgba(255, 255, 255, 0.65)', mr: 0.5 }} />
-          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.65)', fontSize: '0.72rem' }}>
-            Top in {city.metric}
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <InfoIcon sx={{ fontSize: '15px', color: 'rgba(255, 255, 255, 0.65)', mr: 0.5 }} />
+            <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.65)', fontSize: '0.72rem' }}>
+              Top in {city.metric}
+            </Typography>
+          </Box>
+          {/* Status badge in bottom right */}
+          <StatusChip label={status} status={status} size="small" />
         </Box>
       </CardContent>
     </ProgramTileCard>
