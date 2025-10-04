@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Box, Typography, Card, CardContent, Chip, Grid, CircularProgress } from '@mui/material';
+import { Box, Typography, Card, CardContent, Chip, CircularProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import InfoIcon from '@mui/icons-material/Info';
 import { LeadingCity } from '../../types';
