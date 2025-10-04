@@ -187,156 +187,99 @@ const CircularProgressIndicator: React.FC<{ percentage: number; color: string; s
   );
 };
 
-// Consolidated Gauge Chart Component for Actual Raised and Resolved
+// Consolidated Gauge Chart Component for Actual Raised and Resolved (full donut with legend)
 const ConsolidatedGaugeChart: React.FC<{ 
   raisedValue: number; 
   resolvedValue: number; 
   size?: number 
-}> = ({ raisedValue, resolvedValue, size = 280 }) => {
-  const maxValue = Math.max(raisedValue, resolvedValue);
-  const raisedPercentage = Math.min((raisedValue / maxValue) * 100, 100);
-  const resolvedPercentage = Math.min((resolvedValue / maxValue) * 100, 100);
-  
-  const radius = (size - 40) / 2;
-  const circumference = radius * Math.PI; // Half circle
-  const raisedStrokeDasharray = `${circumference} ${circumference}`;
-  const resolvedStrokeDasharray = `${circumference} ${circumference}`;
-  const raisedStrokeDashoffset = circumference - (raisedPercentage / 100) * circumference;
-  const resolvedStrokeDashoffset = circumference - (resolvedPercentage / 100) * circumference;
+}> = ({ raisedValue, resolvedValue, size = 260 }) => {
+  const resolutionRate = raisedValue > 0 ? Math.min((resolvedValue / raisedValue) * 100, 100) : 0;
+
+  const RAISED_COLOR = '#3b82f6'; // Blue
+  const RESOLVED_COLOR = '#22c55e'; // Green
+  const TRACK_COLOR = 'rgba(255, 255, 255, 0.12)';
+
+  const center = size / 2;
+  const outerRadius = center - 10; // outer ring padding 10
+  const innerRadius = outerRadius - 14; // spacing between rings
+
+  const outerCircumference = 2 * Math.PI * outerRadius;
+  const innerCircumference = 2 * Math.PI * innerRadius;
+
+  const innerDasharray = `${innerCircumference} ${innerCircumference}`;
+  const innerDashoffset = innerCircumference - (resolutionRate / 100) * innerCircumference;
 
   return (
-    <Box sx={{
-      position: 'relative',
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      width: '100%',
-      maxWidth: size + 180,
-      height: size * 0.7,
-      gap: 3,
-      mx: 'auto',
-    }}>
-      {/* Left side - Raised */}
-      <Box sx={{ textAlign: 'center', flex: '0 0 auto' }}>
-        <Typography
-          variant="h3"
-          sx={{
-            color: '#ffffff',
-            fontWeight: 800,
-            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-            lineHeight: 1,
-            fontSize: '2.5rem',
-            mb: 1,
-          }}
-        >
-          {raisedValue.toLocaleString()}
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            color: 'rgba(255, 255, 255, 0.8)',
-            fontSize: '1rem',
-            fontWeight: 600,
-          }}
-        >
-          Actual Raise
-        </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 1 }}>
-          <Box sx={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', mr: 1 }}>0</Box>
-          <Box sx={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', ml: 1 }}>{maxValue.toLocaleString()}</Box>
+    <Box sx={{ width: '100%' }}>
+      <Box sx={{ position: 'relative', width: size, height: size, mx: 'auto' }}>
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+          <g transform={`rotate(-90 ${center} ${center})`}>
+            {/* Outer track */}
+            <circle cx={center} cy={center} r={outerRadius} fill="none" stroke={TRACK_COLOR} strokeWidth={10} />
+            {/* Outer value (Raised - always full) */}
+            <circle
+              cx={center}
+              cy={center}
+              r={outerRadius}
+              fill="none"
+              stroke={RAISED_COLOR}
+              strokeWidth={10}
+              strokeLinecap="round"
+              strokeDasharray={`${outerCircumference} ${outerCircumference}`}
+              strokeDashoffset={0}
+              style={{ filter: `drop-shadow(0 0 8px ${RAISED_COLOR}55)` }}
+            />
+
+            {/* Inner track */}
+            <circle cx={center} cy={center} r={innerRadius} fill="none" stroke={TRACK_COLOR} strokeWidth={10} />
+            {/* Inner value (Resolved as % of Raised) */}
+            <circle
+              cx={center}
+              cy={center}
+              r={innerRadius}
+              fill="none"
+              stroke={RESOLVED_COLOR}
+              strokeWidth={10}
+              strokeLinecap="round"
+              strokeDasharray={innerDasharray}
+              strokeDashoffset={innerDashoffset}
+              style={{ transition: 'stroke-dashoffset 0.8s ease', filter: `drop-shadow(0 0 8px ${RESOLVED_COLOR}55)` }}
+            />
+          </g>
+        </svg>
+
+        {/* Center content */}
+        <Box sx={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          pointerEvents: 'none'
+        }}>
+          <Typography variant="h4" sx={{ color: '#111827', fontWeight: 800, textShadow: '0 2px 4px rgba(0,0,0,0.08)' }}>
+            {resolutionRate.toFixed(1)}%
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.85)' }}>
+            Resolution Rate
+          </Typography>
         </Box>
       </Box>
 
-      {/* Center - Consolidated Gauge */}
-      <Box sx={{ flex: '1 1 auto', display: 'flex', justifyContent: 'center' }}>
-        <svg 
-          width={size} 
-          height={size * 0.7} 
-          viewBox={`0 0 ${size} ${size * 0.7}`}
-          style={{ transform: 'rotate(-90deg)' }}
-        >
-          {/* Background arc */}
-          <path
-            d={`M ${size * 0.15} ${size * 0.5} A ${radius} ${radius} 0 0 1 ${size * 0.85} ${size * 0.5}`}
-            fill="none"
-            stroke="rgba(255, 255, 255, 0.1)"
-            strokeWidth="12"
-            strokeLinecap="round"
-          />
-          
-          {/* Gradient definitions */}
-          <defs>
-            <linearGradient id="gradient-raised" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#ff6b6b" />
-              <stop offset="100%" stopColor="#ff6b6bCC" />
-            </linearGradient>
-            <linearGradient id="gradient-resolved" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#ffc107" />
-              <stop offset="100%" stopColor="#ffc107CC" />
-            </linearGradient>
-          </defs>
-          
-          {/* Raised arc (outer) */}
-          <path
-            d={`M ${size * 0.15} ${size * 0.5} A ${radius} ${radius} 0 0 1 ${size * 0.85} ${size * 0.5}`}
-            fill="none"
-            stroke="url(#gradient-raised)"
-            strokeWidth="8"
-            strokeLinecap="round"
-            strokeDasharray={raisedStrokeDasharray}
-            strokeDashoffset={raisedStrokeDashoffset}
-            style={{
-              filter: 'drop-shadow(0 0 8px #ff6b6b50)',
-              transition: 'stroke-dashoffset 1s ease-in-out',
-            }}
-          />
-          
-          {/* Resolved arc (inner, offset) */}
-          <path
-            d={`M ${size * 0.18} ${size * 0.5} A ${radius - 12} ${radius - 12} 0 0 1 ${size * 0.82} ${size * 0.5}`}
-            fill="none"
-            stroke="url(#gradient-resolved)"
-            strokeWidth="8"
-            strokeLinecap="round"
-            strokeDasharray={resolvedStrokeDasharray}
-            strokeDashoffset={resolvedStrokeDashoffset}
-            style={{
-              filter: 'drop-shadow(0 0 8px #ffc10750)',
-              transition: 'stroke-dashoffset 1s ease-in-out',
-            }}
-          />
-        </svg>
-      </Box>
-
-      {/* Right side - Resolved */}
-      <Box sx={{ textAlign: 'center', flex: '0 0 auto' }}>
-        <Typography
-          variant="h3"
-          sx={{
-            color: '#ffffff',
-            fontWeight: 800,
-            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-            lineHeight: 1,
-            fontSize: '2.5rem',
-            mb: 1,
-          }}
-        >
-          {resolvedValue.toLocaleString()}
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            color: 'rgba(255, 255, 255, 0.8)',
-            fontSize: '1rem',
-            fontWeight: 600,
-          }}
-        >
-          Actual Resolved
-        </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 1 }}>
-          <Box sx={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', mr: 1 }}>0</Box>
-          <Box sx={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', ml: 1 }}>{maxValue.toLocaleString()}</Box>
+      {/* Legend */}
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4, mt: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
+          <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: RAISED_COLOR }} />
+          <Typography variant="body2" sx={{ color: '#ffffff' }}>
+            Issues Raised ({raisedValue.toLocaleString()})
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
+          <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: RESOLVED_COLOR }} />
+          <Typography variant="body2" sx={{ color: '#ffffff' }}>
+            Issues Resolved ({resolvedValue.toLocaleString()})
+          </Typography>
         </Box>
       </Box>
     </Box>
@@ -724,37 +667,14 @@ const CityTiles: React.FC = () => {
                 Overall Delhi NCR Performance
               </Typography>
               
-              {/* Consolidated Gauge Chart and Resolution Rate */}
-              <Grid container spacing={4} sx={{ mb: 4, alignItems: 'center' }}>
-                <Grid item xs={12} md={8} sx={{ overflow: 'hidden' }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <ConsolidatedGaugeChart
-                      raisedValue={totalRaised}
-                      resolvedValue={totalResolved}
-                      size={200}
-                    />
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                  <Box sx={{ textAlign: 'center' }}>
-                    <CircularProgressIndicator 
-                      percentage={overallResolutionRate}
-                      color={getResolutionColor(overallResolutionRate)}
-                      size={120}
-                    />
-                    <Typography 
-                      variant="h6" 
-                      sx={{ 
-                        mt: 2, 
-                        color: 'rgba(255, 255, 255, 0.9)', 
-                        fontWeight: 600 
-                      }}
-                    >
-                      Resolution Rate
-                    </Typography>
-                  </Box>
-                </Grid>
-              </Grid>
+              {/* Consolidated Donut with Center Percentage and Legend */}
+              <Box sx={{ mb: 4 }}>
+                <ConsolidatedGaugeChart
+                  raisedValue={totalRaised}
+                  resolvedValue={totalResolved}
+                  size={240}
+                />
+              </Box>
               
               <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 <StatusChip 
