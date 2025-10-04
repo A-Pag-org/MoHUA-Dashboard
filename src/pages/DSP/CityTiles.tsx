@@ -333,6 +333,11 @@ const CityTiles: React.FC = () => {
   const satisfactoryCities = MOCK_DSP_CITIES.filter(city => city.resolutionPercentage >= 90).length;
   const averageCities = MOCK_DSP_CITIES.filter(city => city.resolutionPercentage >= 50 && city.resolutionPercentage < 90).length;
   const unsatisfactoryCities = MOCK_DSP_CITIES.filter(city => city.resolutionPercentage < 50).length;
+  
+  // Calculate total statistics from actual data
+  const totalRaised = MOCK_DSP_CITIES.reduce((sum, city) => sum + city.complaintsRaised, 0);
+  const totalResolved = MOCK_DSP_CITIES.reduce((sum, city) => sum + city.complaintsResolved, 0);
+  const overallResolutionRate = (totalResolved / totalRaised * 100);
 
   return (
     <Box>
@@ -347,7 +352,7 @@ const CityTiles: React.FC = () => {
             textAlign: 'center'
           }}
         >
-          City-wise Overview
+          City-wise Overview - NCR Region
         </Typography>
         
         <Typography 
@@ -360,9 +365,58 @@ const CityTiles: React.FC = () => {
             mx: 'auto'
           }}
         >
-          Comprehensive overview of DSP complaint resolution across all participating cities. 
+          Comprehensive overview of DSP complaint resolution across NCR cities. 
           Each tile displays key metrics with dynamic color coding based on resolution performance.
         </Typography>
+
+        {/* Total Summary Card */}
+        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
+          <Card sx={{ 
+            maxWidth: 600, 
+            borderRadius: '16px', 
+            bgcolor: getResolutionColor(overallResolutionRate) + '10',
+            border: `2px solid ${getResolutionColor(overallResolutionRate)}`,
+            boxShadow: `0 8px 32px ${getResolutionColor(overallResolutionRate)}20`
+          }}>
+            <CardContent sx={{ textAlign: 'center', py: 3 }}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 2, color: '#2c3e50' }}>
+                Total Summary - All NCR Cities
+              </Typography>
+              <Grid container spacing={3} sx={{ mb: 2 }}>
+                <Grid item xs={12} sm={4}>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#e74c3c' }}>
+                    {totalRaised.toLocaleString()}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#7f8c8d' }}>
+                    Total Raised
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: getResolutionColor(overallResolutionRate) }}>
+                    {totalResolved.toLocaleString()}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#7f8c8d' }}>
+                    Total Resolved
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: getResolutionColor(overallResolutionRate) }}>
+                    {overallResolutionRate.toFixed(1)}%
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#7f8c8d' }}>
+                    Overall Resolution
+                  </Typography>
+                </Grid>
+              </Grid>
+              <StatusChip 
+                label={getResolutionStatus(overallResolutionRate)} 
+                status={getResolutionStatus(overallResolutionRate)}
+                size="small"
+                sx={{ fontSize: '0.9rem', px: 2, py: 0.5 }}
+              />
+            </CardContent>
+          </Card>
+        </Box>
 
         {/* Summary Statistics */}
         <Grid container spacing={2} sx={{ mb: 3 }}>
