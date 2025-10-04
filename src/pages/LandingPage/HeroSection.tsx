@@ -229,49 +229,6 @@ const HeroSection: React.FC = () => {
           ))}
         </Box>
 
-        {/* Program Information Cards */}
-        <Box sx={{ 
-          display: 'grid',
-          gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
-          gap: { xs: 2, md: 3 },
-          mt: 4
-        }}>
-          <Card sx={{ p: 2, textAlign: 'center', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1, color: DSP_COLORS.SATISFACTORY }}>
-              🏗️ DSP Program
-            </Typography>
-            <Typography variant="body2" sx={{ color: '#555', lineHeight: 1.5 }}>
-              <strong>Digital Service Platform:</strong> Tracks complaint resolution efficiency for road repairs and civic infrastructure
-            </Typography>
-          </Card>
-          
-          <Card sx={{ p: 2, textAlign: 'center', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1, color: '#2196F3' }}>
-              ♻️ C&D Program
-            </Typography>
-            <Typography variant="body2" sx={{ color: '#555', lineHeight: 1.5 }}>
-              <strong>Construction & Demolition:</strong> Monitors waste management and target achievement across cities
-            </Typography>
-          </Card>
-          
-          <Card sx={{ p: 2, textAlign: 'center', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1, color: '#9C27B0' }}>
-              🛣️ MRS Program
-            </Typography>
-            <Typography variant="body2" sx={{ color: '#555', lineHeight: 1.5 }}>
-              <strong>Road Management System:</strong> Evaluates road length coverage and maintenance efficiency
-            </Typography>
-          </Card>
-        </Box>
-
-        {/* Additional Info */}
-        <Box sx={{ textAlign: 'center', mt: 5, p: 3, backgroundColor: 'rgba(255,255,255,0.8)', borderRadius: 2 }}>
-          <Typography variant="body2" sx={{ color: '#666', fontStyle: 'italic' }}>
-            Rankings are updated in real-time based on the latest performance data from participating cities.
-            <br />
-            Click on any city tile to view detailed performance metrics and trends.
-          </Typography>
-        </Box>
       </Box>
     </Box>
   );
