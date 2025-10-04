@@ -87,13 +87,13 @@ const Header: React.FC = () => {
     <AppBar 
       position="sticky" 
       sx={{ 
-        backgroundColor: '#3e3636', 
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        background: 'linear-gradient(135deg, rgba(7, 14, 28, 0.85) 0%, rgba(16, 27, 42, 0.85) 100%)',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
         top: 0,
         zIndex: 1100,
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
       }}
     >
       <Toolbar sx={{ justifyContent: 'space-between', padding: '0 24px' }}>
@@ -101,8 +101,8 @@ const Header: React.FC = () => {
           variant="h4"
           component="div"
           sx={{
-            color: '#f5f5f5',
-            fontWeight: 'bold',
+            color: 'text.primary',
+            fontWeight: 800,
             letterSpacing: '1px',
           }}
         >

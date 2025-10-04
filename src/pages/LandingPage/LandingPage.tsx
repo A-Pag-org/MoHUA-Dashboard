@@ -6,7 +6,7 @@ import StatsOverview from './StatsOverview';
 
 const LandingPage: React.FC = () => {
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
+    <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
       <Header />
       <HeroSection />
       <StatsOverview />

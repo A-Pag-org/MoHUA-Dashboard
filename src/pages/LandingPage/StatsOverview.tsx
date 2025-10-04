@@ -26,10 +26,10 @@ import {
 
 // Color constants matching the requirements
 const COLORS = {
-  BLACK: '#000000',
+  BLACK: '#0E1525',
   SATISFACTORY: '#4CAF50',
-  AVERAGE: '#FFC107',
-  UNSATISFACTORY: '#F44336',
+  AVERAGE: '#FFD166',
+  UNSATISFACTORY: '#FF6B6B',
 };
 
 // Mock data for development - replace with actual data source
@@ -159,7 +159,7 @@ const DSPSection: React.FC<{ data: DSPComplaintData[] }> = ({ data }) => {
   }));
 
   return (
-    <Card sx={{ height: '100%' }}>
+    <Card sx={{ height: '100%', backgroundColor: 'background.paper' }}>
       <CardContent>
         <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
           Complaint Status: Road repairs & Civic Infra
@@ -167,7 +167,7 @@ const DSPSection: React.FC<{ data: DSPComplaintData[] }> = ({ data }) => {
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           DSP Section - Raised vs Resolved Complaints
         </Typography>
-        <Box sx={{ height: 300 }}>
+        <Box sx={{ height: 260 }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -218,7 +218,7 @@ const CDSection: React.FC<{ data: CDCollectionData[] }> = ({ data }) => {
   }));
 
   return (
-    <Card sx={{ height: '100%' }}>
+    <Card sx={{ height: '100%', backgroundColor: 'background.paper' }}>
       <CardContent>
         <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
           Citywise C&D Collection Status
@@ -226,7 +226,7 @@ const CDSection: React.FC<{ data: CDCollectionData[] }> = ({ data }) => {
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           C&D Section - Target vs Actuals
         </Typography>
-        <Box sx={{ height: 300 }}>
+        <Box sx={{ height: 260 }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -277,7 +277,7 @@ const MRSSection: React.FC<{ data: MRSUsageData[] }> = ({ data }) => {
   }));
 
   return (
-    <Card sx={{ height: '100%' }}>
+    <Card sx={{ height: '100%', backgroundColor: 'background.paper' }}>
       <CardContent>
         <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
           Citywise MRS Usage Status
@@ -285,7 +285,7 @@ const MRSSection: React.FC<{ data: MRSUsageData[] }> = ({ data }) => {
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           MRS Section - Target Road Length vs Actual Road Length Covered
         </Typography>
-        <Box sx={{ height: 300 }}>
+        <Box sx={{ height: 260 }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -327,7 +327,7 @@ const MRSSection: React.FC<{ data: MRSUsageData[] }> = ({ data }) => {
 // Main StatsOverview Component
 const StatsOverview: React.FC = () => {
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
+    <Container maxWidth="xl" sx={{ py: 3 }}>
       <Typography
         variant="h4"
         component="h2"
@@ -337,7 +337,7 @@ const StatsOverview: React.FC = () => {
         Program Overview Statistics
       </Typography>
       
-      <Grid container spacing={4}>
+      <Grid container spacing={3}>
         {/* DSP Section */}
         <Grid item xs={12} lg={4}>
           <DSPSection data={mockData.dspData} />

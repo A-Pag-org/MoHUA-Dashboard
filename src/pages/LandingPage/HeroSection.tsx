@@ -51,14 +51,16 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          borderTop: `4px solid ${getProgramColor(city.program)}`,
+          borderTop: `3px solid ${getProgramColor(city.program)}`,
           transition: 'all 0.3s ease-in-out',
           cursor: 'pointer',
           position: 'relative',
           overflow: 'hidden',
+          borderRadius: 2,
+          backgroundColor: 'background.paper',
           '&:hover': {
-            transform: 'translateY(-8px)',
-            boxShadow: '0 12px 35px rgba(0,0,0,0.2)',
+            transform: 'translateY(-6px)',
+            boxShadow: '0 12px 32px rgba(0,0,0,0.25)',
             '&::before': {
               opacity: 1
             }
@@ -70,16 +72,16 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: `linear-gradient(135deg, ${getProgramColor(city.program)}10, ${getProgramColor(city.program)}05)`,
+            background: `linear-gradient(135deg, ${getProgramColor(city.program)}1a, ${getProgramColor(city.program)}0d)`,
             opacity: 0,
             transition: 'opacity 0.3s ease'
           }
         }}
       >
-        <CardContent sx={{ flex: 1, p: 3, position: 'relative', zIndex: 1 }}>
+        <CardContent sx={{ flex: 1, p: 2, position: 'relative', zIndex: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography sx={{ fontSize: '1.5rem' }}>{getProgramIcon(city.program)}</Typography>
+              <Typography sx={{ fontSize: '1.25rem' }}>{getProgramIcon(city.program)}</Typography>
               <Chip 
                 label={city.program}
                 size="small"
@@ -87,7 +89,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
                   backgroundColor: getProgramColor(city.program),
                   color: 'white',
                   fontWeight: 'bold',
-                  fontSize: '0.75rem'
+                  fontSize: '0.7rem'
                 }}
               />
             </Box>
@@ -96,7 +98,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
               sx={{ 
                 fontWeight: 'bold',
                 color: getProgramColor(city.program),
-                fontSize: '2.2rem',
+                fontSize: '1.8rem',
                 lineHeight: 1
               }}
             >
@@ -108,9 +110,9 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
             variant="h6" 
             sx={{ 
               fontWeight: 'bold',
-              mb: 1,
-              color: '#333',
-              fontSize: '1.1rem'
+              mb: 0.75,
+              color: 'text.primary',
+              fontSize: '1rem'
             }}
           >
             {city.name}
@@ -119,9 +121,9 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           <Typography 
             variant="body2" 
             sx={{ 
-              color: '#666',
+              color: 'text.secondary',
               fontStyle: 'italic',
-              mb: 2
+              mb: 1.5
             }}
           >
             Leading in {city.metric}
@@ -134,11 +136,11 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
               sx={{
                 backgroundColor: performanceColor,
                 color: 'white',
-                fontSize: '0.7rem',
-                height: '24px'
+                fontSize: '0.68rem',
+                height: '22px'
               }}
             />
-            <Typography variant="caption" sx={{ color: '#888', fontWeight: 'medium' }}>
+            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 'medium' }}>
               #1 City
             </Typography>
           </Box>
@@ -167,9 +169,9 @@ const HeroSection: React.FC = () => {
 
   return (
     <Box sx={{ 
-      py: 6, 
-      px: 3,
-      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+      py: 4, 
+      px: 2,
+      background: 'linear-gradient(180deg, #0B1220 0%, #0F1B2A 100%)',
       position: 'relative',
       '&::before': {
         content: '""',
@@ -179,19 +181,19 @@ const HeroSection: React.FC = () => {
         right: 0,
         bottom: 0,
         background: 'url("data:image/svg+xml,%3Csvg width="20" height="20" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3Cpattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"%3E%3Cpath d="M 20 0 L 0 0 0 20" fill="none" stroke="%23f0f0f0" stroke-width="1"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100%25" height="100%25" fill="url(%23grid)"/%3E%3C/svg%3E")',
-        opacity: 0.3,
+        opacity: 0.15,
         zIndex: 0
       }
     }}>
       <Box sx={{ maxWidth: 1200, mx: 'auto', position: 'relative', zIndex: 1 }}>
         {/* Header Section */}
-        <Box sx={{ textAlign: 'center', mb: 6 }}>
+        <Box sx={{ textAlign: 'center', mb: 4 }}>
           <Typography 
             variant="h3" 
             sx={{ 
-              fontWeight: 'bold',
-              mb: 2,
-              background: 'linear-gradient(45deg, #2196F3, #21CBF3)',
+              fontWeight: 800,
+              mb: 1.5,
+              background: 'linear-gradient(45deg, #7aa2ff, #89d0ff)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -204,7 +206,7 @@ const HeroSection: React.FC = () => {
           <Typography 
             variant="h6" 
             sx={{ 
-              color: '#666',
+              color: 'text.secondary',
               maxWidth: 700,
               mx: 'auto',
               lineHeight: 1.6,
@@ -220,9 +222,9 @@ const HeroSection: React.FC = () => {
         <Box sx={{ 
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
-          gap: { xs: 2, md: 3 },
-          mt: 4,
-          mb: 5
+          gap: { xs: 2, md: 2.5 },
+          mt: 3,
+          mb: 4
         }}>
           {calculateLeadingCities.map((city) => (
             <LeaderboardTile key={city.id} city={city} />

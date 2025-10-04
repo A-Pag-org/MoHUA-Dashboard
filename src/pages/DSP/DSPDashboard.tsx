@@ -68,7 +68,7 @@ const DSPDashboard: React.FC = () => {
   return (
     <Box sx={{ 
       minHeight: '100vh', 
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: 'linear-gradient(180deg, #0B1220 0%, #0F1B2A 100%)',
       position: 'relative',
       '&::before': {
         content: '""',
@@ -77,7 +77,7 @@ const DSPDashboard: React.FC = () => {
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.05) 100%)',
+        background: 'radial-gradient(1000px 400px at 20% 0%, rgba(122,162,255,0.15) 0%, rgba(122,162,255,0) 60%), radial-gradient(800px 300px at 80% 10%, rgba(255,209,102,0.12) 0%, rgba(255,209,102,0) 60%)',
         pointerEvents: 'none',
       }
     }}>
@@ -85,13 +85,13 @@ const DSPDashboard: React.FC = () => {
       <AppBar 
         position="sticky" 
         sx={{ 
-          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%)',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
+          background: 'linear-gradient(135deg, rgba(7, 14, 28, 0.85) 0%, rgba(16, 27, 42, 0.85) 100%)',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
           top: 0,
           zIndex: 1100,
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
           '&::before': {
             content: '""',
             position: 'absolute',
@@ -99,7 +99,7 @@ const DSPDashboard: React.FC = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+            background: 'linear-gradient(135deg, rgba(122,162,255,0.12) 0%, rgba(255,209,102,0.10) 100%)',
             pointerEvents: 'none',
           }
         }}
@@ -113,7 +113,7 @@ const DSPDashboard: React.FC = () => {
             variant="h4"
             component="div"
             sx={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: 'linear-gradient(135deg, #7aa2ff 0%, #89d0ff 100%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -131,7 +131,7 @@ const DSPDashboard: React.FC = () => {
               variant="h5"
               component="div"
               sx={{
-                color: '#ffffff',
+              color: 'text.primary',
                 fontWeight: 700,
                 letterSpacing: '1px',
                 textShadow: '0 2px 4px rgba(0,0,0,0.3)',
@@ -143,7 +143,7 @@ const DSPDashboard: React.FC = () => {
             <Typography
               variant="body2"
               sx={{
-                color: 'rgba(255, 255, 255, 0.7)',
+              color: 'text.secondary',
                 fontSize: '0.85rem',
                 letterSpacing: '0.5px',
               }}
@@ -170,7 +170,7 @@ const DSPDashboard: React.FC = () => {
         </Toolbar>
       </AppBar>
 
-      <Container maxWidth="xl" sx={{ padding: '24px 16px', position: 'relative', zIndex: 1 }}>
+      <Container maxWidth="xl" sx={{ padding: '16px 12px', position: 'relative', zIndex: 1 }}>
         {selectedSection === 'citywise' ? (
           <CityTiles />
         ) : (

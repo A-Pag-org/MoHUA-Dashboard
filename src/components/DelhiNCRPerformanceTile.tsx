@@ -31,12 +31,12 @@ const getResolutionStatus = (percentage: number): 'Satisfactory' | 'Average' | '
 
 // Styled components
 const PerformanceTileCard = styled(Card)(() => ({
-  borderRadius: '24px',
-  background: 'rgba(255, 255, 255, 0.1)',
-  backdropFilter: 'blur(20px)',
-  WebkitBackdropFilter: 'blur(20px)',
-  border: '1px solid rgba(255, 255, 255, 0.2)',
-  boxShadow: '0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)',
+  borderRadius: '18px',
+  background: 'rgba(16, 27, 42, 0.6)',
+  backdropFilter: 'blur(12px)',
+  WebkitBackdropFilter: 'blur(12px)',
+  border: '1px solid rgba(255, 255, 255, 0.08)',
+  boxShadow: '0 12px 36px rgba(0,0,0,0.28)',
   position: 'relative',
   overflow: 'hidden',
   '&::before': {
@@ -46,7 +46,7 @@ const PerformanceTileCard = styled(Card)(() => ({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
+    background: 'linear-gradient(135deg, rgba(122,162,255,0.10) 0%, rgba(255,209,102,0.08) 100%)',
     pointerEvents: 'none',
   }
 }));
@@ -54,16 +54,16 @@ const PerformanceTileCard = styled(Card)(() => ({
 const MetricCard = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'color',
 })<{ color?: string }>(({ color = '#ffffff' }) => ({
-  borderRadius: '16px',
-  background: 'rgba(255, 255, 255, 0.1)',
+  borderRadius: '14px',
+  background: 'rgba(16, 27, 42, 0.55)',
   backdropFilter: 'blur(10px)',
   WebkitBackdropFilter: 'blur(10px)',
-  border: '1px solid rgba(255, 255, 255, 0.2)',
-  boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+  border: '1px solid rgba(255, 255, 255, 0.08)',
+  boxShadow: '0 8px 24px rgba(0,0,0,0.22)',
   transition: 'all 0.3s ease',
   '&:hover': {
     transform: 'translateY(-2px)',
-    boxShadow: `0 12px 40px rgba(0,0,0,0.2), 0 0 0 2px ${color}40`,
+    boxShadow: `0 12px 36px rgba(0,0,0,0.28), 0 0 0 2px ${color}30`,
   }
 }));
 
@@ -80,16 +80,16 @@ const StatusChip = styled(Box, {
   };
 
   return {
-    background: `linear-gradient(135deg, ${getStatusColor()}40 0%, ${getStatusColor()}20 100%)`,
-    color: '#ffffff',
+    background: `linear-gradient(135deg, ${getStatusColor()}33 0%, ${getStatusColor()}1f 100%)`,
+    color: '#E6EDF3',
     fontWeight: 700,
     fontSize: '0.75rem',
-    padding: '6px 16px',
-    borderRadius: '20px',
-    border: `1px solid ${getStatusColor()}60`,
-    backdropFilter: 'blur(10px)',
-    WebkitBackdropFilter: 'blur(10px)',
-    boxShadow: `0 4px 16px ${getStatusColor()}20`,
+    padding: '6px 14px',
+    borderRadius: '16px',
+    border: `1px solid ${getStatusColor()}3d`,
+    backdropFilter: 'blur(8px)',
+    WebkitBackdropFilter: 'blur(8px)',
+    boxShadow: `0 4px 14px ${getStatusColor()}1f`,
     display: 'inline-block',
   };
 });
@@ -270,14 +270,14 @@ const DelhiNCRPerformanceTile: React.FC = () => {
   
   return (
     <PerformanceTileCard>
-      <CardContent sx={{ padding: '32px', position: 'relative', zIndex: 1 }}>
+      <CardContent sx={{ padding: '24px', position: 'relative', zIndex: 1 }}>
         {/* Header */}
-        <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Box sx={{ textAlign: 'center', mb: 3 }}>
           <Typography 
             variant="h3" 
             sx={{ 
               fontWeight: 800, 
-              color: '#ffffff', 
+              color: 'text.primary', 
               mb: 1,
               textShadow: '0 4px 8px rgba(0,0,0,0.3)',
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -304,10 +304,10 @@ const DelhiNCRPerformanceTile: React.FC = () => {
         </Box>
 
         {/* Main Metrics Grid */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid container spacing={2.5} sx={{ mb: 3 }}>
           {/* Overall Resolution Rate */}
           <Grid item xs={12} md={4}>
-            <MetricCard sx={{ textAlign: 'center', p: 3 }}>
+            <MetricCard sx={{ textAlign: 'center', p: 2.5 }}>
               <CircularProgressIndicator 
                 percentage={overallResolutionRate}
                 color={resolutionColor}
@@ -319,9 +319,9 @@ const DelhiNCRPerformanceTile: React.FC = () => {
 
           {/* Key Statistics */}
           <Grid item xs={12} md={8}>
-            <Grid container spacing={2}>
+            <Grid container spacing={1.5}>
               <Grid item xs={6} sm={3}>
-                <MetricCard sx={{ textAlign: 'center', p: 2 }}>
+                <MetricCard sx={{ textAlign: 'center', p: 1.75 }}>
                   <Typography variant="h4" sx={{ fontWeight: 800, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
                     {totalCities}
                   </Typography>
@@ -332,7 +332,7 @@ const DelhiNCRPerformanceTile: React.FC = () => {
               </Grid>
               
               <Grid item xs={6} sm={3}>
-                <MetricCard sx={{ textAlign: 'center', p: 2 }}>
+                <MetricCard sx={{ textAlign: 'center', p: 1.75 }}>
                   <Typography variant="h4" sx={{ fontWeight: 800, color: '#ff6b6b', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
                     {totalRaised.toLocaleString()}
                   </Typography>
@@ -343,7 +343,7 @@ const DelhiNCRPerformanceTile: React.FC = () => {
               </Grid>
               
               <Grid item xs={6} sm={3}>
-                <MetricCard sx={{ textAlign: 'center', p: 2 }}>
+                <MetricCard sx={{ textAlign: 'center', p: 1.75 }}>
                   <Typography variant="h4" sx={{ fontWeight: 800, color: '#4CAF50', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
                     {totalResolved.toLocaleString()}
                   </Typography>
@@ -368,9 +368,9 @@ const DelhiNCRPerformanceTile: React.FC = () => {
         </Grid>
 
         {/* Performance Distribution */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid container spacing={2.5} sx={{ mb: 3 }}>
           <Grid item xs={12} md={4}>
-            <MetricCard sx={{ p: 3 }}>
+            <MetricCard sx={{ p: 2.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <LocationCityIcon sx={{ color: DSP_COLORS.SATISFACTORY, mr: 1, fontSize: '1.5rem' }} />
                 <Typography variant="h6" sx={{ color: '#ffffff', fontWeight: 600 }}>
@@ -387,7 +387,7 @@ const DelhiNCRPerformanceTile: React.FC = () => {
           </Grid>
           
           <Grid item xs={12} md={4}>
-            <MetricCard sx={{ p: 3 }}>
+            <MetricCard sx={{ p: 2.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <AssessmentIcon sx={{ color: DSP_COLORS.AVERAGE, mr: 1, fontSize: '1.5rem' }} />
                 <Typography variant="h6" sx={{ color: '#ffffff', fontWeight: 600 }}>
@@ -422,15 +422,15 @@ const DelhiNCRPerformanceTile: React.FC = () => {
         </Grid>
 
         {/* City Performance Chart */}
-        <Grid container spacing={3}>
+        <Grid container spacing={2.5}>
           <Grid item xs={12} md={6}>
-            <MetricCard sx={{ p: 3 }}>
+            <MetricCard sx={{ p: 2.5 }}>
               <CityPerformanceChart />
             </MetricCard>
           </Grid>
           
           <Grid item xs={12} md={6}>
-            <MetricCard sx={{ p: 3 }}>
+            <MetricCard sx={{ p: 2.5 }}>
               <Typography variant="h6" sx={{ color: '#ffffff', fontWeight: 600, mb: 2, textAlign: 'center' }}>
                 Resolution Progress
               </Typography>
