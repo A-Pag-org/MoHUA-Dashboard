@@ -6,10 +6,17 @@ import { LeadingCity } from '../../types';
 import { MOCK_LEADING_CITIES, DSP_COLORS } from '../../utils/constants';
 
 // Helper functions and styled components to mirror DSP city tile aesthetics
+// Use exact dynamic colors per requirement
+const STATUS_COLORS = {
+  SATISFACTORY: '#4CAF50', // Green - >=90%
+  AVERAGE: '#FFC107',      // Amber - 50-89%
+  UNSATISFACTORY: '#F44336', // Red - <50%
+};
+
 const getPerformanceColor = (percentage: number): string => {
-  if (percentage >= 90) return DSP_COLORS.SATISFACTORY;
-  if (percentage >= 50) return DSP_COLORS.AVERAGE;
-  return DSP_COLORS.UNSATISFACTORY;
+  if (percentage >= 90) return STATUS_COLORS.SATISFACTORY;
+  if (percentage >= 50) return STATUS_COLORS.AVERAGE;
+  return STATUS_COLORS.UNSATISFACTORY;
 };
 
 const getPerformanceStatus = (
@@ -21,11 +28,7 @@ const getPerformanceStatus = (
 };
 
 // Color scheme per user requirement for legend/chips
-const STATUS_COLORS = {
-  SATISFACTORY: '#4CAF50', // Green - >=90%
-  AVERAGE: '#FFC107',      // Amber - 50-89%
-  UNSATISFACTORY: '#F44336', // Red - <50%
-};
+// Already declared above for reuse
 
 // Helper for status legend colors is provided by STATUS_COLORS above.
 
@@ -80,13 +83,13 @@ const StatusChip = styled(Chip, {
   const getStatusColor = () => {
     switch (status) {
       case 'Satisfactory':
-        return DSP_COLORS.SATISFACTORY;
+        return STATUS_COLORS.SATISFACTORY;
       case 'Average':
-        return DSP_COLORS.AVERAGE;
+        return STATUS_COLORS.AVERAGE;
       case 'Unsatisfactory':
-        return DSP_COLORS.UNSATISFACTORY;
+        return STATUS_COLORS.UNSATISFACTORY;
       default:
-        return DSP_COLORS.AVERAGE;
+        return STATUS_COLORS.AVERAGE;
     }
   };
 
@@ -178,6 +181,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
       <CardContent
         sx={{
           padding: '16px',
+          pt: '36px', // space for top-left program chip
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
@@ -185,34 +189,42 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           zIndex: 1,
         }}
       >
-        {/* Header with city name and status */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 700,
-                color: '#ffffff',
-                fontSize: '1.1rem',
-                lineHeight: 1.2,
-                textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-              }}
-            >
-              {city.name}
-            </Typography>
-            <Chip
-              label={city.program}
-              size="small"
-              sx={{
-                background: 'rgba(255,255,255,0.08)',
-                color: '#e6edf3',
-                fontWeight: 600,
-                height: '22px',
-              }}
-            />
-          </Box>
+        {/* Program tag at top-left */}
+        <Box sx={{ position: 'absolute', top: 12, left: 12 }}>
+          <Chip
+            label={city.program}
+            size="small"
+            sx={{
+              background: 'rgba(255,255,255,0.08)',
+              color: '#e6edf3',
+              fontWeight: 600,
+              height: '22px',
+              border: '1px solid rgba(255,255,255,0.12)',
+              backdropFilter: 'blur(6px)',
+            }}
+          />
+        </Box>
+
+        {/* Status chip at bottom-right */}
+        <Box sx={{ position: 'absolute', bottom: 12, right: 12 }}>
           <StatusChip label={status} status={status} size="small" />
         </Box>
+
+        {/* City name centered at top */}
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 800,
+            textAlign: 'center',
+            color: color,
+            fontSize: '1.1rem',
+            lineHeight: 1.2,
+            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+            mb: 2,
+          }}
+        >
+          {city.name}
+        </Typography>
 
         {/* Circular Progress Indicator */}
         <Box sx={{ textAlign: 'center', mb: 1.5, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
