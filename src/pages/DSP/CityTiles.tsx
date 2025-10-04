@@ -23,7 +23,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { DSPCity } from '../../types';
-import { DSP_COLORS, MOCK_DSP_CITIES } from '../../utils/constants';
+import { DSP_COLORS, MOCK_DSP_CITIES, MOCK_CATEGORY_DATA } from '../../utils/constants';
+import CategoryBarChart from './CategoryBarChart';
 
 // Helper function to get color based on resolution percentage
 const getResolutionColor = (percentage: number): string => {
@@ -435,7 +436,7 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
       <Dialog 
       open={open} 
       onClose={onClose} 
-      maxWidth="sm" 
+      maxWidth="md" 
       fullWidth
       PaperProps={{
         sx: {
@@ -445,6 +446,7 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
           WebkitBackdropFilter: 'blur(12px)',
           border: '1px solid rgba(255, 255, 255, 0.08)',
           boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
+          maxHeight: '90vh',
         }
       }}
     >
@@ -482,7 +484,7 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
         </IconButton>
       </DialogTitle>
       
-      <DialogContent sx={{ pt: 2, background: 'transparent' }}>
+      <DialogContent sx={{ pt: 2, background: 'transparent', overflowY: 'auto' }}>
         {/* Circular Progress Indicator */}
         <Box sx={{ textAlign: 'center', mb: 3 }}>
           <CircularProgressIndicator 
@@ -577,6 +579,12 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
             </Box>
           </Grid>
         </Grid>
+
+        {/* Category-wise Performance Chart */}
+        <CategoryBarChart 
+          data={MOCK_CATEGORY_DATA[city.id] || []} 
+          cityName={city.cityName}
+        />
       </DialogContent>
       
       <DialogActions sx={{ p: 2.5, pt: 1, background: 'transparent' }}>
