@@ -1,179 +1,239 @@
 import React, { useMemo } from 'react';
-import { Box, Typography, Card, CardContent, Chip, Tooltip, Button } from '@mui/material';
+import { Box, Typography, Card, CardContent, Chip, Grid, CircularProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import InfoIcon from '@mui/icons-material/Info';
 import { LeadingCity } from '../../types';
 import { MOCK_LEADING_CITIES, DSP_COLORS } from '../../utils/constants';
+
+// Helper functions and styled components to mirror DSP city tile aesthetics
+const getPerformanceColor = (percentage: number): string => {
+  if (percentage >= 90) return DSP_COLORS.SATISFACTORY;
+  if (percentage >= 50) return DSP_COLORS.AVERAGE;
+  return DSP_COLORS.UNSATISFACTORY;
+};
+
+const getPerformanceStatus = (
+  percentage: number
+): 'Satisfactory' | 'Average' | 'Unsatisfactory' => {
+  if (percentage >= 90) return 'Satisfactory';
+  if (percentage >= 50) return 'Average';
+  return 'Unsatisfactory';
+};
+
+const ProgramTileCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'resolutionColor',
+})<{ resolutionColor: string }>(({ resolutionColor }) => ({
+  minHeight: '280px',
+  height: 'auto',
+  borderRadius: '16px',
+  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+  cursor: 'default',
+  position: 'relative',
+  overflow: 'hidden',
+  background: 'rgba(16, 27, 42, 0.6)',
+  backdropFilter: 'blur(12px)',
+  WebkitBackdropFilter: 'blur(12px)',
+  border: '1px solid rgba(255, 255, 255, 0.08)',
+  boxShadow: '0 6px 20px rgba(0,0,0,0.25)',
+  '&:hover': {
+    transform: 'translateY(-6px)',
+    boxShadow: `0 16px 48px rgba(0,0,0,0.28), 0 0 0 2px ${resolutionColor}33`,
+    '&::before': {
+      opacity: 1,
+    },
+  },
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: `linear-gradient(135deg, ${resolutionColor}14 0%, ${resolutionColor}0A 100%)`,
+    opacity: 0,
+    transition: 'opacity 0.3s ease',
+  },
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '3px',
+    height: '100%',
+    background: `linear-gradient(180deg, ${resolutionColor} 0%, ${resolutionColor}99 100%)`,
+    borderRadius: '0 1.5px 1.5px 0',
+  },
+}));
+
+const StatusChip = styled(Chip, {
+  shouldForwardProp: (prop) => prop !== 'status',
+})<{ status: string }>(({ status }) => {
+  const getStatusColor = () => {
+    switch (status) {
+      case 'Satisfactory':
+        return DSP_COLORS.SATISFACTORY;
+      case 'Average':
+        return DSP_COLORS.AVERAGE;
+      case 'Unsatisfactory':
+        return DSP_COLORS.UNSATISFACTORY;
+      default:
+        return DSP_COLORS.AVERAGE;
+    }
+  };
+
+  return {
+    background: `linear-gradient(135deg, ${getStatusColor()}33 0%, ${getStatusColor()}1f 100%)`,
+    color: '#E6EDF3',
+    fontWeight: 700,
+    fontSize: '0.72rem',
+    height: '24px',
+    borderRadius: '12px',
+    border: `1px solid ${getStatusColor()}3d`,
+    backdropFilter: 'blur(8px)',
+    WebkitBackdropFilter: 'blur(8px)',
+    boxShadow: `0 4px 14px ${getStatusColor()}1f`,
+  };
+});
+
+const CircularProgressIndicator: React.FC<{
+  percentage: number;
+  color: string;
+  size?: number;
+}> = ({ percentage, color, size = 92 }) => {
+  return (
+    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+      <CircularProgress
+        variant="determinate"
+        value={100}
+        size={size}
+        thickness={4}
+        sx={{
+          color: 'rgba(255, 255, 255, 0.1)',
+          position: 'absolute',
+        }}
+      />
+      <CircularProgress
+        variant="determinate"
+        value={percentage}
+        size={size}
+        thickness={4}
+        sx={{
+          color: color,
+          filter: `drop-shadow(0 0 8px ${color}50)`,
+          '& .MuiCircularProgress-circle': {
+            strokeLinecap: 'round',
+          },
+        }}
+      />
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+        }}
+      >
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{
+            color: '#ffffff',
+            fontWeight: 800,
+            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+            lineHeight: 1,
+            fontSize: size > 100 ? '1.4rem' : '1.1rem',
+          }}
+        >
+          {percentage.toFixed(1)}%
+        </Typography>
+      </Box>
+    </Box>
+  );
+};
 
 interface LeaderboardTileProps {
   city: LeadingCity;
 }
 
 const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
-  const getProgramColor = (program: string) => {
-    switch (program) {
-      case 'DSP':
-        return DSP_COLORS.SATISFACTORY;
-      case 'C&D':
-        return '#2196F3'; // Blue
-      case 'MRS':
-        return '#9C27B0'; // Purple
-      default:
-        return DSP_COLORS.AVERAGE;
-    }
-  };
-
-  const getProgramIcon = (program: string) => {
-    switch (program) {
-      case 'DSP':
-        return '🏗️'; // Construction/Infrastructure
-      case 'C&D':
-        return '♻️'; // Recycling
-      case 'MRS':
-        return '🛣️'; // Roads
-      default:
-        return '📊';
-    }
-  };
-
-  const getPerformanceLabel = (value: number) => {
-    if (value >= 90) return 'Excellent';
-    if (value >= 75) return 'Good';
-    if (value >= 60) return 'Average';
-    return 'Needs Improvement';
-  };
-
-  const performanceLabel = getPerformanceLabel(city.value);
-  const performanceColor = city.value >= 90 ? '#4CAF50' : city.value >= 75 ? '#2196F3' : city.value >= 60 ? '#FF9800' : '#F44336';
+  const color = getPerformanceColor(city.value);
+  const status = getPerformanceStatus(city.value);
 
   return (
-    <Tooltip title={`${city.name} leads in ${city.program} with ${city.value}% ${city.metric}`} arrow>
-      <Card 
-        sx={{ 
+    <ProgramTileCard resolutionColor={color}>
+      <CardContent
+        sx={{
+          padding: '16px',
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          borderTop: `3px solid ${getProgramColor(city.program)}`,
-          transition: 'all 0.3s ease-in-out',
-          cursor: 'pointer',
           position: 'relative',
-          overflow: 'hidden',
-          borderRadius: 2,
-          backgroundColor: 'background.paper',
-          '&:hover': {
-            transform: 'translateY(-6px)',
-            boxShadow: '0 12px 32px rgba(0,0,0,0.25)',
-            '&::before': {
-              opacity: 1
-            }
-          },
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: `linear-gradient(135deg, ${getProgramColor(city.program)}1a, ${getProgramColor(city.program)}0d)`,
-            opacity: 0,
-            transition: 'opacity 0.3s ease'
-          }
+          zIndex: 1,
         }}
       >
-        <CardContent sx={{ flex: 1, p: 2, position: 'relative', zIndex: 1 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography sx={{ fontSize: '1.25rem' }}>{getProgramIcon(city.program)}</Typography>
-              <Chip 
-                label={city.program}
-                size="small"
-                sx={{ 
-                  backgroundColor: getProgramColor(city.program),
-                  color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: '0.7rem'
-                }}
-              />
-            </Box>
-            <Typography 
-              variant="h4" 
-              sx={{ 
-                fontWeight: 'bold',
-                color: getProgramColor(city.program),
-                fontSize: '1.8rem',
-                lineHeight: 1
+        {/* Header with city name and status */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 700,
+                color: '#ffffff',
+                fontSize: '1.1rem',
+                lineHeight: 1.2,
+                textShadow: '0 2px 4px rgba(0,0,0,0.3)',
               }}
             >
-              {city.value.toFixed(1)}%
+              {city.name}
             </Typography>
-          </Box>
-          
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              fontWeight: 'bold',
-              mb: 0.75,
-              color: 'text.primary',
-              fontSize: '1rem'
-            }}
-          >
-            {city.name}
-          </Typography>
-          
-          <Typography 
-            variant="body2" 
-            sx={{ 
-              color: 'text.secondary',
-              fontStyle: 'italic',
-              mb: 1.5
-            }}
-          >
-            Leading in {city.metric}
-          </Typography>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Chip
-              label={performanceLabel}
+              label={city.program}
               size="small"
               sx={{
-                backgroundColor: performanceColor,
-                color: 'white',
-                fontSize: '0.68rem',
-                height: '22px'
+                background: 'rgba(255,255,255,0.08)',
+                color: '#e6edf3',
+                fontWeight: 600,
+                height: '22px',
               }}
             />
-            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 'medium' }}>
-              #1 City
-            </Typography>
           </Box>
-        </CardContent>
-      </Card>
-    </Tooltip>
+          <StatusChip label={status} status={status} size="small" />
+        </Box>
+
+        {/* Circular Progress Indicator */}
+        <Box sx={{ textAlign: 'center', mb: 1.5, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <CircularProgressIndicator percentage={city.value} color={color} />
+        </Box>
+
+        {/* Footer info */}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mt: 1,
+            pt: 1,
+            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          }}
+        >
+          <InfoIcon sx={{ fontSize: '15px', color: 'rgba(255, 255, 255, 0.65)', mr: 0.5 }} />
+          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.65)', fontSize: '0.72rem' }}>
+            Top in {city.metric}
+          </Typography>
+        </Box>
+      </CardContent>
+    </ProgramTileCard>
   );
 };
 
-// CTA button styled to align with DSP aesthetics
-const ProgramButton = styled(Button)({
-  padding: '14px 28px',
-  borderRadius: '16px',
-  fontWeight: 700,
-  textTransform: 'none',
-  fontSize: '1rem',
-  letterSpacing: '0.3px',
-  color: '#ffffff',
-  border: '1px solid rgba(255,255,255,0.2)',
-  boxShadow: '0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15)',
-  backdropFilter: 'blur(10px)',
-  WebkitBackdropFilter: 'blur(10px)',
-  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-  '&:hover': {
-    transform: 'translateY(-2px)',
-    boxShadow: '0 12px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25)'
-  }
-});
+// Removed ProgramButton and quick links as requested
 
 const HeroSection: React.FC = () => {
-  const navigate = useNavigate();
   // In a real application, this would come from props or API calls
   // For now, we'll use the mock data but show how real data would be processed
   const calculateLeadingCities = useMemo(() => {
@@ -254,36 +314,7 @@ const HeroSection: React.FC = () => {
           ))}
         </Box>
 
-        {/* Program quick links */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
-          <ProgramButton
-            onClick={() => navigate('/dsp')}
-            sx={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              boxShadow: '0 8px 32px rgba(102, 126, 234, 0.35), inset 0 1px 0 rgba(255,255,255,0.18)'
-            }}
-          >
-            Explore DSP
-          </ProgramButton>
-          <ProgramButton
-            onClick={() => navigate('/cd')}
-            sx={{
-              background: 'linear-gradient(135deg, #2196F3 0%, #21CBF3 100%)',
-              boxShadow: '0 8px 32px rgba(33, 203, 243, 0.35), inset 0 1px 0 rgba(255,255,255,0.18)'
-            }}
-          >
-            Explore C&D
-          </ProgramButton>
-          <ProgramButton
-            onClick={() => navigate('/mrs')}
-            sx={{
-              background: 'linear-gradient(135deg, #9C27B0 0%, #7E57C2 100%)',
-              boxShadow: '0 8px 32px rgba(126, 87, 194, 0.35), inset 0 1px 0 rgba(255,255,255,0.18)'
-            }}
-          >
-            Explore MRS
-          </ProgramButton>
-        </Box>
+        {/* Program quick links removed */}
       </Box>
     </Box>
   );
