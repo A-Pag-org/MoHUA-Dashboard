@@ -85,7 +85,18 @@ const Header: React.FC = () => {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#3e3636', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+    <AppBar 
+      position="sticky" 
+      sx={{ 
+        backgroundColor: '#3e3636', 
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        top: 0,
+        zIndex: 1100,
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+      }}
+    >
       <Toolbar sx={{ justifyContent: 'space-between', padding: '0 24px' }}>
         <Typography
           variant="h4"
