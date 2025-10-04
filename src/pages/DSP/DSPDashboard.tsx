@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Typography, Container, Button, AppBar, Toolbar, Paper } from '@mui/material';
+import { Box, Typography, Container, Button, AppBar, Toolbar } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CityTiles from './CityTiles';
 import BackButton from '../../components/Common/BackButton';
+import DelhiNCRPerformanceTile from '../../components/DelhiNCRPerformanceTile';
 
 interface DSPButtonProps {
   selected?: boolean;
@@ -173,76 +174,7 @@ const DSPDashboard: React.FC = () => {
         {selectedSection === 'citywise' ? (
           <CityTiles />
         ) : (
-          <Paper
-            sx={{
-              background: 'rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              borderRadius: '24px',
-              padding: '48px',
-              textAlign: 'center',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              position: 'relative',
-              overflow: 'hidden',
-              '&::before': {
-                content: '""',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
-                pointerEvents: 'none',
-              }
-            }}
-          >
-            <Typography 
-              variant="h3" 
-              sx={{ 
-                marginBottom: '24px', 
-                color: '#ffffff',
-                fontWeight: 700,
-                textShadow: '0 4px 8px rgba(0,0,0,0.3)',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              Performance Analytics
-            </Typography>
-            <Typography 
-              variant="h6" 
-              sx={{ 
-                color: 'rgba(255, 255, 255, 0.8)', 
-                marginBottom: '32px',
-                fontWeight: 400,
-                lineHeight: 1.6,
-              }}
-            >
-              Advanced metrics and insights for the Dispersed Source Programme across all NCR cities.
-            </Typography>
-            <Box sx={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              background: 'rgba(255, 255, 255, 0.1)',
-              padding: '12px 24px',
-              borderRadius: '12px',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-            }}>
-              <Typography 
-                variant="body1" 
-                sx={{ 
-                  color: 'rgba(255, 255, 255, 0.9)',
-                  fontStyle: 'italic',
-                  fontSize: '0.95rem',
-                }}
-              >
-                🚀 Coming Soon - Advanced Dashboard Features
-              </Typography>
-            </Box>
-          </Paper>
+          <DelhiNCRPerformanceTile />
         )}
       </Container>
     </Box>
