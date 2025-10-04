@@ -286,19 +286,6 @@ const HeroSection: React.FC = () => {
           >
             🏆 City Performance Leaderboard
           </Typography>
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              color: 'rgba(255,255,255,0.75)',
-              maxWidth: 700,
-              mx: 'auto',
-              lineHeight: 1.6,
-              fontSize: { xs: '1rem', md: '1.1rem' }
-            }}
-          >
-            Discover the top-performing cities across DSP, C&D, and MRS programs based on key performance indicators. 
-            These cities are setting the benchmark for excellence in urban governance.
-          </Typography>
         </Box>
 
         {/* Leaderboard Grid */}
