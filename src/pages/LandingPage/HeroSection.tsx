@@ -355,7 +355,7 @@ const HeroSection: React.FC = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
             <Box sx={{ width: 12, height: 12, bgcolor: STATUS_COLORS.UNSATISFACTORY, borderRadius: '3px' }} />
             <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
-              Unsatisfactory (<50%)
+              Unsatisfactory (&lt;50%)
             </Typography>
           </Box>
         </Box>
