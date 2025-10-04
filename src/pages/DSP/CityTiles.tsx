@@ -152,13 +152,18 @@ const CircularProgressIndicator: React.FC<{ percentage: number; color: string; s
         }}
       >
         <Typography
-          variant="h4"
+          variant="h5"
           component="div"
           sx={{
             color: '#ffffff',
             fontWeight: 800,
             textShadow: '0 2px 4px rgba(0,0,0,0.3)',
             lineHeight: 1,
+            fontSize: size > 120 ? '1.8rem' : size > 100 ? '1.4rem' : '1.1rem',
+            maxWidth: `${size * 0.8}px`,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
           }}
         >
           {percentage.toFixed(0)}%
@@ -167,12 +172,155 @@ const CircularProgressIndicator: React.FC<{ percentage: number; color: string; s
           variant="caption"
           sx={{
             color: 'rgba(255, 255, 255, 0.7)',
-            fontSize: '0.7rem',
+            fontSize: size > 120 ? '0.85rem' : size > 100 ? '0.75rem' : '0.65rem',
             fontWeight: 500,
+            maxWidth: `${size * 0.9}px`,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
           }}
         >
           Resolution
         </Typography>
+      </Box>
+    </Box>
+  );
+};
+
+// Gauge Chart Component inspired by the provided image
+const GaugeChart: React.FC<{ 
+  value: number; 
+  maxValue: number; 
+  title: string; 
+  color: string; 
+  size?: number 
+}> = ({ value, maxValue, title, color, size = 160 }) => {
+  const percentage = Math.min((value / maxValue) * 100, 100);
+  const radius = (size - 20) / 2;
+  const circumference = radius * Math.PI; // Half circle
+  const strokeDasharray = `${circumference} ${circumference}`;
+  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <Box sx={{ 
+      position: 'relative', 
+      display: 'inline-flex', 
+      flexDirection: 'column', 
+      alignItems: 'center',
+      width: size,
+      height: size * 0.7,
+    }}>
+      <svg 
+        width={size} 
+        height={size * 0.7} 
+        viewBox={`0 0 ${size} ${size * 0.7}`}
+        style={{ transform: 'rotate(-90deg)' }}
+      >
+        {/* Background arc */}
+        <path
+          d={`M ${size * 0.15} ${size * 0.5} A ${radius} ${radius} 0 0 1 ${size * 0.85} ${size * 0.5}`}
+          fill="none"
+          stroke="rgba(255, 255, 255, 0.1)"
+          strokeWidth="8"
+          strokeLinecap="round"
+        />
+        {/* Gradient definition */}
+        <defs>
+          <linearGradient id={`gradient-${title.replace(/\s+/g, '')}`} x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor={color} />
+            <stop offset="100%" stopColor={`${color}CC`} />
+          </linearGradient>
+        </defs>
+        {/* Progress arc */}
+        <path
+          d={`M ${size * 0.15} ${size * 0.5} A ${radius} ${radius} 0 0 1 ${size * 0.85} ${size * 0.5}`}
+          fill="none"
+          stroke={`url(#gradient-${title.replace(/\s+/g, '')})`}
+          strokeWidth="8"
+          strokeLinecap="round"
+          strokeDasharray={strokeDasharray}
+          strokeDashoffset={strokeDashoffset}
+          style={{
+            filter: `drop-shadow(0 0 8px ${color}50)`,
+            transition: 'stroke-dashoffset 1s ease-in-out',
+          }}
+        />
+      </svg>
+      
+      {/* Center content */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '45%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          textAlign: 'center',
+          zIndex: 1,
+        }}
+      >
+        <Typography
+          variant="h3"
+          sx={{
+            color: '#ffffff',
+            fontWeight: 800,
+            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+            lineHeight: 1,
+            fontSize: '2rem',
+            mb: 0.5,
+          }}
+        >
+          {value.toLocaleString()}
+        </Typography>
+      </Box>
+      
+      {/* Bottom labels */}
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: -10,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          textAlign: 'center',
+          width: '100%',
+        }}
+      >
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'rgba(255, 255, 255, 0.8)',
+            fontSize: '0.85rem',
+            fontWeight: 600,
+            textAlign: 'center',
+          }}
+        >
+          {title}
+        </Typography>
+      </Box>
+      
+      {/* Scale indicators */}
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: 15,
+          left: 10,
+          fontSize: '0.7rem',
+          color: 'rgba(255, 255, 255, 0.6)',
+          fontWeight: 500,
+        }}
+      >
+        0
+      </Box>
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: 15,
+          right: 10,
+          fontSize: '0.7rem',
+          color: 'rgba(255, 255, 255, 0.6)',
+          fontWeight: 500,
+        }}
+      >
+        {maxValue.toLocaleString()}
       </Box>
     </Box>
   );
@@ -555,37 +703,51 @@ const CityTiles: React.FC = () => {
             }
           }}>
             <CardContent sx={{ textAlign: 'center', py: 4, position: 'relative', zIndex: 1 }}>
-              <Typography variant="h4" sx={{ fontWeight: 800, mb: 3, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                Overall NCR Performance
+              <Typography variant="h4" sx={{ fontWeight: 800, mb: 4, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+                Overall Delhi NCR Performance
               </Typography>
-              <Grid container spacing={4} sx={{ mb: 3 }}>
-                <Grid item xs={12} sm={4}>
+              
+              {/* Gauge Charts Row */}
+              <Grid container spacing={4} sx={{ mb: 4, justifyContent: 'center' }}>
+                <Grid item xs={12} sm={6} md={4}>
                   <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="h3" sx={{ fontWeight: 800, color: '#ff6b6b', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                      {totalRaised.toLocaleString()}
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
-                      Total Complaints
-                    </Typography>
+                    <GaugeChart
+                      value={totalRaised}
+                      maxValue={Math.max(totalRaised, 1000)}
+                      title="Actual Raise"
+                      color="#ff6b6b"
+                      size={180}
+                    />
                   </Box>
                 </Grid>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={6} md={4}>
                   <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="h3" sx={{ fontWeight: 800, color: getResolutionColor(overallResolutionRate), textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                      {totalResolved.toLocaleString()}
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
-                      Total Resolved
-                    </Typography>
+                    <GaugeChart
+                      value={totalResolved}
+                      maxValue={Math.max(totalRaised, 1000)}
+                      title="Actual Resolved"
+                      color={getResolutionColor(overallResolutionRate)}
+                      size={180}
+                    />
                   </Box>
                 </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Box sx={{ textAlign: 'center' }}>
+                <Grid item xs={12} sm={12} md={4}>
+                  <Box sx={{ textAlign: 'center', mt: 2 }}>
                     <CircularProgressIndicator 
                       percentage={overallResolutionRate}
                       color={getResolutionColor(overallResolutionRate)}
-                      size={80}
+                      size={120}
                     />
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        mt: 2, 
+                        color: 'rgba(255, 255, 255, 0.9)', 
+                        fontWeight: 600 
+                      }}
+                    >
+                      Resolution Rate
+                    </Typography>
                   </Box>
                 </Grid>
               </Grid>
