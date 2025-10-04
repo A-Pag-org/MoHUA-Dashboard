@@ -2,9 +2,10 @@ import React from 'react';
 import { IconButton } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import type { SxProps, Theme } from '@mui/material/styles';
 
 interface BackButtonProps {
-  sx?: any;
+  sx?: SxProps<Theme>;
 }
 
 const BackButton: React.FC<BackButtonProps> = ({ sx = {} }) => {
