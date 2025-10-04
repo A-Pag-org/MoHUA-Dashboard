@@ -200,8 +200,16 @@ const ConsolidatedGaugeChart: React.FC<{
 }> = ({ raisedValue, resolvedValue, size = 260 }) => {
   const resolutionRate = raisedValue > 0 ? Math.min((resolvedValue / raisedValue) * 100, 100) : 0;
 
-  const RAISED_COLOR = '#3b82f6'; // Blue
-  const RESOLVED_COLOR = '#22c55e'; // Green
+  // Fixed color for Raised ring (brand blue)
+  const RAISED_COLOR = '#3b82f6';
+  // Dynamic color for Resolved ring based on performance thresholds
+  // Satisfactory >=90%: Green #4CAF50, Average 50-89%: Amber #FFC107, Unsatisfactory <50%: Red #F44336
+  const getResolvedColorForRate = (rate: number): string => {
+    if (rate >= 90) return '#4CAF50';
+    if (rate >= 50) return '#FFC107';
+    return '#F44336';
+  };
+  const RESOLVED_COLOR = getResolvedColorForRate(resolutionRate);
   const TRACK_COLOR = 'rgba(255, 255, 255, 0.12)';
 
   const center = size / 2;
@@ -677,7 +685,7 @@ const CityTiles: React.FC = () => {
                 <ConsolidatedGaugeChart
                   raisedValue={totalRaised}
                   resolvedValue={totalResolved}
-                  size={240}
+                  size={200}
                 />
               </Box>
               
