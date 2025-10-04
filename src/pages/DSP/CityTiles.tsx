@@ -43,21 +43,21 @@ const getResolutionStatus = (percentage: number): 'Satisfactory' | 'Average' | '
 const CityTileCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'resolutionColor',
 })<{ resolutionColor: string }>(({ resolutionColor }) => ({
-  minHeight: '400px',
+  minHeight: '320px',
   height: 'auto',
-  borderRadius: '20px',
+  borderRadius: '16px',
   transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
   cursor: 'pointer',
   position: 'relative',
   overflow: 'hidden',
-  background: 'rgba(255, 255, 255, 0.1)',
-  backdropFilter: 'blur(20px)',
-  WebkitBackdropFilter: 'blur(20px)',
-  border: '1px solid rgba(255, 255, 255, 0.2)',
-  boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+  background: 'rgba(16, 27, 42, 0.6)',
+  backdropFilter: 'blur(12px)',
+  WebkitBackdropFilter: 'blur(12px)',
+  border: '1px solid rgba(255, 255, 255, 0.08)',
+  boxShadow: '0 6px 20px rgba(0,0,0,0.25)',
   '&:hover': {
-    transform: 'translateY(-8px)',
-    boxShadow: `0 20px 60px rgba(0,0,0,0.2), 0 0 0 2px ${resolutionColor}40`,
+    transform: 'translateY(-6px)',
+    boxShadow: `0 16px 48px rgba(0,0,0,0.28), 0 0 0 2px ${resolutionColor}33`,
     '&::before': {
       opacity: 1,
     }
@@ -69,7 +69,7 @@ const CityTileCard = styled(Card, {
     left: 0,
     right: 0,
     bottom: 0,
-    background: `linear-gradient(135deg, ${resolutionColor}20 0%, ${resolutionColor}10 100%)`,
+    background: `linear-gradient(135deg, ${resolutionColor}14 0%, ${resolutionColor}0A 100%)`,
     opacity: 0,
     transition: 'opacity 0.3s ease',
   },
@@ -78,10 +78,10 @@ const CityTileCard = styled(Card, {
     position: 'absolute',
     top: 0,
     left: 0,
-    width: '4px',
+    width: '3px',
     height: '100%',
-    background: `linear-gradient(180deg, ${resolutionColor} 0%, ${resolutionColor}80 100%)`,
-    borderRadius: '0 2px 2px 0',
+    background: `linear-gradient(180deg, ${resolutionColor} 0%, ${resolutionColor}99 100%)`,
+    borderRadius: '0 1.5px 1.5px 0',
   }
 }));
 
@@ -98,16 +98,16 @@ const StatusChip = styled(Chip, {
   };
 
   return {
-    background: `linear-gradient(135deg, ${getStatusColor()}40 0%, ${getStatusColor()}20 100%)`,
-    color: '#ffffff',
+    background: `linear-gradient(135deg, ${getStatusColor()}33 0%, ${getStatusColor()}1f 100%)`,
+    color: '#E6EDF3',
     fontWeight: 700,
-    fontSize: '0.75rem',
-    height: '28px',
-    borderRadius: '14px',
-    border: `1px solid ${getStatusColor()}60`,
-    backdropFilter: 'blur(10px)',
-    WebkitBackdropFilter: 'blur(10px)',
-    boxShadow: `0 4px 16px ${getStatusColor()}20`,
+    fontSize: '0.72rem',
+    height: '24px',
+    borderRadius: '12px',
+    border: `1px solid ${getStatusColor()}3d`,
+    backdropFilter: 'blur(8px)',
+    WebkitBackdropFilter: 'blur(8px)',
+    boxShadow: `0 4px 14px ${getStatusColor()}1f`,
   };
 });
 
@@ -304,7 +304,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
       <CityTileCard resolutionColor={resolutionColor}>
         <CardActionArea onClick={() => onMoreInfo(city)} sx={{ height: '100%' }}>
           <CardContent sx={{ 
-            padding: '24px', 
+            padding: '16px', 
             height: '100%', 
             display: 'flex', 
             flexDirection: 'column',
@@ -335,22 +335,22 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
             </Box>
 
             {/* Circular Progress Indicator */}
-            <Box sx={{ textAlign: 'center', mb: 2, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Box sx={{ textAlign: 'center', mb: 1.5, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgressIndicator 
                 percentage={city.resolutionPercentage}
                 color={resolutionColor}
-                size={100}
+                size={92}
               />
             </Box>
 
             {/* Complaints data */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
               <Box sx={{ 
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 alignItems: 'center',
-                background: 'rgba(255, 255, 255, 0.1)',
-                padding: '8px 12px',
+                background: 'rgba(255, 255, 255, 0.08)',
+                padding: '6px 10px',
                 borderRadius: '8px',
               }}>
                 <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
@@ -365,8 +365,8 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 alignItems: 'center',
-                background: 'rgba(255, 255, 255, 0.1)',
-                padding: '8px 12px',
+                background: 'rgba(255, 255, 255, 0.08)',
+                padding: '6px 10px',
                 borderRadius: '8px',
               }}>
                 <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
@@ -382,12 +382,12 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center', 
-                mt: 1.5, 
-                pt: 1.5,
-                borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                mt: 1, 
+                pt: 1,
+                borderTop: '1px solid rgba(255, 255, 255, 0.08)',
               }}>
-                <InfoIcon sx={{ fontSize: '16px', color: 'rgba(255, 255, 255, 0.6)', mr: 0.5 }} />
-                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.75rem' }}>
+                <InfoIcon sx={{ fontSize: '15px', color: 'rgba(255, 255, 255, 0.65)', mr: 0.5 }} />
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.65)', fontSize: '0.72rem' }}>
                   Click for details
                 </Typography>
               </Box>
@@ -412,30 +412,30 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
   const status = getResolutionStatus(city.resolutionPercentage);
 
   return (
-    <Dialog 
+      <Dialog 
       open={open} 
       onClose={onClose} 
       maxWidth="sm" 
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: '20px',
-          background: 'rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+          borderRadius: '16px',
+          background: 'rgba(16, 27, 42, 0.65)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
         }
       }}
     >
       <DialogTitle sx={{ 
-        background: `linear-gradient(135deg, ${resolutionColor}20 0%, ${resolutionColor}10 100%)`,
-        color: '#ffffff',
+        background: `linear-gradient(135deg, ${resolutionColor}26 0%, ${resolutionColor}14 100%)`,
+        color: 'text.primary',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        pb: 2,
-        borderRadius: '20px 20px 0 0',
+        pb: 1.5,
+        borderRadius: '16px 16px 0 0',
       }}>
         <Box>
           <Typography variant="h5" sx={{ fontWeight: 800, mb: 1, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
@@ -451,10 +451,10 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
           onClick={onClose} 
           size="small"
           sx={{
-            color: 'rgba(255, 255, 255, 0.8)',
-            background: 'rgba(255, 255, 255, 0.1)',
+            color: 'rgba(255, 255, 255, 0.85)',
+            background: 'rgba(255, 255, 255, 0.08)',
             '&:hover': {
-              background: 'rgba(255, 255, 255, 0.2)',
+              background: 'rgba(255, 255, 255, 0.14)',
             }
           }}
         >
@@ -462,27 +462,27 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
         </IconButton>
       </DialogTitle>
       
-      <DialogContent sx={{ pt: 3, background: 'transparent' }}>
+      <DialogContent sx={{ pt: 2, background: 'transparent' }}>
         {/* Circular Progress Indicator */}
-        <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Box sx={{ textAlign: 'center', mb: 3 }}>
           <CircularProgressIndicator 
             percentage={city.resolutionPercentage}
             color={resolutionColor}
-            size={140}
+            size={128}
           />
         </Box>
 
         {/* Detailed statistics */}
-        <Grid container spacing={2}>
+        <Grid container spacing={1.5}>
           <Grid item xs={12} sm={6}>
             <Paper sx={{ 
-              background: 'rgba(255, 255, 255, 0.1)',
+              background: 'rgba(16, 27, 42, 0.55)',
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
-              borderRadius: '16px',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '14px',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
             }}>
-              <CardContent sx={{ textAlign: 'center', py: 3 }}>
+              <CardContent sx={{ textAlign: 'center', py: 2.5 }}>
                 <TrendingUpIcon sx={{ fontSize: 40, color: '#ff6b6b', mb: 1 }} />
                 <Typography variant="h5" sx={{ fontWeight: 800, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
                   {city.complaintsRaised.toLocaleString()}
@@ -496,13 +496,13 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
           
           <Grid item xs={12} sm={6}>
             <Paper sx={{ 
-              background: 'rgba(255, 255, 255, 0.1)',
+              background: 'rgba(16, 27, 42, 0.55)',
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
-              borderRadius: '16px',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '14px',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
             }}>
-              <CardContent sx={{ textAlign: 'center', py: 3 }}>
+              <CardContent sx={{ textAlign: 'center', py: 2.5 }}>
                 <TrendingDownIcon sx={{ fontSize: 40, color: resolutionColor, mb: 1 }} />
                 <Typography variant="h5" sx={{ fontWeight: 800, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
                   {city.complaintsResolved.toLocaleString()}
@@ -515,19 +515,19 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
           </Grid>
         </Grid>
 
-        <Divider sx={{ my: 3, borderColor: 'rgba(255, 255, 255, 0.2)' }} />
+        <Divider sx={{ my: 2.5, borderColor: 'rgba(255, 255, 255, 0.12)' }} />
 
         {/* Additional city information */}
-        <Grid container spacing={2}>
+        <Grid container spacing={1.5}>
           <Grid item xs={12}>
             <Box sx={{ 
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center', 
-              py: 2,
-              background: 'rgba(255, 255, 255, 0.05)',
+              py: 1.5,
+              background: 'rgba(255, 255, 255, 0.06)',
               borderRadius: '12px',
-              px: 3,
+              px: 2.5,
             }}>
               <Typography variant="body1" sx={{ fontWeight: 600, color: 'rgba(255, 255, 255, 0.8)' }}>
                 Issues Raised by Citizens:
@@ -543,10 +543,10 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center', 
-              py: 2,
-              background: 'rgba(255, 255, 255, 0.05)',
+              py: 1.5,
+              background: 'rgba(255, 255, 255, 0.06)',
               borderRadius: '12px',
-              px: 3,
+              px: 2.5,
             }}>
               <Typography variant="body1" sx={{ fontWeight: 600, color: 'rgba(255, 255, 255, 0.8)' }}>
                 Road Owning Agencies Onboarded:
@@ -559,7 +559,7 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
         </Grid>
       </DialogContent>
       
-      <DialogActions sx={{ p: 3, pt: 1, background: 'transparent' }}>
+      <DialogActions sx={{ p: 2.5, pt: 1, background: 'transparent' }}>
         <Button 
           onClick={onClose} 
           variant="contained" 
@@ -569,11 +569,11 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
               background: `linear-gradient(135deg, ${resolutionColor}DD 0%, ${resolutionColor}AA 100%)`,
             },
             borderRadius: '12px',
-            px: 4,
-            py: 1.5,
+            px: 3.5,
+            py: 1.25,
             fontWeight: 600,
             textTransform: 'none',
-            boxShadow: `0 8px 24px ${resolutionColor}40`,
+            boxShadow: `0 8px 24px ${resolutionColor}33`,
           }}
         >
           Close
