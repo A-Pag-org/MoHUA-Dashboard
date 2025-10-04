@@ -205,14 +205,17 @@ const ConsolidatedGaugeChart: React.FC<{
   const resolvedStrokeDashoffset = circumference - (resolvedPercentage / 100) * circumference;
 
   return (
-    <Box sx={{ 
-      position: 'relative', 
-      display: 'flex', 
-      flexDirection: 'row', 
+    <Box sx={{
+      position: 'relative',
+      display: 'flex',
+      flexDirection: 'row',
       alignItems: 'center',
-      width: size + 120,
+      justifyContent: 'space-between',
+      width: '100%',
+      maxWidth: size + 180,
       height: size * 0.7,
       gap: 3,
+      mx: 'auto',
     }}>
       {/* Left side - Raised */}
       <Box sx={{ textAlign: 'center', flex: '0 0 auto' }}>
@@ -722,8 +725,8 @@ const CityTiles: React.FC = () => {
               </Typography>
               
               {/* Consolidated Gauge Chart and Resolution Rate */}
-              <Grid container spacing={4} sx={{ mb: 4, justifyContent: 'center', alignItems: 'center' }}>
-                <Grid item xs={12} md={8}>
+              <Grid container spacing={4} sx={{ mb: 4, alignItems: 'center' }}>
+                <Grid item xs={12} md={8} sx={{ overflow: 'hidden' }}>
                   <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <ConsolidatedGaugeChart
                       raisedValue={totalRaised}
@@ -753,36 +756,13 @@ const CityTiles: React.FC = () => {
                 </Grid>
               </Grid>
               
-              {/* Average Button */}
-              <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-                <Button
-                  variant="contained"
-                  sx={{
-                    backgroundColor: 'rgba(139, 131, 120, 0.8)',
-                    color: '#ffffff',
-                    borderRadius: '20px',
-                    px: 4,
-                    py: 1.5,
-                    fontWeight: 600,
-                    textTransform: 'none',
-                    fontSize: '1rem',
-                    boxShadow: '0 8px 24px rgba(139, 131, 120, 0.3)',
-                    '&:hover': {
-                      backgroundColor: 'rgba(139, 131, 120, 0.9)',
-                      transform: 'translateY(-2px)',
-                    },
-                    transition: 'all 0.3s ease',
-                  }}
-                >
-                  Average
-                </Button>
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <StatusChip 
+                  label={getResolutionStatus(overallResolutionRate)} 
+                  status={getResolutionStatus(overallResolutionRate)}
+                  sx={{ fontSize: '1rem', px: 3, py: 1, height: 'auto' }}
+                />
               </Box>
-              
-              <StatusChip 
-                label={getResolutionStatus(overallResolutionRate)} 
-                status={getResolutionStatus(overallResolutionRate)}
-                sx={{ fontSize: '1rem', px: 3, py: 1, height: 'auto' }}
-              />
             </CardContent>
           </Paper>
         </Box>
