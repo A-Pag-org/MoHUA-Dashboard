@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Container, Button, AppBar, Toolbar } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import CityTiles from './CityTiles';
 
 interface DSPButtonProps {
   selected?: boolean;
@@ -134,27 +135,29 @@ const DSPDashboard: React.FC = () => {
       </AppBar>
 
       <Container maxWidth="lg" sx={{ padding: '40px 0' }}>
-        <Box
-          sx={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            padding: '40px',
-            textAlign: 'center',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-          }}
-        >
-          <Typography variant="h4" sx={{ marginBottom: '20px', color: 'text.primary' }}>
-            {selectedSection === 'citywise' ? 'City Wise Dashboard' : 'Performance Dashboard'}
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', marginBottom: '20px' }}>
-            {selectedSection === 'citywise' 
-              ? 'This section will display city-wise data and analytics for the Dispersed Source Programme.'
-              : 'This section will display performance metrics and analysis for the Dispersed Source Programme.'}
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
-            Selected: {selectedSection === 'citywise' ? '1. City Wise' : '2. Performance'}
-          </Typography>
-        </Box>
+        {selectedSection === 'citywise' ? (
+          <CityTiles />
+        ) : (
+          <Box
+            sx={{
+              backgroundColor: 'white',
+              borderRadius: '16px',
+              padding: '40px',
+              textAlign: 'center',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+            }}
+          >
+            <Typography variant="h4" sx={{ marginBottom: '20px', color: 'text.primary' }}>
+              Performance Dashboard
+            </Typography>
+            <Typography variant="body1" sx={{ color: 'text.secondary', marginBottom: '20px' }}>
+              This section will display performance metrics and analysis for the Dispersed Source Programme.
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
+              Selected: 2. Performance
+            </Typography>
+          </Box>
+        )}
       </Container>
     </Box>
   );
