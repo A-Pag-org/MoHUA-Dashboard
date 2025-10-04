@@ -41,7 +41,8 @@ const getResolutionStatus = (percentage: number): 'Satisfactory' | 'Average' | '
 
 // Styled components
 const CityTileCard = styled(Card)<{ resolutionColor: string }>(({ resolutionColor }) => ({
-  height: '50%',
+  minHeight: '400px',
+  height: 'auto',
   borderRadius: '20px',
   transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
   cursor: 'pointer',
@@ -199,7 +200,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
             zIndex: 1,
           }}>
             {/* Header with city name and status */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
               <Typography 
                 variant="h6" 
                 sx={{ 
@@ -222,7 +223,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
             </Box>
 
             {/* Circular Progress Indicator */}
-            <Box sx={{ textAlign: 'center', mb: 3, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Box sx={{ textAlign: 'center', mb: 2, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgressIndicator 
                 percentage={city.resolutionPercentage}
                 color={resolutionColor}
@@ -231,7 +232,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
             </Box>
 
             {/* Complaints data */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               <Box sx={{ 
                 display: 'flex', 
                 justifyContent: 'space-between', 
@@ -269,8 +270,8 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center', 
-                mt: 2, 
-                pt: 2,
+                mt: 1.5, 
+                pt: 1.5,
                 borderTop: '1px solid rgba(255, 255, 255, 0.1)',
               }}>
                 <InfoIcon sx={{ fontSize: '16px', color: 'rgba(255, 255, 255, 0.6)', mr: 0.5 }} />
@@ -498,7 +499,7 @@ const CityTiles: React.FC = () => {
   return (
     <Box>
       {/* Header Section */}
-      <Box sx={{ mb: 5 }}>
+      <Box sx={{ mb: 3 }}>
         <Typography 
           variant="h3" 
           sx={{ 
@@ -520,7 +521,7 @@ const CityTiles: React.FC = () => {
           variant="h6" 
           sx={{ 
             color: 'rgba(255, 255, 255, 0.8)', 
-            mb: 4,
+            mb: 3,
             textAlign: 'center',
             maxWidth: '700px',
             mx: 'auto',
@@ -532,7 +533,7 @@ const CityTiles: React.FC = () => {
         </Typography>
 
         {/* Total Summary Card */}
-        <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
           <Paper sx={{ 
             maxWidth: 800, 
             borderRadius: '24px', 
@@ -598,7 +599,7 @@ const CityTiles: React.FC = () => {
         </Box>
 
         {/* Summary Statistics */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid container spacing={3} sx={{ mb: 3 }}>
           <Grid item xs={6} sm={3}>
             <Paper sx={{ 
               textAlign: 'center', 
@@ -686,7 +687,7 @@ const CityTiles: React.FC = () => {
       </Box>
 
       {/* City Tiles Grid */}
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         {MOCK_DSP_CITIES.map((city) => (
           <CityTile
             key={city.id}
