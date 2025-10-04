@@ -27,20 +27,7 @@ const STATUS_COLORS = {
   UNSATISFACTORY: '#F44336', // Red - <50%
 };
 
-const getStatusByPercentage = (
-  percentage: number
-): 'Satisfactory' | 'Average' | 'Unsatisfactory' => {
-  if (percentage >= 90) return 'Satisfactory';
-  if (percentage >= 50) return 'Average';
-  return 'Unsatisfactory';
-};
-
-const getStatusColorByPercentage = (percentage: number): string => {
-  const status = getStatusByPercentage(percentage);
-  if (status === 'Satisfactory') return STATUS_COLORS.SATISFACTORY;
-  if (status === 'Average') return STATUS_COLORS.AVERAGE;
-  return STATUS_COLORS.UNSATISFACTORY;
-};
+// Helper for status legend colors is provided by STATUS_COLORS above.
 
 const ProgramTileCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'resolutionColor',
