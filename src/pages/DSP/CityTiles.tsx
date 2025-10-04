@@ -193,7 +193,7 @@ const ConsolidatedGaugeChart: React.FC<{
   resolvedValue: number; 
   size?: number 
 }> = ({ raisedValue, resolvedValue, size = 280 }) => {
-  const maxValue = Math.max(raisedValue, resolvedValue, 1000);
+  const maxValue = Math.max(raisedValue, resolvedValue);
   const raisedPercentage = Math.min((raisedValue / maxValue) * 100, 100);
   const resolvedPercentage = Math.min((resolvedValue / maxValue) * 100, 100);
   
