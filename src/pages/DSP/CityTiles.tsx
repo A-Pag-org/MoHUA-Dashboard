@@ -325,13 +325,18 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
               <Typography 
                 variant="h6" 
                 sx={{ 
-                  fontWeight: 700,
+                  fontWeight: 900,
                   color: '#ffffff',
-                  fontSize: '1.2rem',
+                  fontSize: '1.5rem',
                   lineHeight: 1.2,
                   flex: 1,
                   pr: 1,
-                  textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                  textShadow: '0 3px 8px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.3)',
+                  letterSpacing: '0.5px',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 100%)',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(255,255,255,0.15)',
                 }}
               >
                 {city.cityName}
