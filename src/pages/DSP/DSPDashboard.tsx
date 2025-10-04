@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, Container, Button, AppBar, Toolbar, Paper } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CityTiles from './CityTiles';
+import BackButton from '../../components/Common/BackButton';
 
 interface DSPButtonProps {
   selected?: boolean;
@@ -103,7 +104,10 @@ const DSPDashboard: React.FC = () => {
         }}
       >
         <Toolbar sx={{ justifyContent: 'space-between', padding: '16px 32px', position: 'relative', zIndex: 1 }}>
-          {/* MoHUA text on the left */}
+          {/* Back button on the far left */}
+          <BackButton sx={{ marginRight: '16px' }} />
+          
+          {/* MoHUA text */}
           <Typography
             variant="h4"
             component="div"
