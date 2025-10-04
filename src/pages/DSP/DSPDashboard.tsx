@@ -140,16 +140,6 @@ const DSPDashboard: React.FC = () => {
             >
               Dispersed Source Programme
             </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-              color: 'text.secondary',
-                fontSize: '0.85rem',
-                letterSpacing: '0.5px',
-              }}
-            >
-              Smart City Mission Dashboard
-            </Typography>
           </Box>
           
           {/* Interactive buttons on the right */}

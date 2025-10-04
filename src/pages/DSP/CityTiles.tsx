@@ -638,20 +638,6 @@ const CityTiles: React.FC = () => {
           NCR Cities Overview
         </Typography>
         
-        <Typography 
-          variant="h6" 
-          sx={{ 
-            color: 'rgba(255, 255, 255, 0.8)', 
-            mb: 3,
-            textAlign: 'center',
-            maxWidth: '700px',
-            mx: 'auto',
-            fontWeight: 400,
-            lineHeight: 1.6,
-          }}
-        >
-          Real-time dashboard showcasing DSP complaint resolution metrics across National Capital Region cities
-        </Typography>
 
         {/* Total Summary Card */}
         <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
