@@ -618,7 +618,7 @@ const CityTiles: React.FC = () => {
             textShadow: '0 4px 8px rgba(0,0,0,0.3)',
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             backgroundClip: 'text',
-            WebkitBackdropFilter: 'text',
+            WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
           }}
         >

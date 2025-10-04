@@ -138,7 +138,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
                 height: '24px'
               }}
             />
-            <Typography variant="caption" sx={{ color: '#888', fontWeight: 'medium' }}>
+            <Typography variant="caption" sx={{ color: '#888', fontWeight: 500 }}>
               #1 City
             </Typography>
           </Box>
