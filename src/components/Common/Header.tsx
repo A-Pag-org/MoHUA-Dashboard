@@ -5,11 +5,10 @@ import { styled } from '@mui/material/styles';
 
 interface NavButtonProps extends ButtonProps {
   selected?: boolean;
-  accent?: string;
 }
 
 const StyledButton = styled((props: NavButtonProps) => {
-  const { selected, accent, ...rest } = props;
+  const { ...rest } = props;
   return <Button {...rest} />;
 })<NavButtonProps>(({ selected }) => ({
   margin: '0 8px',
