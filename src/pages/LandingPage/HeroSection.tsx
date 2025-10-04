@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
-import { Box, Typography, Card, CardContent, Chip, Tooltip } from '@mui/material';
+import { Box, Typography, Card, CardContent, Chip, Tooltip, Button } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 import { LeadingCity } from '../../types';
 import { MOCK_LEADING_CITIES, DSP_COLORS } from '../../utils/constants';
 
@@ -150,7 +152,28 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
   );
 };
 
+// CTA button styled to align with DSP aesthetics
+const ProgramButton = styled(Button)({
+  padding: '14px 28px',
+  borderRadius: '16px',
+  fontWeight: 700,
+  textTransform: 'none',
+  fontSize: '1rem',
+  letterSpacing: '0.3px',
+  color: '#ffffff',
+  border: '1px solid rgba(255,255,255,0.2)',
+  boxShadow: '0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15)',
+  backdropFilter: 'blur(10px)',
+  WebkitBackdropFilter: 'blur(10px)',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 12px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25)'
+  }
+});
+
 const HeroSection: React.FC = () => {
+  const navigate = useNavigate();
   // In a real application, this would come from props or API calls
   // For now, we'll use the mock data but show how real data would be processed
   const calculateLeadingCities = useMemo(() => {
@@ -171,7 +194,7 @@ const HeroSection: React.FC = () => {
     <Box sx={{ 
       py: 4, 
       px: 2,
-      background: 'linear-gradient(180deg, #0B1220 0%, #0F1B2A 100%)',
+      background: 'transparent',
       position: 'relative',
       '&::before': {
         content: '""',
@@ -181,7 +204,7 @@ const HeroSection: React.FC = () => {
         right: 0,
         bottom: 0,
         background: 'url("data:image/svg+xml,%3Csvg width="20" height="20" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3Cpattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"%3E%3Cpath d="M 20 0 L 0 0 0 20" fill="none" stroke="%23f0f0f0" stroke-width="1"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100%25" height="100%25" fill="url(%23grid)"/%3E%3C/svg%3E")',
-        opacity: 0.15,
+        opacity: 0.08,
         zIndex: 0
       }
     }}>
@@ -193,7 +216,7 @@ const HeroSection: React.FC = () => {
             sx={{ 
               fontWeight: 800,
               mb: 1.5,
-              background: 'linear-gradient(45deg, #7aa2ff, #89d0ff)',
+              background: 'linear-gradient(135deg, #7aa2ff 0%, #89d0ff 100%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -206,7 +229,7 @@ const HeroSection: React.FC = () => {
           <Typography 
             variant="h6" 
             sx={{ 
-              color: 'text.secondary',
+              color: 'rgba(255,255,255,0.75)',
               maxWidth: 700,
               mx: 'auto',
               lineHeight: 1.6,
@@ -231,7 +254,36 @@ const HeroSection: React.FC = () => {
           ))}
         </Box>
 
-
+        {/* Program quick links */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
+          <ProgramButton
+            onClick={() => navigate('/dsp')}
+            sx={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              boxShadow: '0 8px 32px rgba(102, 126, 234, 0.35), inset 0 1px 0 rgba(255,255,255,0.18)'
+            }}
+          >
+            Explore DSP
+          </ProgramButton>
+          <ProgramButton
+            onClick={() => navigate('/cd')}
+            sx={{
+              background: 'linear-gradient(135deg, #2196F3 0%, #21CBF3 100%)',
+              boxShadow: '0 8px 32px rgba(33, 203, 243, 0.35), inset 0 1px 0 rgba(255,255,255,0.18)'
+            }}
+          >
+            Explore C&D
+          </ProgramButton>
+          <ProgramButton
+            onClick={() => navigate('/mrs')}
+            sx={{
+              background: 'linear-gradient(135deg, #9C27B0 0%, #7E57C2 100%)',
+              boxShadow: '0 8px 32px rgba(126, 87, 194, 0.35), inset 0 1px 0 rgba(255,255,255,0.18)'
+            }}
+          >
+            Explore MRS
+          </ProgramButton>
+        </Box>
       </Box>
     </Box>
   );
