@@ -169,7 +169,7 @@ const DSPDashboard: React.FC = () => {
         </Toolbar>
       </AppBar>
 
-      <Container maxWidth="xl" sx={{ padding: '32px 16px', position: 'relative', zIndex: 1 }}>
+      <Container maxWidth="xl" sx={{ padding: '24px 16px', position: 'relative', zIndex: 1 }}>
         {selectedSection === 'citywise' ? (
           <CityTiles />
         ) : (
