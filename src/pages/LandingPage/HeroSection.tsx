@@ -20,6 +20,28 @@ const getPerformanceStatus = (
   return 'Unsatisfactory';
 };
 
+// Color scheme per user requirement for legend/chips
+const STATUS_COLORS = {
+  SATISFACTORY: '#4CAF50', // Green - >=90%
+  AVERAGE: '#FFC107',      // Amber - 50-89%
+  UNSATISFACTORY: '#F44336', // Red - <50%
+};
+
+const getStatusByPercentage = (
+  percentage: number
+): 'Satisfactory' | 'Average' | 'Unsatisfactory' => {
+  if (percentage >= 90) return 'Satisfactory';
+  if (percentage >= 50) return 'Average';
+  return 'Unsatisfactory';
+};
+
+const getStatusColorByPercentage = (percentage: number): string => {
+  const status = getStatusByPercentage(percentage);
+  if (status === 'Satisfactory') return STATUS_COLORS.SATISFACTORY;
+  if (status === 'Average') return STATUS_COLORS.AVERAGE;
+  return STATUS_COLORS.UNSATISFACTORY;
+};
+
 const ProgramTileCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'resolutionColor',
 })<{ resolutionColor: string }>(({ resolutionColor }) => ({
@@ -268,6 +290,76 @@ const HeroSection: React.FC = () => {
         zIndex: 0
       }
     }}>
+      {/* Top-left programs legend (DSP, C&D, MRS) */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: { xs: 8, md: 16 },
+          left: { xs: 8, md: 16 },
+          display: 'flex',
+          gap: 1,
+          zIndex: 2,
+        }}
+      >
+        {['DSP', 'C&D', 'MRS'].map((program) => (
+          <Chip
+            key={program}
+            label={program}
+            size="small"
+            sx={{
+              background: 'rgba(255,255,255,0.08)',
+              color: '#e6edf3',
+              fontWeight: 700,
+              height: 24,
+              borderRadius: '12px',
+              border: '1px solid rgba(255,255,255,0.12)'
+            }}
+          />
+        ))}
+      </Box>
+
+      {/* Bottom-right status legend (Satisfactory, Average, Unsatisfactory) */}
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: { xs: 8, md: 16 },
+          right: { xs: 8, md: 16 },
+          zIndex: 2,
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            alignItems: 'center',
+            p: 1,
+            borderRadius: '12px',
+            background: 'rgba(16, 27, 42, 0.6)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)'
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+            <Box sx={{ width: 12, height: 12, bgcolor: STATUS_COLORS.SATISFACTORY, borderRadius: '3px' }} />
+            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
+              Satisfactory (≥90%)
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+            <Box sx={{ width: 12, height: 12, bgcolor: STATUS_COLORS.AVERAGE, borderRadius: '3px' }} />
+            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
+              Average (50-89%)
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+            <Box sx={{ width: 12, height: 12, bgcolor: STATUS_COLORS.UNSATISFACTORY, borderRadius: '3px' }} />
+            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
+              Unsatisfactory (&lt;50%)
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
       <Box sx={{ maxWidth: 1200, mx: 'auto', position: 'relative', zIndex: 1 }}>
         {/* Header Section */}
         <Box sx={{ textAlign: 'center', mb: 4 }}>
@@ -286,6 +378,35 @@ const HeroSection: React.FC = () => {
           >
             🏆 City Performance Leaderboard
           </Typography>
+          {/* City names centered at top with dynamic status colors */}
+          <Box
+            sx={{
+              mt: 1,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 1,
+              flexWrap: 'wrap'
+            }}
+          >
+            {calculateLeadingCities.map((city) => {
+              const color = getStatusColorByPercentage(city.value);
+              return (
+                <Chip
+                  key={city.id}
+                  label={city.name}
+                  sx={{
+                    background: `linear-gradient(135deg, ${color}33 0%, ${color}1f 100%)`,
+                    color: '#E6EDF3',
+                    fontWeight: 700,
+                    height: 28,
+                    borderRadius: '14px',
+                    border: `1px solid ${color}55`,
+                  }}
+                />
+              );
+            })}
+          </Box>
         </Box>
 
         {/* Leaderboard Grid */}
