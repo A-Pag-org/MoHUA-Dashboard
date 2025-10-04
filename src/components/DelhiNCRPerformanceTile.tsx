@@ -30,7 +30,9 @@ const getResolutionStatus = (percentage: number): 'Satisfactory' | 'Average' | '
 };
 
 // Styled components
-const PerformanceTileCard = styled(Card)(() => ({
+const PerformanceTileCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'resolutionColor',
+})<{ resolutionColor: string }>(({ resolutionColor }) => ({
   borderRadius: '18px',
   background: 'rgba(16, 27, 42, 0.6)',
   backdropFilter: 'blur(12px)',
@@ -46,7 +48,8 @@ const PerformanceTileCard = styled(Card)(() => ({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'linear-gradient(135deg, rgba(122,162,255,0.10) 0%, rgba(255,209,102,0.08) 100%)',
+    // Dynamic overlay based on overall resolution slab
+    background: `linear-gradient(135deg, ${resolutionColor}33 0%, ${resolutionColor}1f 100%)`,
     pointerEvents: 'none',
   }
 }));
@@ -269,7 +272,7 @@ const DelhiNCRPerformanceTile: React.FC = () => {
   const avgResolutionTime = 4.2; // days
   
   return (
-    <PerformanceTileCard>
+    <PerformanceTileCard resolutionColor={resolutionColor}>
       <CardContent sx={{ padding: '24px', position: 'relative', zIndex: 1 }}>
         {/* Header */}
         <Box sx={{ textAlign: 'center', mb: 3 }}>
@@ -277,10 +280,10 @@ const DelhiNCRPerformanceTile: React.FC = () => {
             variant="h3" 
             sx={{ 
               fontWeight: 800, 
-              color: 'text.primary', 
               mb: 1,
               textShadow: '0 4px 8px rgba(0,0,0,0.3)',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              // Dynamic text gradient based on overall resolution slab
+              background: `linear-gradient(135deg, ${resolutionColor} 0%, ${resolutionColor}CC 100%)`,
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -307,7 +310,7 @@ const DelhiNCRPerformanceTile: React.FC = () => {
         <Grid container spacing={2.5} sx={{ mb: 3 }}>
           {/* Overall Resolution Rate */}
           <Grid item xs={12} md={4}>
-            <MetricCard sx={{ textAlign: 'center', p: 2.5 }}>
+            <MetricCard color={resolutionColor} sx={{ textAlign: 'center', p: 2.5 }}>
               <CircularProgressIndicator 
                 percentage={overallResolutionRate}
                 color={resolutionColor}
@@ -430,7 +433,7 @@ const DelhiNCRPerformanceTile: React.FC = () => {
           </Grid>
           
           <Grid item xs={12} md={6}>
-            <MetricCard sx={{ p: 2.5 }}>
+            <MetricCard color={resolutionColor} sx={{ p: 2.5 }}>
               <Typography variant="h6" sx={{ color: '#ffffff', fontWeight: 600, mb: 2, textAlign: 'center' }}>
                 Resolution Progress
               </Typography>
