@@ -621,23 +621,6 @@ const CityTiles: React.FC = () => {
     <Box>
       {/* Header Section */}
       <Box sx={{ mb: 3 }}>
-        <Typography 
-          variant="h3" 
-          sx={{ 
-            fontWeight: 800, 
-            color: '#ffffff', 
-            mb: 2,
-            textAlign: 'center',
-            textShadow: '0 4px 8px rgba(0,0,0,0.3)',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            backgroundClip: 'text',
-            WebkitBackdropFilter: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          NCR Cities Overview
-        </Typography>
-        
 
         {/* Total Summary Card */}
         <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
