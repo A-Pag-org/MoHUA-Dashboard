@@ -43,7 +43,8 @@ const getResolutionStatus = (percentage: number): 'Satisfactory' | 'Average' | '
 const CityTileCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'resolutionColor',
 })<{ resolutionColor: string }>(({ resolutionColor }) => ({
-  minHeight: '320px',
+  // Reduced height for a more compact tile
+  minHeight: '280px',
   height: 'auto',
   borderRadius: '16px',
   transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
