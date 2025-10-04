@@ -27,20 +27,7 @@ const STATUS_COLORS = {
   UNSATISFACTORY: '#F44336', // Red - <50%
 };
 
-const getStatusByPercentage = (
-  percentage: number
-): 'Satisfactory' | 'Average' | 'Unsatisfactory' => {
-  if (percentage >= 90) return 'Satisfactory';
-  if (percentage >= 50) return 'Average';
-  return 'Unsatisfactory';
-};
-
-const getStatusColorByPercentage = (percentage: number): string => {
-  const status = getStatusByPercentage(percentage);
-  if (status === 'Satisfactory') return STATUS_COLORS.SATISFACTORY;
-  if (status === 'Average') return STATUS_COLORS.AVERAGE;
-  return STATUS_COLORS.UNSATISFACTORY;
-};
+// Helper for status legend colors is provided by STATUS_COLORS above.
 
 const ProgramTileCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'resolutionColor',
@@ -290,33 +277,7 @@ const HeroSection: React.FC = () => {
         zIndex: 0
       }
     }}>
-      {/* Top-left programs legend (DSP, C&D, MRS) */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: { xs: 8, md: 16 },
-          left: { xs: 8, md: 16 },
-          display: 'flex',
-          gap: 1,
-          zIndex: 2,
-        }}
-      >
-        {['DSP', 'C&D', 'MRS'].map((program) => (
-          <Chip
-            key={program}
-            label={program}
-            size="small"
-            sx={{
-              background: 'rgba(255,255,255,0.08)',
-              color: '#e6edf3',
-              fontWeight: 700,
-              height: 24,
-              borderRadius: '12px',
-              border: '1px solid rgba(255,255,255,0.12)'
-            }}
-          />
-        ))}
-      </Box>
+      {/* Program legend removed as requested */}
 
       {/* Bottom-right status legend (Satisfactory, Average, Unsatisfactory) */}
       <Box
@@ -378,35 +339,7 @@ const HeroSection: React.FC = () => {
           >
             🏆 City Performance Leaderboard
           </Typography>
-          {/* City names centered at top with dynamic status colors */}
-          <Box
-            sx={{
-              mt: 1,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: 1,
-              flexWrap: 'wrap'
-            }}
-          >
-            {calculateLeadingCities.map((city) => {
-              const color = getStatusColorByPercentage(city.value);
-              return (
-                <Chip
-                  key={city.id}
-                  label={city.name}
-                  sx={{
-                    background: `linear-gradient(135deg, ${color}33 0%, ${color}1f 100%)`,
-                    color: '#E6EDF3',
-                    fontWeight: 700,
-                    height: 28,
-                    borderRadius: '14px',
-                    border: `1px solid ${color}55`,
-                  }}
-                />
-              );
-            })}
-          </Box>
+          {/* City chips removed as requested */}
         </Box>
 
         {/* Leaderboard Grid */}
