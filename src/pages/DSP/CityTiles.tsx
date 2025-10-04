@@ -40,7 +40,9 @@ const getResolutionStatus = (percentage: number): 'Satisfactory' | 'Average' | '
 };
 
 // Styled components
-const CityTileCard = styled(Card)<{ resolutionColor: string }>(({ resolutionColor }) => ({
+const CityTileCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'resolutionColor',
+})<{ resolutionColor: string }>(({ resolutionColor }) => ({
   minHeight: '400px',
   height: 'auto',
   borderRadius: '20px',
@@ -83,7 +85,9 @@ const CityTileCard = styled(Card)<{ resolutionColor: string }>(({ resolutionColo
   }
 }));
 
-const StatusChip = styled(Chip)<{ status: string }>(({ status }) => {
+const StatusChip = styled(Chip, {
+  shouldForwardProp: (prop) => prop !== 'status',
+})<{ status: string }>(({ status }) => {
   const getStatusColor = () => {
     switch (status) {
       case 'Satisfactory': return DSP_COLORS.SATISFACTORY;

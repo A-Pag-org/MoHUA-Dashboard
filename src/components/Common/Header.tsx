@@ -8,7 +8,7 @@ interface NavButtonProps extends ButtonProps {
 }
 
 const StyledButton = styled((props: NavButtonProps) => {
-  const { ...rest } = props;
+  const { selected, ...rest } = props;
   return <Button {...rest} />;
 })<NavButtonProps>(({ selected }) => ({
   margin: '0 8px',

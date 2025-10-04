@@ -51,7 +51,9 @@ const PerformanceTileCard = styled(Card)(() => ({
   }
 }));
 
-const MetricCard = styled(Paper)<{ color?: string }>(({ color = '#ffffff' }) => ({
+const MetricCard = styled(Paper, {
+  shouldForwardProp: (prop) => prop !== 'color',
+})<{ color?: string }>(({ color = '#ffffff' }) => ({
   borderRadius: '16px',
   background: 'rgba(255, 255, 255, 0.1)',
   backdropFilter: 'blur(10px)',
@@ -65,7 +67,9 @@ const MetricCard = styled(Paper)<{ color?: string }>(({ color = '#ffffff' }) => 
   }
 }));
 
-const StatusChip = styled(Box)<{ status: string }>(({ status }) => {
+const StatusChip = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'status',
+})<{ status: string }>(({ status }) => {
   const getStatusColor = () => {
     switch (status) {
       case 'Satisfactory': return DSP_COLORS.SATISFACTORY;
