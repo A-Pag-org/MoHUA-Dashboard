@@ -72,7 +72,11 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleNavigation = (path: string) => {
+  const handleNavigation = (path: string, event?: React.MouseEvent) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     navigate(path);
   };
 
@@ -97,20 +101,23 @@ const Header: React.FC = () => {
         
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <StyledButton
+            type="button"
             selected={isSelected('/dsp')}
-            onClick={() => handleNavigation('/dsp')}
+            onClick={(e) => handleNavigation('/dsp', e)}
           >
             DSP
           </StyledButton>
           <StyledButton
+            type="button"
             selected={isSelected('/cd')}
-            onClick={() => handleNavigation('/cd')}
+            onClick={(e) => handleNavigation('/cd', e)}
           >
             C&D
           </StyledButton>
           <StyledButton
+            type="button"
             selected={isSelected('/mrs')}
-            onClick={() => handleNavigation('/mrs')}
+            onClick={(e) => handleNavigation('/mrs', e)}
           >
             MRS
           </StyledButton>
