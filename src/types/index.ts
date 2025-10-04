@@ -53,3 +53,34 @@ export interface DSPOfficer {
   totalCases: number;
   pendingCases: number;
 }
+
+// Program Overview Data Types
+export interface DSPComplaintData {
+  city: string;
+  raised: number;
+  resolved: number;
+  resolutionPercentage: number;
+  status: 'Satisfactory' | 'Average' | 'Unsatisfactory';
+}
+
+export interface CDCollectionData {
+  city: string;
+  target: number;
+  actual: number;
+  achievementPercentage: number;
+  status: 'Satisfactory' | 'Average' | 'Unsatisfactory';
+}
+
+export interface MRSUsageData {
+  city: string;
+  targetRoadLength: number;
+  actualRoadLength: number;
+  coveragePercentage: number;
+  status: 'Satisfactory' | 'Average' | 'Unsatisfactory';
+}
+
+export interface ProgramOverviewData {
+  dspData: DSPComplaintData[];
+  cdData: CDCollectionData[];
+  mrsData: MRSUsageData[];
+}
