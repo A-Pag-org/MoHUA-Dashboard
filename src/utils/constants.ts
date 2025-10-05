@@ -1,6 +1,6 @@
 export const DSP_COLORS = {
   SATISFACTORY: '#4CAF50', // Green - >=90%
-  AVERAGE: '#FFC107',      // Amber - 50-89%
+  AVERAGE: '#FFD54F',      // Lighter Amber - 50-89%
   UNSATISFACTORY: '#F44336', // Red - <50%
   RAISED: '#0E1525',       // Deep night for raised/target bars
 };
