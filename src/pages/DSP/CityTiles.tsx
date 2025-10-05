@@ -456,11 +456,13 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        pb: 1.5,
+        pb: 1,
+        pt: 1.5,
+        px: 2,
         borderRadius: '16px 16px 0 0',
       }}>
         <Box>
-          <Typography variant="h5" sx={{ fontWeight: 800, mb: 1, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
             {city.cityName}
           </Typography>
           <StatusChip 
@@ -484,32 +486,32 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
         </IconButton>
       </DialogTitle>
       
-      <DialogContent sx={{ pt: 2, background: 'transparent', overflowY: 'auto' }}>
+      <DialogContent sx={{ pt: 1.5, px: 2, pb: 1, background: 'transparent', overflowY: 'auto' }}>
         {/* Circular Progress Indicator */}
-        <Box sx={{ textAlign: 'center', mb: 3 }}>
+        <Box sx={{ textAlign: 'center', mb: 1.5 }}>
           <CircularProgressIndicator 
             percentage={city.resolutionPercentage}
             color={resolutionColor}
-            size={128}
+            size={100}
           />
         </Box>
 
         {/* Detailed statistics */}
-        <Grid container spacing={1.5}>
+        <Grid container spacing={1}>
           <Grid item xs={12} sm={6}>
             <Paper sx={{ 
               background: 'rgba(16, 27, 42, 0.55)',
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
-              borderRadius: '14px',
+              borderRadius: '12px',
               border: '1px solid rgba(255, 255, 255, 0.08)',
             }}>
-              <CardContent sx={{ textAlign: 'center', py: 2.5 }}>
-                <TrendingUpIcon sx={{ fontSize: 40, color: '#ff6b6b', mb: 1 }} />
-                <Typography variant="h5" sx={{ fontWeight: 800, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+              <CardContent sx={{ textAlign: 'center', py: 1.5, '&:last-child': { pb: 1.5 } }}>
+                <TrendingUpIcon sx={{ fontSize: 32, color: '#ff6b6b', mb: 0.5 }} />
+                <Typography variant="h6" sx={{ fontWeight: 600, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
                   {city.complaintsRaised.toLocaleString()}
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 400, fontSize: '0.75rem' }}>
                   Complaints Raised
                 </Typography>
               </CardContent>
@@ -521,15 +523,15 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
               background: 'rgba(16, 27, 42, 0.55)',
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
-              borderRadius: '14px',
+              borderRadius: '12px',
               border: '1px solid rgba(255, 255, 255, 0.08)',
             }}>
-              <CardContent sx={{ textAlign: 'center', py: 2.5 }}>
-                <TrendingDownIcon sx={{ fontSize: 40, color: resolutionColor, mb: 1 }} />
-                <Typography variant="h5" sx={{ fontWeight: 800, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+              <CardContent sx={{ textAlign: 'center', py: 1.5, '&:last-child': { pb: 1.5 } }}>
+                <TrendingDownIcon sx={{ fontSize: 32, color: resolutionColor, mb: 0.5 }} />
+                <Typography variant="h6" sx={{ fontWeight: 600, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
                   {city.complaintsResolved.toLocaleString()}
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 400, fontSize: '0.75rem' }}>
                   Complaints Resolved
                 </Typography>
               </CardContent>
@@ -537,24 +539,24 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
           </Grid>
         </Grid>
 
-        <Divider sx={{ my: 2.5, borderColor: 'rgba(255, 255, 255, 0.12)' }} />
+        <Divider sx={{ my: 1.5, borderColor: 'rgba(255, 255, 255, 0.12)' }} />
 
         {/* Additional city information */}
-        <Grid container spacing={1.5}>
+        <Grid container spacing={1}>
           <Grid item xs={12}>
             <Box sx={{ 
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center', 
-              py: 1.5,
+              py: 1,
               background: 'rgba(255, 255, 255, 0.06)',
-              borderRadius: '12px',
-              px: 2.5,
+              borderRadius: '10px',
+              px: 1.5,
             }}>
-              <Typography variant="body1" sx={{ fontWeight: 600, color: 'rgba(255, 255, 255, 0.8)' }}>
+              <Typography variant="body2" sx={{ fontWeight: 500, color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.85rem' }}>
                 Issues Raised by Citizens:
               </Typography>
-              <Typography variant="body1" sx={{ fontWeight: 800, color: '#ffffff' }}>
+              <Typography variant="body2" sx={{ fontWeight: 600, color: '#ffffff', fontSize: '0.85rem' }}>
                 {city.issuesRaisedByCitizens.toLocaleString()}
               </Typography>
             </Box>
@@ -565,15 +567,15 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center', 
-              py: 1.5,
+              py: 1,
               background: 'rgba(255, 255, 255, 0.06)',
-              borderRadius: '12px',
-              px: 2.5,
+              borderRadius: '10px',
+              px: 1.5,
             }}>
-              <Typography variant="body1" sx={{ fontWeight: 600, color: 'rgba(255, 255, 255, 0.8)' }}>
+              <Typography variant="body2" sx={{ fontWeight: 500, color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.85rem' }}>
                 Road Owning Agencies Onboarded:
               </Typography>
-              <Typography variant="body1" sx={{ fontWeight: 800, color: '#ffffff' }}>
+              <Typography variant="body2" sx={{ fontWeight: 600, color: '#ffffff', fontSize: '0.85rem' }}>
                 {city.roadOwningAgenciesOnboarded}
               </Typography>
             </Box>
@@ -587,7 +589,7 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
         />
       </DialogContent>
       
-      <DialogActions sx={{ p: 2.5, pt: 1, background: 'transparent' }}>
+      <DialogActions sx={{ p: 1.5, pt: 0.5, background: 'transparent' }}>
         <Button 
           onClick={onClose} 
           variant="contained" 
@@ -596,10 +598,10 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
             '&:hover': {
               background: `linear-gradient(135deg, ${resolutionColor}DD 0%, ${resolutionColor}AA 100%)`,
             },
-            borderRadius: '12px',
-            px: 3.5,
-            py: 1.25,
-            fontWeight: 600,
+            borderRadius: '10px',
+            px: 2.5,
+            py: 0.75,
+            fontWeight: 500,
             textTransform: 'none',
             boxShadow: `0 8px 24px ${resolutionColor}33`,
           }}
