@@ -272,7 +272,7 @@ const ConsolidatedGaugeChart: React.FC<{
           flexDirection: 'column',
           pointerEvents: 'none'
         }}>
-          <Typography variant="h4" sx={{ color: '#111827', fontWeight: 800, textShadow: '0 2px 4px rgba(0,0,0,0.08)' }}>
+          <Typography variant="h4" sx={{ color: '#ffffff', fontWeight: 800, textShadow: '0 2px 4px rgba(0,0,0,0.08)' }}>
             {resolutionRate.toFixed(1)}%
           </Typography>
           <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.85)' }}>
