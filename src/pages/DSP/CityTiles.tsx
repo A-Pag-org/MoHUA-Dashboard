@@ -457,7 +457,7 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
         alignItems: 'center',
         justifyContent: 'space-between',
         pb: 1,
-        pt: 1.5,
+        pt: 1,
         px: 2,
         borderRadius: '16px 16px 0 0',
       }}>
@@ -487,18 +487,19 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
       </DialogTitle>
       
       <DialogContent sx={{ pt: 1.5, px: 2, pb: 1, background: 'transparent', overflowY: 'auto' }}>
-        {/* Circular Progress Indicator */}
-        <Box sx={{ textAlign: 'center', mb: 1.5 }}>
-          <CircularProgressIndicator 
-            percentage={city.resolutionPercentage}
-            color={resolutionColor}
-            size={100}
-          />
-        </Box>
-
-        {/* Detailed statistics */}
+        {/* Circular Progress Indicator and Detailed statistics in one row */}
         <Grid container spacing={1}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
+            <Box sx={{ textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+              <CircularProgressIndicator 
+                percentage={city.resolutionPercentage}
+                color={resolutionColor}
+                size={100}
+              />
+            </Box>
+          </Grid>
+          
+          <Grid item xs={12} sm={4}>
             <Paper sx={{ 
               background: 'rgba(16, 27, 42, 0.55)',
               backdropFilter: 'blur(10px)',
@@ -518,7 +519,7 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
             </Paper>
           </Grid>
           
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <Paper sx={{ 
               background: 'rgba(16, 27, 42, 0.55)',
               backdropFilter: 'blur(10px)',
