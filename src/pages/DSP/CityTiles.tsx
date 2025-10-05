@@ -457,7 +457,7 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
         alignItems: 'center',
         justifyContent: 'space-between',
         pb: 1,
-        pt: 1.5,
+        pt: 1,
         px: 2,
         borderRadius: '16px 16px 0 0',
       }}>
