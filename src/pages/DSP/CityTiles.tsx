@@ -24,7 +24,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { DSPCity } from '../../types';
 import { DSP_COLORS, MOCK_DSP_CITIES, MOCK_CATEGORY_DATA } from '../../utils/constants';
-import CategoryBarChart from './CategoryBarChart';
+import CityIssuesDonutChart from './CityIssuesDonutChart';
 
 // Helper function to get color based on resolution percentage
 const getResolutionColor = (percentage: number): string => {
@@ -581,9 +581,9 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
           </Grid>
         </Grid>
 
-        {/* Category-wise Performance Chart */}
-        <CategoryBarChart 
-          data={MOCK_CATEGORY_DATA[city.id] || []} 
+        {/* City-wise Issues Distribution (Double Donut) */}
+        <CityIssuesDonutChart 
+          data={(MOCK_CATEGORY_DATA[city.id] || []).filter((d) => (d.raised ?? 0) > 0 || (d.resolved ?? 0) > 0)} 
           cityName={city.cityName}
         />
       </DialogContent>
