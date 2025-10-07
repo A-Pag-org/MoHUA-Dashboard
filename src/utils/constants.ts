@@ -157,7 +157,7 @@ export const MOCK_DSP_CITIES = [
 
 // Mock category-wise data for each city
 export const MOCK_CATEGORY_DATA: Record<string, Array<{ category: string; raised: number; resolved: number; }>> = {
-  '1': [ // Baharudgarh
+  '1': [ // Bahadurgarh
     { category: 'Pothole', raised: 1200, resolved: 360 },
     { category: 'Unpaved Road', raised: 850, resolved: 220 },
     { category: 'Broken Footpath / Divider', raised: 920, resolved: 280 },
