@@ -38,7 +38,7 @@ export const MOCK_LEADING_CITIES = [
   },
   {
     id: '3',
-    name: 'Bangalore',
+    name: 'Noida',
     value: 92.8,
     metric: 'Road Coverage %',
     program: 'MRS' as const
@@ -75,7 +75,7 @@ export const MOCK_PROGRAM_STATS = [
 export const MOCK_DSP_CITIES = [
   {
     id: '1',
-    cityName: 'Baharudgarh',
+    cityName: 'Bahadurgarh',
     complaintsRaised: 7356,
     complaintsResolved: 2169,
     resolutionPercentage: 29.0,
