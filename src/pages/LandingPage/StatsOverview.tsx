@@ -1,21 +1,5 @@
-import React from 'react';
-import {
-  Box,
-  Container,
-  Typography,
-  Grid,
-  Card,
-  CardContent,
-} from '@mui/material';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
+import React, { useMemo, useRef, useState } from 'react';
+import { Box, Container, Typography, Grid } from '@mui/material';
 import { DSP_COLORS } from '../../utils/constants';
 import {
   DSPComplaintData,
@@ -23,6 +7,11 @@ import {
   MRSUsageData,
   ProgramOverviewData,
 } from '../../types';
+import ChartCard from './Charts/ChartCard';
+import MicroBulletBars, { MicroBulletDatum } from './Charts/MicroBulletBars';
+import ExpandChartDialog, { LabelMode } from './Charts/ExpandChartDialog';
+import ExpandedBarChart, { ExpandedBarDatum } from './Charts/ExpandedBarChart';
+import { exportRowsToCSV, exportSVGContainerToPNG } from './Charts/exportUtils';
 
 // Color constants matching tile styles (use shared DSP_COLORS)
 const COLORS = {
@@ -180,129 +169,188 @@ const mockData: ProgramOverviewData = {
   ],
 };
 
-// DSP Section Component
-const DSPSection: React.FC<{ data: DSPComplaintData[] }> = ({ data }) => {
-  // Transform data for recharts with separate columns for each status
-  const chartData = data.map((item) => ({
-    city: item.city,
-    raised: item.raised,
-    resolvedSatisfactory: item.status === 'Satisfactory' ? item.resolved : 0,
-    resolvedAverage: item.status === 'Average' ? item.resolved : 0,
-    resolvedUnsatisfactory: item.status === 'Unsatisfactory' ? item.resolved : 0,
-  }));
+// Section components render micro bars and provide expand action
+const DSPSection: React.FC<{
+  data: DSPComplaintData[];
+  onExpand: (expanded: { title: string; rows: any[]; chart: ExpandedBarDatum[] }) => void;
+}> = ({ data, onExpand }) => {
+  const microData: MicroBulletDatum[] = useMemo(
+    () =>
+      data.map((item, i) => ({
+        id: `${i}-${item.city}`,
+        label: item.city,
+        track: item.raised,
+        fill: item.resolved,
+        percentage: item.resolutionPercentage,
+        status: item.status,
+      })),
+    [data]
+  );
 
-  
+  const expandedChart: ExpandedBarDatum[] = useMemo(
+    () =>
+      data.map((item) => ({
+        city: item.city,
+        raisedOrTarget: item.raised,
+        actualOrResolved: item.resolved,
+        percentage: item.resolutionPercentage,
+        status: item.status,
+      })),
+    [data]
+  );
+
+  const csvRows = useMemo(
+    () =>
+      data.map((d) => ({
+        City: d.city,
+        Raised: d.raised,
+        Resolved: d.resolved,
+        ResolutionPercentage: d.resolutionPercentage.toFixed(1),
+        Status: d.status,
+      })),
+    [data]
+  );
 
   return (
-    <Card sx={{ height: '100%', backgroundColor: 'background.paper' }}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-          Complaint Status: Road repairs & Civic Infra
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Actual Raise Vs Actual Resolved
-        </Typography>
-        <Box sx={{ height: 260 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="city" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="raised" fill={COLORS.BLACK} name="Raised" />
-              <Bar dataKey="resolvedSatisfactory" fill={COLORS.SATISFACTORY} name="Resolved (Satisfactory)" stackId="resolved" />
-              <Bar dataKey="resolvedAverage" fill={COLORS.AVERAGE} name="Resolved (Average)" stackId="resolved" />
-              <Bar dataKey="resolvedUnsatisfactory" fill={COLORS.UNSATISFACTORY} name="Resolved (Unsatisfactory)" stackId="resolved" />
-            </BarChart>
-          </ResponsiveContainer>
-        </Box>
-
-        
-      </CardContent>
-    </Card>
+    <ChartCard
+      title="Complaint Status: Road repairs & Civic Infra"
+      subtitle="Percent resolved"
+      onExpand={() => onExpand({ title: 'DSP — Complaints Resolved', rows: csvRows, chart: expandedChart })}
+    >
+      <MicroBulletBars data={microData} />
+    </ChartCard>
   );
 };
 
 // C&D Section Component
-const CDSection: React.FC<{ data: CDCollectionData[] }> = ({ data }) => {
-  // Transform data for recharts with separate columns for each status
-  const chartData = data.map((item) => ({
-    city: item.city,
-    target: item.target,
-    actualSatisfactory: item.status === 'Satisfactory' ? item.actual : 0,
-    actualAverage: item.status === 'Average' ? item.actual : 0,
-    actualUnsatisfactory: item.status === 'Unsatisfactory' ? item.actual : 0,
-  }));
+const CDSection: React.FC<{
+  data: CDCollectionData[];
+  onExpand: (expanded: { title: string; rows: any[]; chart: ExpandedBarDatum[] }) => void;
+}> = ({ data, onExpand }) => {
+  const microData: MicroBulletDatum[] = useMemo(
+    () =>
+      data.map((item, i) => ({
+        id: `${i}-${item.city}`,
+        label: item.city,
+        track: item.target,
+        fill: item.actual,
+        percentage: item.achievementPercentage,
+        status: item.status,
+      })),
+    [data]
+  );
+
+  const expandedChart: ExpandedBarDatum[] = useMemo(
+    () =>
+      data.map((item) => ({
+        city: item.city,
+        raisedOrTarget: item.target,
+        actualOrResolved: item.actual,
+        percentage: item.achievementPercentage,
+        status: item.status,
+      })),
+    [data]
+  );
+
+  const csvRows = useMemo(
+    () =>
+      data.map((d) => ({
+        City: d.city,
+        Target: d.target,
+        Actual: d.actual,
+        AchievementPercentage: d.achievementPercentage.toFixed(1),
+        Status: d.status,
+      })),
+    [data]
+  );
 
   return (
-    <Card sx={{ height: '100%', backgroundColor: 'background.paper' }}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-          Citywise C&D Collection Status
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Target Vs Actual
-        </Typography>
-        <Box sx={{ height: 260 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="city" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="target" fill={COLORS.BLACK} name="Target" />
-              <Bar dataKey="actualSatisfactory" fill={COLORS.SATISFACTORY} name="Actuals (Satisfactory)" stackId="actual" />
-              <Bar dataKey="actualAverage" fill={COLORS.AVERAGE} name="Actuals (Average)" stackId="actual" />
-              <Bar dataKey="actualUnsatisfactory" fill={COLORS.UNSATISFACTORY} name="Actuals (Unsatisfactory)" stackId="actual" />
-            </BarChart>
-          </ResponsiveContainer>
-        </Box>
-      </CardContent>
-    </Card>
+    <ChartCard
+      title="Citywise C&D Collection Status"
+      subtitle="Percent achieved"
+      onExpand={() => onExpand({ title: 'C&D — Collection Achievement', rows: csvRows, chart: expandedChart })}
+    >
+      <MicroBulletBars data={microData} />
+    </ChartCard>
   );
 };
 
 // MRS Section Component
-const MRSSection: React.FC<{ data: MRSUsageData[] }> = ({ data }) => {
-  // Transform data for recharts with separate columns for each status
-  const chartData = data.map((item) => ({
-    city: item.city,
-    targetRoadLength: item.targetRoadLength,
-    actualSatisfactory: item.status === 'Satisfactory' ? item.actualRoadLength : 0,
-    actualAverage: item.status === 'Average' ? item.actualRoadLength : 0,
-    actualUnsatisfactory: item.status === 'Unsatisfactory' ? item.actualRoadLength : 0,
-  }));
+const MRSSection: React.FC<{
+  data: MRSUsageData[];
+  onExpand: (expanded: { title: string; rows: any[]; chart: ExpandedBarDatum[] }) => void;
+}> = ({ data, onExpand }) => {
+  const microData: MicroBulletDatum[] = useMemo(
+    () =>
+      data.map((item, i) => ({
+        id: `${i}-${item.city}`,
+        label: item.city,
+        track: item.targetRoadLength,
+        fill: item.actualRoadLength,
+        percentage: item.coveragePercentage,
+        status: item.status,
+      })),
+    [data]
+  );
+
+  const expandedChart: ExpandedBarDatum[] = useMemo(
+    () =>
+      data.map((item) => ({
+        city: item.city,
+        raisedOrTarget: item.targetRoadLength,
+        actualOrResolved: item.actualRoadLength,
+        percentage: item.coveragePercentage,
+        status: item.status,
+      })),
+    [data]
+  );
+
+  const csvRows = useMemo(
+    () =>
+      data.map((d) => ({
+        City: d.city,
+        TargetRoadLength: d.targetRoadLength,
+        ActualRoadLength: d.actualRoadLength,
+        CoveragePercentage: d.coveragePercentage.toFixed(1),
+        Status: d.status,
+      })),
+    [data]
+  );
 
   return (
-    <Card sx={{ height: '100%', backgroundColor: 'background.paper' }}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-          Citywise MRS Usage Status
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Target Road Length Covered to Actual Road Length Covered
-        </Typography>
-        <Box sx={{ height: 260 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="city" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="targetRoadLength" fill={COLORS.BLACK} name="Target" />
-              <Bar dataKey="actualSatisfactory" fill={COLORS.SATISFACTORY} name="Actuals (Satisfactory)" stackId="actual" />
-              <Bar dataKey="actualAverage" fill={COLORS.AVERAGE} name="Actuals (Average)" stackId="actual" />
-              <Bar dataKey="actualUnsatisfactory" fill={COLORS.UNSATISFACTORY} name="Actuals (Unsatisfactory)" stackId="actual" />
-            </BarChart>
-          </ResponsiveContainer>
-        </Box>
-      </CardContent>
-    </Card>
+    <ChartCard
+      title="Citywise MRS Usage Status"
+      subtitle="Percent road length covered"
+      onExpand={() => onExpand({ title: 'MRS — Road Coverage', rows: csvRows, chart: expandedChart })}
+    >
+      <MicroBulletBars data={microData} />
+    </ChartCard>
   );
 };
 
 // Main StatsOverview Component
 const StatsOverview: React.FC = () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [labelMode, setLabelMode] = useState<LabelMode>('percent');
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [expandedData, setExpandedData] = useState<ExpandedBarDatum[]>([]);
+  const [csvRows, setCsvRows] = useState<any[]>([]);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const openExpand = (cfg: { title: string; rows: any[]; chart: ExpandedBarDatum[] }) => {
+    setDialogTitle(cfg.title);
+    setExpandedData(cfg.chart);
+    setCsvRows(cfg.rows);
+    setDialogOpen(true);
+  };
+
+  const exportCSV = () => exportRowsToCSV(`${dialogTitle.replace(/\s+/g, '_').toLowerCase()}.csv`, csvRows);
+  const exportPNG = () => {
+    if (contentRef.current) {
+      exportSVGContainerToPNG(contentRef.current, `${dialogTitle.replace(/\s+/g, '_').toLowerCase()}.png`);
+    }
+  };
+
   return (
     <Container maxWidth="xl" sx={{ py: 3, position: 'relative' }}>
       <Typography
@@ -326,17 +374,17 @@ const StatsOverview: React.FC = () => {
       <Grid container spacing={3}>
         {/* DSP Section */}
         <Grid item xs={12} lg={4}>
-          <DSPSection data={mockData.dspData} />
+          <DSPSection data={mockData.dspData} onExpand={openExpand} />
         </Grid>
         
         {/* C&D Section */}
         <Grid item xs={12} lg={4}>
-          <CDSection data={mockData.cdData} />
+          <CDSection data={mockData.cdData} onExpand={openExpand} />
         </Grid>
         
         {/* MRS Section */}
         <Grid item xs={12} lg={4}>
-          <MRSSection data={mockData.mrsData} />
+          <MRSSection data={mockData.mrsData} onExpand={openExpand} />
         </Grid>
       </Grid>
 
@@ -381,6 +429,19 @@ const StatsOverview: React.FC = () => {
           </Box>
         </Box>
       </Box>
+      <ExpandChartDialog
+        open={dialogOpen}
+        title={dialogTitle}
+        onClose={() => setDialogOpen(false)}
+        onExportCSV={exportCSV}
+        onExportPNG={exportPNG}
+        labelMode={labelMode}
+        onLabelModeChange={setLabelMode}
+        contentRef={contentRef}
+      >
+        <ExpandedBarChart data={expandedData} labelMode={labelMode} />
+      </ExpandChartDialog>
+
     </Container>
   );
 };
