@@ -40,7 +40,22 @@ const ExpandChartDialog: React.FC<ExpandChartDialogProps> = ({
   contentRef,
 }) => {
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg" aria-labelledby="expanded-chart-title">
+    <Dialog 
+      open={open} 
+      onClose={onClose} 
+      fullWidth 
+      maxWidth="lg" 
+      aria-labelledby="expanded-chart-title"
+      sx={{
+        '& .MuiDialog-container': {
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        '& .MuiPaper-root': {
+          margin: 0, // remove default margin that can offset from center
+        },
+      }}
+    >
       <DialogTitle id="expanded-chart-title" sx={{ pr: 6 }}>
         {title}
         <IconButton onClick={onClose} aria-label="close" sx={{ position: 'absolute', right: 8, top: 8 }}>
