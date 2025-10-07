@@ -48,7 +48,7 @@ const ComingSoonPage = ({ title, subtitle }: { title: string; subtitle: string }
             textShadow: '0 4px 8px rgba(0,0,0,0.3)',
           }}
         >
-          MoHUA
+          Ministry of Housing & Urban Affairs
         </Typography>
         <Box sx={{ flex: 1, textAlign: 'center', marginX: 4 }}>
           <Typography
