@@ -34,11 +34,11 @@ const PerformanceTileCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'resolutionColor',
 })<{ resolutionColor: string }>(({ theme, resolutionColor }) => ({
   borderRadius: '18px',
-  background: theme.palette.mode === 'dark' ? 'rgba(16, 27, 42, 0.6)' : 'rgba(255, 255, 255, 0.85)',
+  background: theme.palette.mode === 'dark' ? 'rgba(16, 27, 42, 0.6)' : 'rgba(255, 255, 255, 0.95)',
   backdropFilter: 'blur(12px)',
   WebkitBackdropFilter: 'blur(12px)',
   border: theme.palette.mode === 'dark' ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(0, 0, 0, 0.06)',
-  boxShadow: theme.palette.mode === 'dark' ? '0 12px 36px rgba(0,0,0,0.28)' : '0 12px 36px rgba(0,0,0,0.12)',
+  boxShadow: theme.palette.mode === 'dark' ? '0 12px 36px rgba(0,0,0,0.28)' : '0 12px 36px rgba(0,0,0,0.10)',
   position: 'relative',
   overflow: 'hidden',
   '&::before': {
@@ -49,7 +49,9 @@ const PerformanceTileCard = styled(Card, {
     right: 0,
     bottom: 0,
     // Dynamic overlay based on overall resolution slab
-    background: `linear-gradient(135deg, ${resolutionColor}33 0%, ${resolutionColor}1f 100%)`,
+    background: theme.palette.mode === 'dark' 
+      ? `linear-gradient(135deg, ${resolutionColor}33 0%, ${resolutionColor}1f 100%)`
+      : 'linear-gradient(135deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.01) 100%)',
     pointerEvents: 'none',
   }
 }));
@@ -280,16 +282,12 @@ const DelhiNCRPerformanceTile: React.FC = () => {
         <Box sx={{ textAlign: 'center', mb: 3 }}>
           <Typography 
             variant="h3" 
-            sx={{ 
+            sx={(theme) => ({ 
               fontWeight: 800, 
               mb: 1,
-              textShadow: '0 4px 8px rgba(0,0,0,0.3)',
-              // Dynamic text gradient based on overall resolution slab
-              background: `linear-gradient(135deg, ${resolutionColor} 0%, ${resolutionColor}CC 100%)`,
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
+              textShadow: theme.palette.mode === 'dark' ? '0 4px 8px rgba(0,0,0,0.3)' : 'none',
+              color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary,
+            })}
           >
             Delhi NCR Performance
           </Typography>
@@ -297,7 +295,7 @@ const DelhiNCRPerformanceTile: React.FC = () => {
             variant="h6" 
             sx={(theme) => ({ 
               color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.7)', 
-              fontWeight: 400,
+              fontWeight: 600,
               mb: 2,
             })}
           >

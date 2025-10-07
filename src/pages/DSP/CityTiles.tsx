@@ -158,31 +158,31 @@ const CircularProgressIndicator: React.FC<{ percentage: number; color: string; s
         <Typography
           variant="h5"
           component="div"
-          sx={{
-            color: '#ffffff',
+          sx={(theme) => ({
+            color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary,
             fontWeight: 800,
-            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+            textShadow: theme.palette.mode === 'dark' ? '0 2px 4px rgba(0,0,0,0.3)' : 'none',
             lineHeight: 1,
             fontSize: size > 120 ? '1.8rem' : size > 100 ? '1.4rem' : '1.1rem',
             maxWidth: `${size * 0.8}px`,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
-          }}
+          })}
         >
           {percentage.toFixed(0)}%
         </Typography>
         <Typography
           variant="caption"
-          sx={{
-            color: 'rgba(255, 255, 255, 0.7)',
+          sx={(theme) => ({
+            color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
             fontSize: size > 120 ? '0.85rem' : size > 100 ? '0.75rem' : '0.65rem',
             fontWeight: 500,
             maxWidth: `${size * 0.9}px`,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
-          }}
+          })}
         >
           Resolution
         </Typography>
@@ -270,10 +270,22 @@ const ConsolidatedGaugeChart: React.FC<{
           flexDirection: 'column',
           pointerEvents: 'none'
         }}>
-          <Typography variant="h4" sx={{ color: '#ffffff', fontWeight: 800, textShadow: '0 2px 4px rgba(0,0,0,0.08)' }}>
+          <Typography 
+            variant="h4" 
+            sx={(theme) => ({ 
+              color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary, 
+              fontWeight: 800, 
+              textShadow: theme.palette.mode === 'dark' ? '0 2px 4px rgba(0,0,0,0.08)' : 'none' 
+            })}
+          >
             {resolutionRate.toFixed(1)}%
           </Typography>
-          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.85)' }}>
+          <Typography 
+            variant="body2" 
+            sx={(theme) => ({ 
+              color: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.85)' : theme.palette.text.primary 
+            })}
+          >
             Resolution Rate
           </Typography>
         </Box>
@@ -283,13 +295,13 @@ const ConsolidatedGaugeChart: React.FC<{
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4, mt: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
           <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: RAISED_COLOR }} />
-          <Typography variant="body2" sx={{ color: '#ffffff' }}>
+          <Typography variant="body2" sx={(theme) => ({ color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary })}>
             Issues Raised ({raisedValue.toLocaleString()})
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
           <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: RESOLVED_COLOR }} />
-          <Typography variant="body2" sx={{ color: '#ffffff' }}>
+          <Typography variant="body2" sx={(theme) => ({ color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary })}>
             Issues Resolved ({resolvedValue.toLocaleString()})
           </Typography>
         </Box>
@@ -323,16 +335,16 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
               <Typography 
                 variant="h6" 
-                sx={{ 
+                sx={(theme) => ({ 
                   fontWeight: 700,
-                  color: '#ffffff',
+                  color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary,
                   fontSize: '1.05rem',
                   lineHeight: 1.3,
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   pr: 1,
-                  textShadow: '0 2px 6px rgba(0,0,0,0.35)',
+                  textShadow: theme.palette.mode === 'dark' ? '0 2px 6px rgba(0,0,0,0.35)' : 'none',
                   letterSpacing: '0.3px',
                   background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.22) 0%, rgba(76, 175, 80, 0.12) 100%)',
                   padding: '6px 14px',
@@ -342,7 +354,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                   WebkitBackdropFilter: 'blur(8px)',
                   width: 'fit-content',
                   maxWidth: '65%',
-                }}
+                })}
               >
                 {city.cityName}
               </Typography>
@@ -375,7 +387,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
                   Raised:
                 </Typography>
-                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#ffffff' }}>
+                <Typography variant="body2" sx={(theme) => ({ fontWeight: 'bold', color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary })}>
                   {city.complaintsRaised.toLocaleString()}
                 </Typography>
               </Box>
@@ -391,7 +403,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
                   Resolved:
                 </Typography>
-                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#ffffff' }}>
+                <Typography variant="body2" sx={(theme) => ({ fontWeight: 'bold', color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary })}>
                   {city.complaintsResolved.toLocaleString()}
                 </Typography>
               </Box>
@@ -647,11 +659,11 @@ const CityTiles: React.FC = () => {
           <Paper sx={{ 
             maxWidth: 800, 
             borderRadius: '24px', 
-            background: 'rgba(255, 255, 255, 0.1)',
+            background: (theme) => theme.palette.mode === 'dark' ? 'rgba(16, 27, 42, 0.65)' : 'rgba(255, 255, 255, 0.92)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
+            border: (theme) => theme.palette.mode === 'dark' ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(0, 0, 0, 0.06)',
+            boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 20px 60px rgba(0,0,0,0.4)' : '0 20px 60px rgba(0,0,0,0.08)',
             overflow: 'hidden',
             position: 'relative',
             '&::before': {
@@ -661,11 +673,13 @@ const CityTiles: React.FC = () => {
               left: 0,
               right: 0,
               bottom: 0,
-              background: `linear-gradient(135deg, ${getResolutionColor(overallResolutionRate)}20 0%, ${getResolutionColor(overallResolutionRate)}10 100%)`,
+              background: (theme) => theme.palette.mode === 'dark' 
+                ? `linear-gradient(135deg, ${getResolutionColor(overallResolutionRate)}20 0%, ${getResolutionColor(overallResolutionRate)}10 100%)`
+                : 'linear-gradient(135deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.01) 100%)',
             }
           }}>
             <CardContent sx={{ textAlign: 'center', py: 4, position: 'relative', zIndex: 1 }}>
-              <Typography variant="h4" sx={{ fontWeight: 800, mb: 4, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+              <Typography variant="h4" sx={(theme) => ({ fontWeight: 800, mb: 4, color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary, textShadow: theme.palette.mode === 'dark' ? '0 2px 4px rgba(0,0,0,0.3)' : 'none' })}>
                 Overall Delhi NCR Performance
               </Typography>
               
@@ -702,10 +716,10 @@ const CityTiles: React.FC = () => {
               boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
             }}>
               <CardContent sx={{ py: 3 }}>
-                <Typography variant="h4" sx={{ fontWeight: 800, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+                <Typography variant="h4" sx={(theme) => ({ fontWeight: 800, color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary, textShadow: theme.palette.mode === 'dark' ? '0 2px 4px rgba(0,0,0,0.3)' : 'none' })}>
                   {totalCities}
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontWeight: 500 }}>
+                <Typography variant="body2" sx={(theme) => ({ color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)', fontWeight: 500 })}>
                   Total Cities
                 </Typography>
               </CardContent>
@@ -726,7 +740,7 @@ const CityTiles: React.FC = () => {
                 <Typography variant="h4" sx={{ fontWeight: 800, color: DSP_COLORS.SATISFACTORY, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
                   {satisfactoryCities}
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
+                <Typography variant="body2" sx={(theme) => ({ color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)', fontWeight: 500 })}>
                   Satisfactory (≥90%)
                 </Typography>
               </CardContent>
@@ -747,7 +761,7 @@ const CityTiles: React.FC = () => {
                 <Typography variant="h4" sx={{ fontWeight: 800, color: DSP_COLORS.AVERAGE, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
                   {averageCities}
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
+                <Typography variant="body2" sx={(theme) => ({ color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)', fontWeight: 500 })}>
                   Average (50-89%)
                 </Typography>
               </CardContent>
@@ -768,7 +782,7 @@ const CityTiles: React.FC = () => {
                 <Typography variant="h4" sx={{ fontWeight: 800, color: DSP_COLORS.UNSATISFACTORY, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
                   {unsatisfactoryCities}
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
+                <Typography variant="body2" sx={(theme) => ({ color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)', fontWeight: 500 })}>
                   Needs Attention (&lt;50%)
                 </Typography>
               </CardContent>
