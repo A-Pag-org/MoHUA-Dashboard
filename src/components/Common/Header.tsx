@@ -1,7 +1,9 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box, ButtonProps } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Box, ButtonProps, IconButton } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 
 interface NavButtonProps extends ButtonProps {
   selected?: boolean;
@@ -68,6 +70,7 @@ const StyledButton = styled((props: NavButtonProps) => {
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
 
   const handleNavigation = (path: string, event?: React.MouseEvent) => {
     if (event) {
@@ -140,6 +143,13 @@ const Header: React.FC = () => {
           >
             MRS
           </StyledButton>
+          <IconButton
+            aria-label="toggle theme"
+            onClick={() => window.dispatchEvent(new Event('toggle-color-mode'))}
+            sx={{ ml: 1, color: '#ffffff' }}
+          >
+            {theme.palette.mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+          </IconButton>
         </Box>
       </Toolbar>
     </AppBar>

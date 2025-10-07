@@ -5,31 +5,40 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import App from './App'
 
-const theme = createTheme({
+type ThemeMode = 'light' | 'dark'
+
+const getDesignTokens = (mode: ThemeMode) => ({
   palette: {
+    mode,
     primary: {
-      // Soft sky blue accent inspired by iOS Weather
       main: '#7aa2ff',
     },
     secondary: {
-      // Warm sunrise amber for highlights
       main: '#FFD166',
     },
     error: {
       main: '#FF6B6B',
     },
-    background: {
-      // Night-sky background
-      default: '#0B1220',
-      paper: '#0F1B2A',
-    },
-    text: {
-      primary: '#E6EDF3',
-      secondary: '#B0B7C3',
-    },
+    background: mode === 'dark'
+      ? {
+          default: '#0B1220',
+          paper: '#0F1B2A',
+        }
+      : {
+          default: '#F8FAFF',
+          paper: '#FFFFFF',
+        },
+    text: mode === 'dark'
+      ? {
+          primary: '#E6EDF3',
+          secondary: '#B0B7C3',
+        }
+      : {
+          primary: '#111827',
+          secondary: '#4B5563',
+        },
   },
   typography: {
-    // Prefer San Francisco on Apple devices, fall back to system UI/fonts elsewhere
     fontFamily:
       '"SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, "Noto Sans", sans-serif',
     h1: {
@@ -61,13 +70,43 @@ if (!rootElement) {
   throw new Error('Root element not found');
 }
 
-ReactDOM.createRoot(rootElement).render(
-  <React.StrictMode>
+const getInitialMode = (): ThemeMode => {
+  if (typeof window !== 'undefined') {
+    const stored = window.localStorage.getItem('color-mode');
+    if (stored === 'light' || stored === 'dark') return stored;
+  }
+  return 'dark';
+}
+
+function Root() {
+  const [mode, setMode] = React.useState<ThemeMode>(getInitialMode);
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('color-mode', mode);
+    }
+  }, [mode]);
+
+  React.useEffect(() => {
+    const handler = () => setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
+    window.addEventListener('toggle-color-mode', handler);
+    return () => window.removeEventListener('toggle-color-mode', handler);
+  }, []);
+
+  const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+
+  return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <App />
       </ThemeProvider>
     </BrowserRouter>
+  );
+}
+
+ReactDOM.createRoot(rootElement).render(
+  <React.StrictMode>
+    <Root />
   </React.StrictMode>,
 )
