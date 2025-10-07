@@ -200,7 +200,7 @@ const DSPSection: React.FC<{ data: DSPComplaintData[] }> = ({ data }) => {
           Complaint Status: Road repairs & Civic Infra
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          DSP Section - Raised vs Resolved Complaints
+          Actual Raise Vs Actual Resolved
         </Typography>
         <Box sx={{ height: 260 }}>
           <ResponsiveContainer width="100%" height="100%">
@@ -241,7 +241,7 @@ const CDSection: React.FC<{ data: CDCollectionData[] }> = ({ data }) => {
           Citywise C&D Collection Status
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          C&D Section - Target vs Actuals
+          Target Vs Actual
         </Typography>
         <Box sx={{ height: 260 }}>
           <ResponsiveContainer width="100%" height="100%">
@@ -280,7 +280,7 @@ const MRSSection: React.FC<{ data: MRSUsageData[] }> = ({ data }) => {
           Citywise MRS Usage Status
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          MRS Section - Target Road Length vs Actual Road Length Covered
+          Target Road Length Covered to Actual Road Length Covered
         </Typography>
         <Box sx={{ height: 260 }}>
           <ResponsiveContainer width="100%" height="100%">
