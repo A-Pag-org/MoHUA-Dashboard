@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Typography, Paper, ToggleButton, ToggleButtonGroup, Divider } from '@mui/material';
 import { DSP_COLORS } from '../../utils/constants';
 
@@ -58,12 +58,16 @@ interface ProcessedRow extends CategoryData {
 }
 
 const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) => {
+  // Display tuning constants
+  const AGGREGATION_THRESHOLD = 0.025; // 2.5%
+  const MAX_SLICES_VISIBLE = 8; // cap visible slices for readability
+
   // Data prep with small-slice aggregation for readability
   const processed = useMemo((): { rows: ProcessedRow[]; totalRaised: number; totalResolved: number; overallRate: number } => {
     const totalRaised = data.reduce((s: number, d: CategoryData) => s + d.raised, 0) || 1;
     const totalResolved = data.reduce((s: number, d: CategoryData) => s + d.resolved, 0) || 1;
-    const threshold = 0.025; // 2.5% of ring
-    const MAX_SLICES = 8; // cap visible slices for readability
+    const threshold = AGGREGATION_THRESHOLD;
+    const MAX_SLICES = MAX_SLICES_VISIBLE;
     const sorted = [...data].sort((a: CategoryData, b: CategoryData) => b.raised - a.raised);
     const major: CategoryData[] = [];
     const other: CategoryData[] = [];
@@ -97,12 +101,29 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
 
   // Geometry
-  const size = 340;
+  const chartBoxRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState<number>(340);
+
+  useEffect(() => {
+    const el = chartBoxRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect?.width ?? 340;
+      const clamped = Math.max(260, Math.min(420, Math.floor(w)));
+      setSize(clamped);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const center = size / 2;
-  const outerR = center - 10;
-  const innerR = outerR - 26; // ring thickness 26
-  const innerOuterR = innerR - 14;
-  const innerInnerR = innerOuterR - 26;
+  const padding = Math.max(8, Math.floor(size * 0.03));
+  const ringThickness = Math.max(18, Math.floor(size * 0.075));
+  const ringGap = Math.max(10, Math.floor(size * 0.04));
+  const outerR = center - padding;
+  const innerR = outerR - ringThickness; // outer ring thickness
+  const innerOuterR = innerR - ringGap; // inter-ring gap
+  const innerInnerR = innerOuterR - ringThickness; // inner ring thickness
   const pad = toRadians(0.8); // small gap between slices
 
   // Precompute cumulative angles
@@ -155,12 +176,12 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
   // Donut view
   const DonutView = (
     <Box sx={{ display: 'flex', gap: 2, alignItems: 'stretch', flexWrap: { xs: 'wrap', md: 'nowrap' } }}>
-      <Box sx={{ flex: '1 1 340px', minWidth: 320, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Box ref={chartBoxRef} sx={{ flex: '1 1 340px', minWidth: 320, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>        
           {/* Outer ring background */}
-          <circle cx={center} cy={center} r={outerR} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={12} />
+          <circle cx={center} cy={center} r={outerR} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={ringThickness} />
           {/* Inner ring background */}
-          <circle cx={center} cy={center} r={innerOuterR} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={12} />
+          <circle cx={center} cy={center} r={innerOuterR} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={ringThickness} />
 
           {/* Raised (outer ring) */}
           {processed.rows.map((r: ProcessedRow, idx: number) => (
@@ -198,22 +219,22 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
           <g pointerEvents="none">
             {hoverIdx === null ? (
               <>
-                <text x={center} y={center - 6} textAnchor="middle" fill="#ffffff" fontWeight={800} fontSize={22} style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.4))' }}>
+                <text x={center} y={center - Math.floor(size * 0.018)} textAnchor="middle" fill="#ffffff" fontWeight={800} fontSize={Math.floor(size * 0.065)} style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.4))' }}>
                   {processed.overallRate.toFixed(1)}%
                 </text>
-                <text x={center} y={center + 16} textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize={12}>
+                <text x={center} y={center + Math.floor(size * 0.047)} textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize={Math.floor(size * 0.035)}>
                   Overall Resolution
                 </text>
               </>
             ) : (
               <>
-                <text x={center} y={center - 10} textAnchor="middle" fill="#ffffff" fontWeight={800} fontSize={22} style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.4))' }}>
+                <text x={center} y={center - Math.floor(size * 0.03)} textAnchor="middle" fill="#ffffff" fontWeight={800} fontSize={Math.floor(size * 0.065)} style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.4))' }}>
                   {processed.rows[hoverIdx].resolutionRate.toFixed(1)}%
                 </text>
-                <text x={center} y={center + 10} textAnchor="middle" fill="rgba(255,255,255,0.92)" fontSize={12}>
+                <text x={center} y={center + Math.floor(size * 0.015)} textAnchor="middle" fill="rgba(255,255,255,0.92)" fontSize={Math.floor(size * 0.035)}>
                   {processed.rows[hoverIdx].category}
                 </text>
-                <text x={center} y={center + 26} textAnchor="middle" fill="rgba(255,255,255,0.75)" fontSize={11}>
+                <text x={center} y={center + Math.floor(size * 0.07)} textAnchor="middle" fill="rgba(255,255,255,0.75)" fontSize={Math.floor(size * 0.032)}>
                   {`${processed.rows[hoverIdx].resolved.toLocaleString()} / ${processed.rows[hoverIdx].raised.toLocaleString()}`}
                 </text>
               </>
@@ -228,19 +249,19 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
           Raised vs Resolved by Category
         </Typography>
         <Divider sx={{ mb: 1, borderColor: 'rgba(255,255,255,0.08)' }} />
-        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 0.75 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 0.9 }}>
           {processed.rows.map((r: ProcessedRow, idx: number) => (
-            <Box key={`leg-${idx}`} onMouseEnter={() => setHoverIdx(idx)} onMouseLeave={() => setHoverIdx(null)} sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 0.5, borderRadius: 1, cursor: 'default', background: hoverIdx === idx ? 'rgba(255,255,255,0.06)' : 'transparent' }}>
+            <Box key={`leg-${idx}`} onMouseEnter={() => setHoverIdx(idx)} onMouseLeave={() => setHoverIdx(null)} sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 0.6, borderRadius: 1, cursor: 'default', background: hoverIdx === idx ? 'rgba(255,255,255,0.06)' : 'transparent' }}>
               <Box sx={{ width: 12, height: 12, borderRadius: '3px', background: r.category === 'Other' ? OTHER_COLOR : r.color, boxShadow: `0 0 6px ${r.color}40` }} />
               <Box sx={{ flex: 1, minWidth: 0 }}>
-                <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.85rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.9rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {r.category}
                 </Typography>
-                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.77rem' }}>
                   {r.resolved.toLocaleString()} / {r.raised.toLocaleString()} • {r.resolutionRate.toFixed(1)}%
                 </Typography>
               </Box>
-              <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.6)' }}>
+              <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>
                 {(r.raisedShare * 100).toFixed(1)}%
               </Typography>
             </Box>
