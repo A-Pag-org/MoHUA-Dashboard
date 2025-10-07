@@ -63,12 +63,13 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
     const totalRaised = data.reduce((s: number, d: CategoryData) => s + d.raised, 0) || 1;
     const totalResolved = data.reduce((s: number, d: CategoryData) => s + d.resolved, 0) || 1;
     const threshold = 0.025; // 2.5% of ring
+    const MAX_SLICES = 8; // cap visible slices for readability
     const sorted = [...data].sort((a: CategoryData, b: CategoryData) => b.raised - a.raised);
     const major: CategoryData[] = [];
     const other: CategoryData[] = [];
-    sorted.forEach((d: CategoryData) => {
+    sorted.forEach((d: CategoryData, idx: number) => {
       const share = d.raised / totalRaised;
-      if (share < threshold) other.push(d); else major.push(d);
+      if (idx >= MAX_SLICES - 1 || share < threshold) other.push(d); else major.push(d);
     });
     if (other.length) {
       major.push({
@@ -193,14 +194,30 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
             </path>
           ))}
 
-          {/* Center labels */}
+          {/* Center labels (overall or hovered category) */}
           <g pointerEvents="none">
-            <text x={center} y={center - 6} textAnchor="middle" fill="#ffffff" fontWeight={800} fontSize={22} style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.4))' }}>
-              {processed.overallRate.toFixed(1)}%
-            </text>
-            <text x={center} y={center + 16} textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize={12}>
-              Overall Resolution
-            </text>
+            {hoverIdx === null ? (
+              <>
+                <text x={center} y={center - 6} textAnchor="middle" fill="#ffffff" fontWeight={800} fontSize={22} style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.4))' }}>
+                  {processed.overallRate.toFixed(1)}%
+                </text>
+                <text x={center} y={center + 16} textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize={12}>
+                  Overall Resolution
+                </text>
+              </>
+            ) : (
+              <>
+                <text x={center} y={center - 10} textAnchor="middle" fill="#ffffff" fontWeight={800} fontSize={22} style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.4))' }}>
+                  {processed.rows[hoverIdx].resolutionRate.toFixed(1)}%
+                </text>
+                <text x={center} y={center + 10} textAnchor="middle" fill="rgba(255,255,255,0.92)" fontSize={12}>
+                  {processed.rows[hoverIdx].category}
+                </text>
+                <text x={center} y={center + 26} textAnchor="middle" fill="rgba(255,255,255,0.75)" fontSize={11}>
+                  {`${processed.rows[hoverIdx].resolved.toLocaleString()} / ${processed.rows[hoverIdx].raised.toLocaleString()}`}
+                </text>
+              </>
+            )}
           </g>
         </svg>
       </Box>
