@@ -14,9 +14,9 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { DSP_COLORS } from '../../utils/constants';
 import {
   DSPComplaintData,
   CDCollectionData,
@@ -24,12 +24,12 @@ import {
   ProgramOverviewData,
 } from '../../types';
 
-// Color constants matching the requirements
+// Color constants matching tile styles (use shared DSP_COLORS)
 const COLORS = {
   BLACK: '#0E1525',
-  SATISFACTORY: '#4CAF50',
-  AVERAGE: '#FFD166',
-  UNSATISFACTORY: '#FF6B6B',
+  SATISFACTORY: DSP_COLORS.SATISFACTORY,
+  AVERAGE: DSP_COLORS.AVERAGE,
+  UNSATISFACTORY: DSP_COLORS.UNSATISFACTORY,
 };
 
 // Helper to map resolution percentage to status buckets
@@ -212,32 +212,12 @@ const DSPSection: React.FC<{ data: DSPComplaintData[] }> = ({ data }) => {
               <XAxis dataKey="city" />
               <YAxis />
               <Tooltip />
-              <Legend />
               <Bar dataKey="raised" fill={COLORS.BLACK} name="Raised" />
               <Bar dataKey="resolvedSatisfactory" fill={COLORS.SATISFACTORY} name="Resolved (Satisfactory)" stackId="resolved" />
               <Bar dataKey="resolvedAverage" fill={COLORS.AVERAGE} name="Resolved (Average)" stackId="resolved" />
               <Bar dataKey="resolvedUnsatisfactory" fill={COLORS.UNSATISFACTORY} name="Resolved (Unsatisfactory)" stackId="resolved" />
             </BarChart>
           </ResponsiveContainer>
-        </Box>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
-            Resolution Status Legend:
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Box sx={{ width: 12, height: 12, bgcolor: COLORS.SATISFACTORY }} />
-              <Typography variant="caption">Satisfactory (≥90%)</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Box sx={{ width: 12, height: 12, bgcolor: COLORS.AVERAGE }} />
-              <Typography variant="caption">Average (50-89%)</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Box sx={{ width: 12, height: 12, bgcolor: COLORS.UNSATISFACTORY }} />
-              <Typography variant="caption">Unsatisfactory (&lt;50%)</Typography>
-            </Box>
-          </Box>
         </Box>
 
         {/* Totals summary based on provided city data */}
@@ -281,32 +261,12 @@ const CDSection: React.FC<{ data: CDCollectionData[] }> = ({ data }) => {
               <XAxis dataKey="city" />
               <YAxis />
               <Tooltip />
-              <Legend />
               <Bar dataKey="target" fill={COLORS.BLACK} name="Target" />
               <Bar dataKey="actualSatisfactory" fill={COLORS.SATISFACTORY} name="Actuals (Satisfactory)" stackId="actual" />
               <Bar dataKey="actualAverage" fill={COLORS.AVERAGE} name="Actuals (Average)" stackId="actual" />
               <Bar dataKey="actualUnsatisfactory" fill={COLORS.UNSATISFACTORY} name="Actuals (Unsatisfactory)" stackId="actual" />
             </BarChart>
           </ResponsiveContainer>
-        </Box>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
-            Achievement Status Legend:
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Box sx={{ width: 12, height: 12, bgcolor: COLORS.SATISFACTORY }} />
-              <Typography variant="caption">Satisfactory (≥90%)</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Box sx={{ width: 12, height: 12, bgcolor: COLORS.AVERAGE }} />
-              <Typography variant="caption">Average (50-89%)</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Box sx={{ width: 12, height: 12, bgcolor: COLORS.UNSATISFACTORY }} />
-              <Typography variant="caption">Unsatisfactory (&lt;50%)</Typography>
-            </Box>
-          </Box>
         </Box>
       </CardContent>
     </Card>
@@ -340,32 +300,12 @@ const MRSSection: React.FC<{ data: MRSUsageData[] }> = ({ data }) => {
               <XAxis dataKey="city" />
               <YAxis />
               <Tooltip />
-              <Legend />
               <Bar dataKey="targetRoadLength" fill={COLORS.BLACK} name="Target" />
               <Bar dataKey="actualSatisfactory" fill={COLORS.SATISFACTORY} name="Actuals (Satisfactory)" stackId="actual" />
               <Bar dataKey="actualAverage" fill={COLORS.AVERAGE} name="Actuals (Average)" stackId="actual" />
               <Bar dataKey="actualUnsatisfactory" fill={COLORS.UNSATISFACTORY} name="Actuals (Unsatisfactory)" stackId="actual" />
             </BarChart>
           </ResponsiveContainer>
-        </Box>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
-            Coverage Status Legend:
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Box sx={{ width: 12, height: 12, bgcolor: COLORS.SATISFACTORY }} />
-              <Typography variant="caption">Satisfactory (≥90%)</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Box sx={{ width: 12, height: 12, bgcolor: COLORS.AVERAGE }} />
-              <Typography variant="caption">Average (50-89%)</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Box sx={{ width: 12, height: 12, bgcolor: COLORS.UNSATISFACTORY }} />
-              <Typography variant="caption">Unsatisfactory (&lt;50%)</Typography>
-            </Box>
-          </Box>
         </Box>
       </CardContent>
     </Card>
@@ -410,6 +350,48 @@ const StatsOverview: React.FC = () => {
           <MRSSection data={mockData.mrsData} />
         </Grid>
       </Grid>
+
+      {/* Unified status legend below the three charts */}
+      <Box
+        sx={{
+          mt: 2.5,
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            alignItems: 'center',
+            p: 1,
+            borderRadius: '12px',
+            background: 'rgba(16, 27, 42, 0.6)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)'
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+            <Box sx={{ width: 12, height: 12, bgcolor: COLORS.SATISFACTORY, borderRadius: '3px' }} />
+            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
+              Satisfactory (≥90%)
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+            <Box sx={{ width: 12, height: 12, bgcolor: COLORS.AVERAGE, borderRadius: '3px' }} />
+            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
+              Average (50-89%)
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+            <Box sx={{ width: 12, height: 12, bgcolor: COLORS.UNSATISFACTORY, borderRadius: '3px' }} />
+            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
+              Unsatisfactory (&lt;50%)
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
     </Container>
   );
 };
