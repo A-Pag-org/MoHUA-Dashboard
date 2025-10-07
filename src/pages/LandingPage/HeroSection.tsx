@@ -74,7 +74,7 @@ const ProgramTileCard = styled(Card)(() => ({
 
 const StatusChip = styled(Chip, {
   shouldForwardProp: (prop) => prop !== 'status',
-})<{ status: string }>(({ status }) => {
+})<{ status: string }>(({ theme, status }) => {
   const getStatusColor = () => {
     switch (status) {
       case 'Satisfactory':
@@ -90,7 +90,7 @@ const StatusChip = styled(Chip, {
 
   return {
     background: `linear-gradient(135deg, ${getStatusColor()}33 0%, ${getStatusColor()}1f 100%)`,
-    color: '#E6EDF3',
+    color: theme.palette.mode === 'light' ? '#000000' : '#E6EDF3',
     fontWeight: 700,
     fontSize: '0.72rem',
     height: '24px',
@@ -148,13 +148,13 @@ const CircularProgressIndicator: React.FC<{
         <Typography
           variant="h6"
           component="div"
-          sx={{
-            color: '#ffffff',
+          sx={(theme) => ({
+            color: theme.palette.mode === 'light' ? '#000000' : '#ffffff',
             fontWeight: 800,
-            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+            textShadow: theme.palette.mode === 'light' ? 'none' : '0 2px 4px rgba(0,0,0,0.3)',
             lineHeight: 1,
             fontSize: size > 100 ? '1.4rem' : '1.1rem',
-          }}
+          })}
         >
           {percentage.toFixed(1)}%
         </Typography>
@@ -188,15 +188,15 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           <Chip
             label={city.program}
             size="small"
-            sx={{
+            sx={(theme) => ({
               background: 'rgba(76, 175, 80, 0.22)',
-              color: '#E6EDF3',
+              color: theme.palette.mode === 'light' ? '#000000' : '#E6EDF3',
               fontWeight: 700,
               fontSize: '0.75rem',
               height: '26px',
               borderRadius: '8px',
               border: '1px solid rgba(76, 175, 80, 0.45)',
-            }}
+            })}
           />
         </Box>
 
@@ -204,14 +204,14 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
         <Box sx={{ textAlign: 'center', mb: 2 }}>
           <Typography
             variant="h5"
-            sx={{
+            sx={(theme) => ({
               fontWeight: 900,
-              color: '#ffffff',
+              color: theme.palette.mode === 'light' ? '#000000' : '#ffffff',
               fontSize: '1.5rem',
               lineHeight: 1.2,
-              textShadow: '0 3px 8px rgba(0,0,0,0.35)',
+              textShadow: theme.palette.mode === 'light' ? 'none' : '0 3px 8px rgba(0,0,0,0.35)',
               letterSpacing: '0.5px',
-            }}
+            })}
           >
             {city.name}
           </Typography>
@@ -225,7 +225,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
         {/* Gauge label just below the chart */}
         <Typography
           variant="caption"
-          sx={{ color: 'rgba(255, 255, 255, 0.85)', textAlign: 'center', display: 'block', mb: 1 }}
+          sx={(theme) => ({ color: theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.85)' : 'rgba(255, 255, 255, 0.85)', textAlign: 'center', display: 'block', mb: 1 })}
         >
           {city.program === 'DSP'
             ? 'Percentage of Resolution'
@@ -246,8 +246,8 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <InfoIcon sx={{ fontSize: '15px', color: '#0a2e17', opacity: 0.85, mr: 0.5 }} />
-            <Typography variant="caption" sx={{ color: '#0a2e17', opacity: 0.85, fontSize: '0.72rem' }}>
+            <InfoIcon sx={(theme) => ({ fontSize: '15px', color: theme.palette.mode === 'light' ? '#000000' : 'rgba(230, 237, 243, 0.85)', mr: 0.5 })} />
+            <Typography variant="caption" sx={(theme) => ({ color: theme.palette.mode === 'light' ? '#000000' : 'rgba(230, 237, 243, 0.85)', fontSize: '0.72rem' })}>
               Top in {city.metric}
             </Typography>
           </Box>
