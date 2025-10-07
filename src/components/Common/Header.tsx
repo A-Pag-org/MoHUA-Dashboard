@@ -12,18 +12,18 @@ const StyledButton = styled((props: NavButtonProps) => {
   return <Button {...rest} />;
 })<NavButtonProps>(({ selected }) => ({
   margin: '0 8px',
-  padding: '12px 28px',
-  borderRadius: '12px',
-  fontWeight: 700,
+  padding: '8px 16px',
+  borderRadius: '10px',
+  fontWeight: 600,
   textTransform: 'none',
-  fontSize: '1.1rem',
-  letterSpacing: '0.5px',
+  fontSize: '0.95rem',
+  letterSpacing: '0.3px',
   backgroundColor: selected ? '#4CAF50' : '#6B7280',
   color: '#ffffff',
   border: 'none',
-  boxShadow: selected 
-    ? '0 8px 20px rgba(76, 175, 80, 0.4), 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)' 
-    : '0 4px 12px rgba(107, 114, 128, 0.3), 0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1)',
+  boxShadow: selected
+    ? '0 8px 20px rgba(76, 175, 80, 0.35), 0 4px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.2)'
+    : '0 4px 10px rgba(0, 0, 0, 0.25)',
   transform: selected ? 'translateY(-2px)' : 'translateY(0px)',
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   position: 'relative',
@@ -55,15 +55,13 @@ const StyledButton = styled((props: NavButtonProps) => {
   '&:hover': {
     backgroundColor: selected ? '#45A049' : '#5B6470',
     transform: selected ? 'translateY(-3px)' : 'translateY(-1px)',
-    boxShadow: selected 
-      ? '0 12px 28px rgba(76, 175, 80, 0.5), 0 6px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3)' 
-      : '0 6px 16px rgba(107, 114, 128, 0.4), 0 3px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)',
+    boxShadow:
+      '0 0 0 3px rgba(76, 175, 80, 0.35), 0 12px 28px rgba(76, 175, 80, 0.3), inset 0 1px 0 rgba(255,255,255,0.2)',
   },
   '&:active': {
     transform: selected ? 'translateY(-1px)' : 'translateY(0px)',
-    boxShadow: selected 
-      ? '0 4px 12px rgba(76, 175, 80, 0.3), 0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1)' 
-      : '0 2px 8px rgba(107, 114, 128, 0.2), 0 1px 2px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.05)',
+    boxShadow:
+      '0 0 0 2px rgba(76, 175, 80, 0.3), 0 6px 16px rgba(76, 175, 80, 0.25), inset 0 1px 0 rgba(255,255,255,0.1)',
   },
 }));
 
@@ -100,21 +98,10 @@ const Header: React.FC = () => {
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Box
             component="img"
-            src="https://www.stickpng.com/img/icons-logos-emojis/iconic-brands/government-of-india-logo-gold"
+            src="https://www.presentations.gov.in/wp-content/uploads/2020/01/NE_Preview1.png"
             alt="Government of India Logo"
             sx={{ height: 40, width: 'auto', mr: 2 }}
           />
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              color: 'text.primary',
-              fontWeight: 800,
-              letterSpacing: '1px',
-            }}
-          >
-            Ministry of Housing and Urban Affairs
-          </Typography>
           {/* Keep abbreviation for tests without displaying it */}
           <Typography sx={{ display: 'none' }}>MoHUA</Typography>
         </Box>

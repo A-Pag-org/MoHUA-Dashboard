@@ -29,9 +29,7 @@ const STATUS_COLORS = {
 
 // Helper for status legend colors is provided by STATUS_COLORS above.
 
-const ProgramTileCard = styled(Card, {
-  shouldForwardProp: (prop) => prop !== 'resolutionColor',
-})<{ resolutionColor: string }>(({ resolutionColor }) => ({
+const ProgramTileCard = styled(Card)(() => ({
   minHeight: '280px',
   height: 'auto',
   borderRadius: '16px',
@@ -39,14 +37,14 @@ const ProgramTileCard = styled(Card, {
   cursor: 'default',
   position: 'relative',
   overflow: 'hidden',
-  background: 'rgba(16, 27, 42, 0.6)',
-  backdropFilter: 'blur(12px)',
-  WebkitBackdropFilter: 'blur(12px)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
-  boxShadow: '0 6px 20px rgba(0,0,0,0.25)',
+  background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.18) 0%, rgba(76, 175, 80, 0.32) 100%)',
+  backdropFilter: 'blur(10px)',
+  WebkitBackdropFilter: 'blur(10px)',
+  border: '1px solid rgba(76, 175, 80, 0.45)',
+  boxShadow: '0 8px 24px rgba(76, 175, 80, 0.25)',
   '&:hover': {
     transform: 'translateY(-6px)',
-    boxShadow: `0 16px 48px rgba(0,0,0,0.28), 0 0 0 2px ${resolutionColor}33`,
+    boxShadow: '0 0 0 3px rgba(76, 175, 80, 0.5), 0 18px 56px rgba(76, 175, 80, 0.35)',
     '&::before': {
       opacity: 1,
     },
@@ -58,7 +56,7 @@ const ProgramTileCard = styled(Card, {
     left: 0,
     right: 0,
     bottom: 0,
-    background: `linear-gradient(135deg, ${resolutionColor}14 0%, ${resolutionColor}0A 100%)`,
+    background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.22) 0%, rgba(76, 175, 80, 0.12) 100%)',
     opacity: 0,
     transition: 'opacity 0.3s ease',
   },
@@ -69,7 +67,7 @@ const ProgramTileCard = styled(Card, {
     left: 0,
     width: '3px',
     height: '100%',
-    background: `linear-gradient(180deg, ${resolutionColor} 0%, ${resolutionColor}99 100%)`,
+    background: 'linear-gradient(180deg, #4CAF50 0%, rgba(76, 175, 80, 0.7) 100%)',
     borderRadius: '0 1.5px 1.5px 0',
   },
 }));
@@ -174,7 +172,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
   const status = getPerformanceStatus(city.value);
 
   return (
-    <ProgramTileCard resolutionColor={color}>
+    <ProgramTileCard>
       <CardContent
         sx={{
           padding: '16px',
@@ -191,13 +189,13 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
             label={city.program}
             size="small"
             sx={{
-              background: 'rgba(255,255,255,0.12)',
-              color: '#e6edf3',
+              background: 'rgba(76, 175, 80, 0.22)',
+              color: '#E6EDF3',
               fontWeight: 700,
               fontSize: '0.75rem',
               height: '26px',
               borderRadius: '8px',
-              border: '1px solid rgba(255,255,255,0.15)',
+              border: '1px solid rgba(76, 175, 80, 0.45)',
             }}
           />
         </Box>
@@ -211,11 +209,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
               color: '#ffffff',
               fontSize: '1.5rem',
               lineHeight: 1.2,
-              textShadow: '0 3px 8px rgba(0,0,0,0.4), 0 0 20px rgba(255,255,255,0.1)',
-              background: `linear-gradient(135deg, ${color} 0%, #ffffff 100%)`,
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              textShadow: '0 3px 8px rgba(0,0,0,0.35)',
               letterSpacing: '0.5px',
             }}
           >
@@ -236,12 +230,12 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
             justifyContent: 'space-between',
             mt: 1,
             pt: 1,
-            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+            borderTop: '1px solid rgba(76, 175, 80, 0.35)',
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <InfoIcon sx={{ fontSize: '15px', color: 'rgba(255, 255, 255, 0.65)', mr: 0.5 }} />
-            <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.65)', fontSize: '0.72rem' }}>
+            <InfoIcon sx={{ fontSize: '15px', color: '#0a2e17', opacity: 0.85, mr: 0.5 }} />
+            <Typography variant="caption" sx={{ color: '#0a2e17', opacity: 0.85, fontSize: '0.72rem' }}>
               Top in {city.metric}
             </Typography>
           </Box>
@@ -342,7 +336,7 @@ const HeroSection: React.FC = () => {
             sx={{ 
               fontWeight: 800,
               mb: 1.5,
-              background: 'linear-gradient(135deg, #7aa2ff 0%, #89d0ff 100%)',
+              background: 'linear-gradient(135deg, #4CAF50 0%, #A5D6A7 100%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -350,7 +344,7 @@ const HeroSection: React.FC = () => {
               fontSize: { xs: '2rem', md: '3rem' }
             }}
           >
-            🏆 City Performance Leaderboard
+            Program Leaderboard: City Wise
           </Typography>
           {/* City chips removed as requested */}
         </Box>
