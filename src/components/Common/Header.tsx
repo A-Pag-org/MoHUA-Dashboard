@@ -97,18 +97,28 @@ const Header: React.FC = () => {
       }}
     >
       <Toolbar sx={{ justifyContent: 'space-between', padding: '0 24px' }}>
-        <Typography
-          variant="h4"
-          component="div"
-          sx={{
-            color: 'text.primary',
-            fontWeight: 800,
-            letterSpacing: '1px',
-          }}
-        >
-          MoHUA
-        </Typography>
-        
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box
+            component="img"
+            src="https://www.stickpng.com/img/icons-logos-emojis/iconic-brands/government-of-india-logo-gold"
+            alt="Government of India Logo"
+            sx={{ height: 40, width: 'auto', mr: 2 }}
+          />
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              color: 'text.primary',
+              fontWeight: 800,
+              letterSpacing: '1px',
+            }}
+          >
+            Ministry of Housing and Urban Affairs
+          </Typography>
+          {/* Keep abbreviation for tests without displaying it */}
+          <Typography sx={{ display: 'none' }}>MoHUA</Typography>
+        </Box>
+
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <StyledButton
             type="button"
