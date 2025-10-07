@@ -43,21 +43,7 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
               <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 500, minWidth: 140 }}>
                 {d.label}
               </Typography>
-              {/* Status chip moved to the left of the bar (visual alignment hint) */}
-              <Typography
-                variant="caption"
-                sx={{
-                  px: 1,
-                  py: 0.25,
-                  borderRadius: 1,
-                  fontWeight: 700,
-                  bgcolor: `${color}33`,
-                  color: isAverage ? '#000000' : color,
-                  border: `1px solid ${color}66`,
-                }}
-              >
-                {d.status}
-              </Typography>
+              {/* Status chip removed per latest requirement: status will be on the bar itself */}
             </Box>
 
             <Box
@@ -66,7 +52,8 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
                 height: 20,
                 width: '100%',
                 borderRadius: 10,
-                backgroundColor: 'rgba(255,255,255,0.08)',
+                // Stronger grey track behind the filled bar (superimposed look)
+                backgroundColor: '#9EA7B333',
                 overflow: 'hidden',
               }}
             >
@@ -85,17 +72,39 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
                 }}
               />
 
-              {/* Percentage label on the bar */}
+              {/* Status label inside the filled bar, aligned to the left */}
+              <Typography
+                variant="caption"
+                sx={{
+                  position: 'absolute',
+                  left: 8,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: labelTextColor,
+                  fontWeight: 600,
+                  pointerEvents: 'none',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  maxWidth: `${safePct}%`,
+                }}
+              >
+                {d.status}
+              </Typography>
+
+              {/* Percentage label inside the filled bar, aligned to the right; unbolded */}
               {showInside ? (
                 <Typography
                   variant="caption"
                   sx={{
                     position: 'absolute',
-                    right: Math.max(4, 100 - safePct < 6 ? 4 : 8),
+                    right: 8,
                     top: '50%',
                     transform: 'translateY(-50%)',
                     color: labelTextColor,
-                    fontWeight: 800,
+                    fontWeight: 400,
+                    pointerEvents: 'none',
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   {safePct.toFixed(1)}%
@@ -110,7 +119,8 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
                     top: '50%',
                     transform: 'translateY(-50%)',
                     color: outsideTextColor,
-                    fontWeight: 800,
+                    fontWeight: 400,
+                    pointerEvents: 'none',
                   }}
                 >
                   {safePct.toFixed(1)}%
