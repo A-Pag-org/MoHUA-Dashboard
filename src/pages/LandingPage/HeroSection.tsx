@@ -222,6 +222,18 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           <CircularProgressIndicator percentage={city.value} color={color} />
         </Box>
 
+        {/* Gauge label just below the chart */}
+        <Typography
+          variant="caption"
+          sx={{ color: 'rgba(255, 255, 255, 0.85)', textAlign: 'center', display: 'block', mb: 1 }}
+        >
+          {city.program === 'DSP'
+            ? 'Percentage of Resolution'
+            : city.program === 'C&D'
+            ? 'Percentage of Target Achieved'
+            : 'Percentage of Target achieved'}
+        </Typography>
+
         {/* Footer with metric info and status badge */}
         <Box
           sx={{
