@@ -41,9 +41,7 @@ const getResolutionStatus = (percentage: number): 'Satisfactory' | 'Average' | '
 };
 
 // Styled components
-const CityTileCard = styled(Card, {
-  shouldForwardProp: (prop) => prop !== 'resolutionColor',
-})<{ resolutionColor: string }>(({ resolutionColor }) => ({
+const CityTileCard = styled(Card)(() => ({
   // Reduced height for a more compact tile
   minHeight: '280px',
   height: 'auto',
@@ -52,14 +50,14 @@ const CityTileCard = styled(Card, {
   cursor: 'pointer',
   position: 'relative',
   overflow: 'hidden',
-  background: 'rgba(16, 27, 42, 0.6)',
-  backdropFilter: 'blur(12px)',
-  WebkitBackdropFilter: 'blur(12px)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
-  boxShadow: '0 6px 20px rgba(0,0,0,0.25)',
+  background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.18) 0%, rgba(76, 175, 80, 0.32) 100%)',
+  backdropFilter: 'blur(10px)',
+  WebkitBackdropFilter: 'blur(10px)',
+  border: '1px solid rgba(76, 175, 80, 0.45)',
+  boxShadow: '0 8px 24px rgba(76, 175, 80, 0.25)',
   '&:hover': {
     transform: 'translateY(-6px)',
-    boxShadow: `0 16px 48px rgba(0,0,0,0.28), 0 0 0 2px ${resolutionColor}33`,
+    boxShadow: '0 0 0 3px rgba(76, 175, 80, 0.5), 0 18px 56px rgba(76, 175, 80, 0.35)',
     '&::before': {
       opacity: 1,
     }
@@ -71,7 +69,7 @@ const CityTileCard = styled(Card, {
     left: 0,
     right: 0,
     bottom: 0,
-    background: `linear-gradient(135deg, ${resolutionColor}14 0%, ${resolutionColor}0A 100%)`,
+    background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.22) 0%, rgba(76, 175, 80, 0.12) 100%)',
     opacity: 0,
     transition: 'opacity 0.3s ease',
   },
@@ -82,7 +80,7 @@ const CityTileCard = styled(Card, {
     left: 0,
     width: '3px',
     height: '100%',
-    background: `linear-gradient(180deg, ${resolutionColor} 0%, ${resolutionColor}99 100%)`,
+    background: 'linear-gradient(180deg, #4CAF50 0%, rgba(76, 175, 80, 0.7) 100%)',
     borderRadius: '0 1.5px 1.5px 0',
   }
 }));
@@ -311,7 +309,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
-      <CityTileCard resolutionColor={resolutionColor}>
+      <CityTileCard>
         <CardActionArea onClick={() => onMoreInfo(city)} sx={{ height: '100%' }}>
           <CardContent sx={{ 
             padding: '16px', 
@@ -334,12 +332,12 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   pr: 1,
-                  textShadow: '0 2px 6px rgba(0,0,0,0.4)',
+                  textShadow: '0 2px 6px rgba(0,0,0,0.35)',
                   letterSpacing: '0.3px',
-                  background: `linear-gradient(135deg, ${resolutionColor}18 0%, ${resolutionColor}08 100%)`,
+                  background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.22) 0%, rgba(76, 175, 80, 0.12) 100%)',
                   padding: '6px 14px',
                   borderRadius: '6px',
-                  border: `1px solid ${resolutionColor}25`,
+                  border: '1px solid rgba(76, 175, 80, 0.35)',
                   backdropFilter: 'blur(8px)',
                   WebkitBackdropFilter: 'blur(8px)',
                   width: 'fit-content',
@@ -370,7 +368,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 alignItems: 'center',
-                background: 'rgba(255, 255, 255, 0.08)',
+                background: 'rgba(76, 175, 80, 0.12)',
                 padding: '6px 10px',
                 borderRadius: '8px',
               }}>
@@ -386,7 +384,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 alignItems: 'center',
-                background: 'rgba(255, 255, 255, 0.08)',
+                background: 'rgba(76, 175, 80, 0.12)',
                 padding: '6px 10px',
                 borderRadius: '8px',
               }}>
