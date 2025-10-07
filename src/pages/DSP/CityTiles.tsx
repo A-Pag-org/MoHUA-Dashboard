@@ -115,7 +115,7 @@ const StatusChip = styled(Chip, {
 const CircularProgressIndicator: React.FC<{ percentage: number; color: string; size?: number }> = ({ 
   percentage, 
   color, 
-  size = 120 
+  size = 90 
 }) => {
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
@@ -196,7 +196,7 @@ const ConsolidatedGaugeChart: React.FC<{
   raisedValue: number; 
   resolvedValue: number; 
   size?: number 
-}> = ({ raisedValue, resolvedValue, size = 260 }) => {
+}> = ({ raisedValue, resolvedValue, size = 195 }) => {
   const resolutionRate = raisedValue > 0 ? Math.min((resolvedValue / raisedValue) * 100, 100) : 0;
 
   // Fixed color for Raised ring (brand blue)
@@ -370,7 +370,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
               <CircularProgressIndicator 
                 percentage={city.resolutionPercentage}
                 color={resolutionColor}
-                size={92}
+                size={69}
               />
             </Box>
 
@@ -504,7 +504,7 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
               <CircularProgressIndicator 
                 percentage={city.resolutionPercentage}
                 color={resolutionColor}
-                size={100}
+                size={75}
               />
             </Box>
           </Grid>
@@ -688,7 +688,7 @@ const CityTiles: React.FC = () => {
                 <ConsolidatedGaugeChart
                   raisedValue={totalRaised}
                   resolvedValue={totalResolved}
-                  size={200}
+                  size={150}
                 />
               </Box>
               

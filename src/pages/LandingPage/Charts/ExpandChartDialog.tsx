@@ -87,7 +87,7 @@ const ExpandChartDialog: React.FC<ExpandChartDialogProps> = ({
             )}
           </Box>
         </Box>
-        <Box ref={contentRef} sx={{ height: 460 }}>
+        <Box ref={contentRef} sx={{ height: 345 }}>
           {children}
         </Box>
       </DialogContent>
