@@ -33,7 +33,7 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
       {data.map((d) => {
         const color = getStatusColor(d.status);
         const safePct = isFinite(d.percentage) ? Math.max(0, Math.min(100, d.percentage)) : 0;
-        const showInside = safePct >= 22; // lower threshold so more labels appear inside
+        const showInside = safePct >= 12; // show inside more aggressively so percentages appear on the bar
         const isAverage = d.status === 'Average';
         const labelTextColor = isAverage ? '#000000' : '#ffffff';
         const outsideTextColor = isAverage ? '#000000' : 'rgba(255,255,255,0.85)';
@@ -92,7 +92,7 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
                 {d.status}
               </Typography>
 
-              {/* Percentage label inside the filled bar, aligned to the right; unbolded */}
+              {/* Percentage label placed on the bar; if bar is too thin, place slightly outside but overlapping */}
               {showInside ? (
                 <Typography
                   variant="caption"
@@ -114,10 +114,10 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
                   variant="caption"
                   sx={{
                     position: 'absolute',
-                    left: `${safePct}%`,
-                    ml: 0.75,
+                    left: `calc(${safePct}% - 4px)`,
+                    // slight negative translate so text hugs the bar end and appears on it
+                    transform: 'translate(-100%, -50%)',
                     top: '50%',
-                    transform: 'translateY(-50%)',
                     color: outsideTextColor,
                     fontWeight: 400,
                     pointerEvents: 'none',
