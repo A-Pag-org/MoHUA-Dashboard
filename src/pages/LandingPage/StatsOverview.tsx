@@ -32,45 +32,78 @@ const COLORS = {
   UNSATISFACTORY: '#FF6B6B',
 };
 
-// Mock data for development - replace with actual data source
+// Helper to map resolution percentage to status buckets
+const getStatusFromPercentage = (
+  percentage: number
+): 'Satisfactory' | 'Average' | 'Unsatisfactory' => {
+  if (percentage >= 90) return 'Satisfactory';
+  if (percentage >= 50) return 'Average';
+  return 'Unsatisfactory';
+};
+
+// DSP city data for landing page (Raised, Resolved, Resolution Rate)
+const CITY_DSP_DATA: DSPComplaintData[] = [
+  {
+    city: 'Baharudgarh',
+    raised: 7356,
+    resolved: 2169,
+    resolutionPercentage: (2169 / 7356) * 100,
+    status: getStatusFromPercentage((2169 / 7356) * 100),
+  },
+  {
+    city: 'Delhi',
+    raised: 70550,
+    resolved: 52984,
+    resolutionPercentage: (52984 / 70550) * 100,
+    status: getStatusFromPercentage((52984 / 70550) * 100),
+  },
+  {
+    city: 'Faridabad',
+    raised: 22161,
+    resolved: 17636,
+    resolutionPercentage: (17636 / 22161) * 100,
+    status: getStatusFromPercentage((17636 / 22161) * 100),
+  },
+  {
+    city: 'Ghaziabad',
+    raised: 30814,
+    resolved: 26505,
+    resolutionPercentage: (26505 / 30814) * 100,
+    status: getStatusFromPercentage((26505 / 30814) * 100),
+  },
+  {
+    city: 'Greater Noida',
+    raised: 12705,
+    resolved: 9575,
+    resolutionPercentage: (9575 / 12705) * 100,
+    status: getStatusFromPercentage((9575 / 12705) * 100),
+  },
+  {
+    city: 'Gurgaon',
+    raised: 26169,
+    resolved: 17656,
+    resolutionPercentage: (17656 / 26169) * 100,
+    status: getStatusFromPercentage((17656 / 26169) * 100),
+  },
+  {
+    city: 'Manesar',
+    raised: 9606,
+    resolved: 7454,
+    resolutionPercentage: (7454 / 9606) * 100,
+    status: getStatusFromPercentage((7454 / 9606) * 100),
+  },
+  {
+    city: 'Noida',
+    raised: 17742,
+    resolved: 16500,
+    resolutionPercentage: (16500 / 17742) * 100,
+    status: getStatusFromPercentage((16500 / 17742) * 100),
+  },
+];
+
+// Program overview data (landing page)
 const mockData: ProgramOverviewData = {
-  dspData: [
-    {
-      city: 'Delhi',
-      raised: 450,
-      resolved: 420,
-      resolutionPercentage: 93.3,
-      status: 'Satisfactory',
-    },
-    {
-      city: 'Mumbai',
-      raised: 380,
-      resolved: 285,
-      resolutionPercentage: 75.0,
-      status: 'Average',
-    },
-    {
-      city: 'Bangalore',
-      raised: 320,
-      resolved: 140,
-      resolutionPercentage: 43.8,
-      status: 'Unsatisfactory',
-    },
-    {
-      city: 'Chennai',
-      raised: 290,
-      resolved: 275,
-      resolutionPercentage: 94.8,
-      status: 'Satisfactory',
-    },
-    {
-      city: 'Hyderabad',
-      raised: 240,
-      resolved: 150,
-      resolutionPercentage: 62.5,
-      status: 'Average',
-    },
-  ],
+  dspData: CITY_DSP_DATA,
   cdData: [
     {
       city: 'Delhi',
@@ -158,6 +191,11 @@ const DSPSection: React.FC<{ data: DSPComplaintData[] }> = ({ data }) => {
     resolvedUnsatisfactory: item.status === 'Unsatisfactory' ? item.resolved : 0,
   }));
 
+  // Totals computed from provided city data
+  const totalRaised = data.reduce((sum, item) => sum + item.raised, 0);
+  const totalResolved = data.reduce((sum, item) => sum + item.resolved, 0);
+  const overallResolutionRate = totalRaised > 0 ? (totalResolved / totalRaised) * 100 : 0;
+
   return (
     <Card sx={{ height: '100%', backgroundColor: 'background.paper' }}>
       <CardContent>
@@ -200,6 +238,16 @@ const DSPSection: React.FC<{ data: DSPComplaintData[] }> = ({ data }) => {
               <Typography variant="caption">Unsatisfactory (&lt;50%)</Typography>
             </Box>
           </Box>
+        </Box>
+
+        {/* Totals summary based on provided city data */}
+        <Box sx={{ mt: 2, p: 1.25, borderRadius: '8px', bgcolor: 'action.hover' }}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+            Totals (DSP)
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            Raised: {totalRaised.toLocaleString()} | Resolved: {totalResolved.toLocaleString()} | Resolution Rate: {overallResolutionRate.toFixed(2)}%
+          </Typography>
         </Box>
       </CardContent>
     </Card>
