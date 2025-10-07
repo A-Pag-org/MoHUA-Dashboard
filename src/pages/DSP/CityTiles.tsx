@@ -679,7 +679,7 @@ const CityTiles: React.FC = () => {
             }
           }}>
             <CardContent sx={{ textAlign: 'center', py: 4, position: 'relative', zIndex: 1 }}>
-              <Typography variant="h4" sx={(theme) => ({ fontWeight: 800, mb: 4, color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary, textShadow: theme.palette.mode === 'dark' ? '0 2px 4px rgba(0,0,0,0.3)' : 'none' })}>
+              <Typography variant="h4" sx={(theme) => ({ fontWeight: 800, mb: 4, color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000', textShadow: theme.palette.mode === 'dark' ? '0 2px 4px rgba(0,0,0,0.3)' : '0 1px 2px rgba(0,0,0,0.25)' })}>
                 Overall Delhi NCR Performance
               </Typography>
               
@@ -716,10 +716,10 @@ const CityTiles: React.FC = () => {
               boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
             }}>
               <CardContent sx={{ py: 3 }}>
-                <Typography variant="h4" sx={(theme) => ({ fontWeight: 800, color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary, textShadow: theme.palette.mode === 'dark' ? '0 2px 4px rgba(0,0,0,0.3)' : 'none' })}>
+                <Typography variant="h4" sx={(theme) => ({ fontWeight: 800, color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000', textShadow: theme.palette.mode === 'dark' ? '0 2px 4px rgba(0,0,0,0.3)' : '0 1px 2px rgba(0,0,0,0.25)' })}>
                   {totalCities}
                 </Typography>
-                <Typography variant="body2" sx={(theme) => ({ color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)', fontWeight: 500 })}>
+                <Typography variant="body2" sx={(theme) => ({ color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#000000', fontWeight: 500 })}>
                   Total Cities
                 </Typography>
               </CardContent>
