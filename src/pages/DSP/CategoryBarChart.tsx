@@ -58,6 +58,7 @@ interface ProcessedRow extends CategoryData {
 }
 
 const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) => {
+  const DISPLAY_SCALE = 0.75; // scale down visual size by 25%
   // Display tuning constants
   const AGGREGATION_THRESHOLD = 0.025; // 2.5%
   const MAX_SLICES_VISIBLE = 8; // cap visible slices for readability
@@ -177,7 +178,7 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
   const DonutView = (
     <Box sx={{ display: 'flex', gap: 2, alignItems: 'stretch', flexWrap: { xs: 'wrap', md: 'nowrap' } }}>
       <Box ref={chartBoxRef} sx={{ flex: '1 1 340px', minWidth: 320, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>        
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: `scale(${DISPLAY_SCALE})`, transformOrigin: 'center' }}>
           {/* Outer ring background */}
           <circle cx={center} cy={center} r={outerR} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={ringThickness} />
           {/* Inner ring background */}
@@ -244,7 +245,7 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
       </Box>
 
       {/* Legend */}
-      <Box sx={{ flex: '1 1 260px', minWidth: 240, maxHeight: size, overflow: 'auto', pr: 1 }}>
+      <Box sx={{ flex: '1 1 260px', minWidth: 240, maxHeight: Math.floor(size * DISPLAY_SCALE), overflow: 'auto', pr: 1 }}>
         <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.85)', mb: 1, textAlign: 'center' }}>
           Raised vs Resolved by Category
         </Typography>

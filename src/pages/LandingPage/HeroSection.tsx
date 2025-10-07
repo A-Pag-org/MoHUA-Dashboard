@@ -106,7 +106,7 @@ const CircularProgressIndicator: React.FC<{
   percentage: number;
   color: string;
   size?: number;
-}> = ({ percentage, color, size = 92 }) => {
+}> = ({ percentage, color, size = 69 }) => {
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
       <CircularProgress

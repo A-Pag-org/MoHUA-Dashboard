@@ -13,7 +13,7 @@ export interface MicroBulletDatum {
 
 export interface MicroBulletBarsProps {
   data: MicroBulletDatum[];
-  heightPerRow?: number; // default 36
+  heightPerRow?: number; // default 27 (25% smaller)
 }
 
 const getStatusColor = (status: MicroBulletDatum['status']): string => {
@@ -27,7 +27,7 @@ const getStatusColor = (status: MicroBulletDatum['status']): string => {
   }
 };
 
-const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 36 }) => {
+const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 27 }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
       {data.map((d) => {
@@ -49,7 +49,7 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
             <Box
               sx={{
                 position: 'relative',
-                height: 20,
+                height: 15,
                 width: '100%',
                 borderRadius: 10,
                 // Stronger grey track behind the filled bar (superimposed look)
