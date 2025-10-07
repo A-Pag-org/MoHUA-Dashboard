@@ -131,7 +131,7 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
                   position: 'relative',
                   height: '22px',
                   width: '100%',
-                  backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                  backgroundColor: '#363636',
                   borderRadius: '11px',
                   overflow: 'hidden',
                   boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)',
