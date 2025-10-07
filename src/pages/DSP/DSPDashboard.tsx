@@ -1,25 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Container } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import CityTiles from './CityTiles';
 import DelhiNCRPerformanceTile from '../../components/DelhiNCRPerformanceTile';
 import Header from '../../components/Common/Header';
-import PillButton from '../../components/Common/PillButton';
+import { useLocation } from 'react-router-dom';
 
-const TabsBar = styled('div')(() => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: '8px',
-  padding: '12px 0',
-}));
 
 const DSPDashboard: React.FC = () => {
-  const [selectedSection, setSelectedSection] = useState<'citywise' | 'performance'>('citywise');
-
-  const handleSectionChange = (section: 'citywise' | 'performance') => {
-    setSelectedSection(section);
-  };
+  const location = useLocation();
+  const sectionParam = new URLSearchParams(location.search).get('section');
+  const selectedSection: 'citywise' | 'performance' = sectionParam === 'performance' ? 'performance' : 'citywise';
 
   return (
     <Box sx={(theme) => ({ 
@@ -42,14 +32,6 @@ const DSPDashboard: React.FC = () => {
       }
     })}>
       <Header />
-      <TabsBar>
-        <PillButton selected={selectedSection === 'citywise'} onClick={() => handleSectionChange('citywise')}>
-          City Overview
-        </PillButton>
-        <PillButton selected={selectedSection === 'performance'} onClick={() => handleSectionChange('performance')}>
-          Performance
-        </PillButton>
-      </TabsBar>
 
       <Container maxWidth="xl" sx={{ padding: '16px 12px', position: 'relative', zIndex: 1 }}>
         {selectedSection === 'citywise' ? (

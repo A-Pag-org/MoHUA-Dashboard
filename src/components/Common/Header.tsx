@@ -5,6 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import PillButton from './PillButton';
+import ArrowBack from '@mui/icons-material/ArrowBack';
 // no custom StyledButton; use shared PillButton to match landing page buttons
 
 const Header: React.FC = () => {
@@ -24,6 +25,15 @@ const Header: React.FC = () => {
     return location.pathname === path;
   };
 
+  const isDSP = location.pathname.startsWith('/dsp');
+  const dspSectionParam = new URLSearchParams(location.search).get('section');
+  const dspSection = dspSectionParam === 'performance' ? 'performance' : 'citywise';
+
+  const handleDspSectionNav = (section: 'citywise' | 'performance') => {
+    if (!isDSP) return;
+    navigate(`/dsp?section=${section}`);
+  };
+
   return (
     <AppBar 
       position="sticky" 
@@ -39,6 +49,15 @@ const Header: React.FC = () => {
     >
       <Toolbar sx={{ justifyContent: 'space-between', padding: '0 24px' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {isDSP && (
+            <IconButton
+              aria-label="Back to landing"
+              onClick={(e) => handleNavigation('/', e)}
+              sx={{ color: '#ffffff', mr: 1.5 }}
+            >
+              <ArrowBack />
+            </IconButton>
+          )}
           <Box
             component="img"
             src="https://www.presentations.gov.in/wp-content/uploads/2020/01/NE_Preview1.png"
@@ -61,28 +80,51 @@ const Header: React.FC = () => {
           <Typography sx={{ display: 'none' }}>MoHUA</Typography>
         </Box>
 
+        {isDSP && (
+          <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <PillButton
+              type="button"
+              selected={dspSection === 'citywise'}
+              onClick={() => handleDspSectionNav('citywise')}
+            >
+              City Overview
+            </PillButton>
+            <PillButton
+              type="button"
+              selected={dspSection === 'performance'}
+              onClick={() => handleDspSectionNav('performance')}
+            >
+              Performance
+            </PillButton>
+          </Box>
+        )}
+
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <PillButton
-            type="button"
-            selected={isSelected('/dsp')}
-            onClick={(e) => handleNavigation('/dsp', e)}
-          >
-            DSP
-          </PillButton>
-          <PillButton
-            type="button"
-            selected={isSelected('/cd')}
-            onClick={(e) => handleNavigation('/cd', e)}
-          >
-            C&D
-          </PillButton>
-          <PillButton
-            type="button"
-            selected={isSelected('/mrs')}
-            onClick={(e) => handleNavigation('/mrs', e)}
-          >
-            MRS
-          </PillButton>
+          {!isDSP && (
+            <>
+              <PillButton
+                type="button"
+                selected={isSelected('/dsp')}
+                onClick={(e) => handleNavigation('/dsp', e)}
+              >
+                DSP
+              </PillButton>
+              <PillButton
+                type="button"
+                selected={isSelected('/cd')}
+                onClick={(e) => handleNavigation('/cd', e)}
+              >
+                C&D
+              </PillButton>
+              <PillButton
+                type="button"
+                selected={isSelected('/mrs')}
+                onClick={(e) => handleNavigation('/mrs', e)}
+              >
+                MRS
+              </PillButton>
+            </>
+          )}
           <IconButton
             aria-label="toggle theme"
             onClick={() => window.dispatchEvent(new Event('toggle-color-mode'))}
