@@ -53,7 +53,7 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
                 width: '100%',
                 borderRadius: 10,
                 // Stronger grey track behind the filled bar (superimposed look)
-                backgroundColor: '#9EA7B333',
+                backgroundColor: '#363636',
                 overflow: 'hidden',
               }}
             >
