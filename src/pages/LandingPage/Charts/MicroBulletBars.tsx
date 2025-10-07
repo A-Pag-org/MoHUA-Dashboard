@@ -36,7 +36,7 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
         const showInside = safePct >= 12; // show inside more aggressively so percentages appear on the bar
         const isAverage = d.status === 'Average';
         const labelTextColor = isAverage ? '#000000' : '#ffffff';
-        const outsideTextColor = isAverage ? '#000000' : 'rgba(255,255,255,0.85)';
+        const outsideTextColor = 'rgba(255,255,255,0.85)';
         return (
           <Box key={d.id} sx={{ minHeight: heightPerRow }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5, gap: 1 }}>
