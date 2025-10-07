@@ -75,7 +75,7 @@ const getInitialMode = (): ThemeMode => {
     const stored = window.localStorage.getItem('color-mode');
     if (stored === 'light' || stored === 'dark') return stored;
   }
-  return 'dark';
+  return 'light';
 }
 
 function Root() {
