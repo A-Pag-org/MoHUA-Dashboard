@@ -102,6 +102,18 @@ const Header: React.FC = () => {
             alt="Government of India Logo"
             sx={{ height: 40, width: 'auto', mr: 2 }}
           />
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              color: '#ffffff',
+              fontWeight: 700,
+              letterSpacing: '0.5px',
+              textShadow: '0 1px 2px rgba(0,0,0,0.25)'
+            }}
+          >
+            Ministry of Housing & Urban Affairs
+          </Typography>
           {/* Keep abbreviation for tests without displaying it */}
           <Typography sx={{ display: 'none' }}>MoHUA</Typography>
         </Box>
