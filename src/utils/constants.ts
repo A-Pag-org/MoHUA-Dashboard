@@ -24,21 +24,21 @@ export const DSP_CATEGORIES = [
 export const MOCK_LEADING_CITIES = [
   {
     id: '1',
-    name: 'Mumbai',
+    name: 'Delhi',
     value: 95.2,
     metric: 'Resolution %',
     program: 'DSP' as const
   },
   {
     id: '2',
-    name: 'Delhi',
+    name: 'Ghaziabad',
     value: 87.5,
     metric: 'Achievement %',
     program: 'C&D' as const
   },
   {
     id: '3',
-    name: 'Noida',
+    name: 'Gurgaon',
     value: 92.8,
     metric: 'Road Coverage %',
     program: 'MRS' as const
