@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Typography, Paper } from '@mui/material';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Box, Typography, Paper, ToggleButton, ToggleButtonGroup, Divider } from '@mui/material';
 import { DSP_COLORS } from '../../utils/constants';
 
 interface CategoryData {
@@ -13,21 +13,264 @@ interface CategoryBarChartProps {
   cityName: string;
 }
 
-// Helper function to get color based on resolution percentage
-const getResolutionColor = (percentage: number): string => {
-  if (percentage >= 90) return DSP_COLORS.SATISFACTORY;
-  if (percentage >= 50) return DSP_COLORS.AVERAGE;
-  return DSP_COLORS.UNSATISFACTORY;
+// Radial geometry helpers
+const toRadians = (deg: number) => (deg * Math.PI) / 180;
+const polarToCartesian = (cx: number, cy: number, r: number, angle: number) => ({
+  x: cx + r * Math.cos(angle),
+  y: cy + r * Math.sin(angle),
+});
+
+const donutArcPath = (
+  cx: number,
+  cy: number,
+  outerR: number,
+  innerR: number,
+  start: number,
+  end: number
+) => {
+  const largeArc = end - start > Math.PI ? 1 : 0;
+  const p1 = polarToCartesian(cx, cy, outerR, start);
+  const p2 = polarToCartesian(cx, cy, outerR, end);
+  const p3 = polarToCartesian(cx, cy, innerR, end);
+  const p4 = polarToCartesian(cx, cy, innerR, start);
+  return [
+    `M ${p1.x} ${p1.y}`,
+    `A ${outerR} ${outerR} 0 ${largeArc} 1 ${p2.x} ${p2.y}`,
+    `L ${p3.x} ${p3.y}`,
+    `A ${innerR} ${innerR} 0 ${largeArc} 0 ${p4.x} ${p4.y}`,
+    'Z',
+  ].join(' ');
 };
 
-// Helper function to get status text
-const getResolutionStatus = (percentage: number): string => {
-  if (percentage >= 90) return 'Satisfactory';
-  if (percentage >= 50) return 'Average';
-  return 'Unsatisfactory';
-};
+// Pleasant readable color palette for categories (max 12 distinct + grey for Other)
+const CATEGORY_COLORS = [
+  '#7aa2ff', '#4fd1c5', '#ffd166', '#fb7185', '#a78bfa', '#60a5fa', '#34d399', '#fbbf24', '#f472b6', '#22c55e', '#c084fc', '#38bdf8',
+];
+const OTHER_COLOR = 'rgba(255,255,255,0.25)';
+
+type ViewMode = 'donut' | 'bars';
+
+interface ProcessedRow extends CategoryData {
+  color: string;
+  raisedShare: number;
+  resolvedShare: number;
+  resolutionRate: number;
+}
 
 const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) => {
+  // Display tuning constants
+  const AGGREGATION_THRESHOLD = 0.025; // 2.5%
+  const MAX_SLICES_VISIBLE = 8; // cap visible slices for readability
+
+  // Data prep with small-slice aggregation for readability
+  const processed = useMemo((): { rows: ProcessedRow[]; totalRaised: number; totalResolved: number; overallRate: number } => {
+    const totalRaised = data.reduce((s: number, d: CategoryData) => s + d.raised, 0) || 1;
+    const totalResolved = data.reduce((s: number, d: CategoryData) => s + d.resolved, 0) || 1;
+    const threshold = AGGREGATION_THRESHOLD;
+    const MAX_SLICES = MAX_SLICES_VISIBLE;
+    const sorted = [...data].sort((a: CategoryData, b: CategoryData) => b.raised - a.raised);
+    const major: CategoryData[] = [];
+    const other: CategoryData[] = [];
+    sorted.forEach((d: CategoryData, idx: number) => {
+      const share = d.raised / totalRaised;
+      if (idx >= MAX_SLICES - 1 || share < threshold) other.push(d); else major.push(d);
+    });
+    if (other.length) {
+      major.push({
+        category: 'Other',
+        raised: other.reduce((s: number, d: CategoryData) => s + d.raised, 0),
+        resolved: other.reduce((s: number, d: CategoryData) => s + d.resolved, 0),
+      });
+    }
+    const withColors: ProcessedRow[] = major.map((d: CategoryData, i: number) => ({
+      ...d,
+      color: d.category === 'Other' ? OTHER_COLOR : CATEGORY_COLORS[i % CATEGORY_COLORS.length],
+      raisedShare: d.raised / totalRaised,
+      resolvedShare: d.resolved / totalResolved,
+      resolutionRate: d.raised > 0 ? (d.resolved / d.raised) * 100 : 0,
+    }));
+    return {
+      rows: withColors,
+      totalRaised,
+      totalResolved,
+      overallRate: (totalResolved / totalRaised) * 100,
+    };
+  }, [data]);
+
+  const [view, setView] = useState<ViewMode>('donut');
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+
+  // Geometry
+  const chartBoxRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState<number>(340);
+
+  useEffect(() => {
+    const el = chartBoxRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect?.width ?? 340;
+      const clamped = Math.max(260, Math.min(420, Math.floor(w)));
+      setSize(clamped);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const center = size / 2;
+  const padding = Math.max(8, Math.floor(size * 0.03));
+  const ringThickness = Math.max(18, Math.floor(size * 0.075));
+  const ringGap = Math.max(10, Math.floor(size * 0.04));
+  const outerR = center - padding;
+  const innerR = outerR - ringThickness; // outer ring thickness
+  const innerOuterR = innerR - ringGap; // inter-ring gap
+  const innerInnerR = innerOuterR - ringThickness; // inner ring thickness
+  const pad = toRadians(0.8); // small gap between slices
+
+  // Precompute cumulative angles
+  const raisedAngles = useMemo(() => {
+    let acc = -Math.PI / 2; // start at top
+    return processed.rows.map((r: ProcessedRow) => {
+      const a0 = acc;
+      const delta = Math.max(0, r.raisedShare * Math.PI * 2 - pad);
+      acc += delta + pad;
+      return { start: a0 + pad / 2, end: a0 + pad / 2 + delta };
+    });
+  }, [processed.rows]);
+
+  const resolvedAngles = useMemo(() => {
+    let acc = -Math.PI / 2;
+    return processed.rows.map((r: ProcessedRow) => {
+      const a0 = acc;
+      const delta = Math.max(0, r.resolvedShare * Math.PI * 2 - pad);
+      acc += delta + pad;
+      return { start: a0 + pad / 2, end: a0 + pad / 2 + delta };
+    });
+  }, [processed.rows]);
+
+  // Bars view reused from original but simplified; kept for optional toggle
+  const BarsView = (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
+      {processed.rows.map((r: ProcessedRow, idx: number) => (
+        <Box key={idx}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5, gap: 1, flexWrap: 'wrap' }}>
+            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.9)', fontWeight: 500, fontSize: '0.8rem', minWidth: '180px', flex: 1 }}>
+              {r.category}
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.7rem' }}>
+                {r.resolved.toLocaleString()} / {r.raised.toLocaleString()}
+              </Typography>
+              <Typography variant="caption" sx={{ color: r.resolutionRate >= 90 ? DSP_COLORS.SATISFACTORY : r.resolutionRate >= 50 ? DSP_COLORS.AVERAGE : DSP_COLORS.UNSATISFACTORY, fontWeight: 600 }}>
+                {r.resolutionRate.toFixed(1)}%
+              </Typography>
+            </Box>
+          </Box>
+          <Box sx={{ position: 'relative', height: '20px', background: '#363636', borderRadius: '10px', overflow: 'hidden' }}>
+            <Box sx={{ position: 'absolute', inset: 0, width: `${Math.min(r.resolutionRate, 100)}%`, background: r.category === 'Other' ? OTHER_COLOR : r.color, boxShadow: `0 0 8px ${r.color}55`, transition: 'width 0.5s ease' }} />
+          </Box>
+        </Box>
+      ))}
+    </Box>
+  );
+
+  // Donut view
+  const DonutView = (
+    <Box sx={{ display: 'flex', gap: 2, alignItems: 'stretch', flexWrap: { xs: 'wrap', md: 'nowrap' } }}>
+      <Box ref={chartBoxRef} sx={{ flex: '1 1 340px', minWidth: 320, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>        
+          {/* Outer ring background */}
+          <circle cx={center} cy={center} r={outerR} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={ringThickness} />
+          {/* Inner ring background */}
+          <circle cx={center} cy={center} r={innerOuterR} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={ringThickness} />
+
+          {/* Raised (outer ring) */}
+          {processed.rows.map((r: ProcessedRow, idx: number) => (
+            <path
+              key={`raised-${idx}`}
+              d={donutArcPath(center, center, outerR, innerR, raisedAngles[idx].start, raisedAngles[idx].end)}
+              fill={r.category === 'Other' ? OTHER_COLOR : r.color}
+              opacity={hoverIdx === null || hoverIdx === idx ? 1 : 0.35}
+              stroke="#0e1525"
+              strokeWidth={1}
+              onMouseEnter={() => setHoverIdx(idx)}
+              onMouseLeave={() => setHoverIdx(null)}
+            >
+              <title>{`${r.category}: Raised ${r.raised.toLocaleString()} (${(r.raisedShare*100).toFixed(1)}%)`}</title>
+            </path>
+          ))}
+
+          {/* Resolved (inner ring) */}
+          {processed.rows.map((r: ProcessedRow, idx: number) => (
+            <path
+              key={`resolved-${idx}`}
+              d={donutArcPath(center, center, innerOuterR, innerInnerR, resolvedAngles[idx].start, resolvedAngles[idx].end)}
+              fill={r.category === 'Other' ? OTHER_COLOR : r.color}
+              opacity={hoverIdx === null || hoverIdx === idx ? 1 : 0.35}
+              stroke="#0e1525"
+              strokeWidth={1}
+              onMouseEnter={() => setHoverIdx(idx)}
+              onMouseLeave={() => setHoverIdx(null)}
+            >
+              <title>{`${r.category}: Resolved ${r.resolved.toLocaleString()} (${(r.resolvedShare*100).toFixed(1)}%)`}</title>
+            </path>
+          ))}
+
+          {/* Center labels (overall or hovered category) */}
+          <g pointerEvents="none">
+            {hoverIdx === null ? (
+              <>
+                <text x={center} y={center - Math.floor(size * 0.018)} textAnchor="middle" fill="#ffffff" fontWeight={800} fontSize={Math.floor(size * 0.065)} style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.4))' }}>
+                  {processed.overallRate.toFixed(1)}%
+                </text>
+                <text x={center} y={center + Math.floor(size * 0.047)} textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize={Math.floor(size * 0.035)}>
+                  Overall Resolution
+                </text>
+              </>
+            ) : (
+              <>
+                <text x={center} y={center - Math.floor(size * 0.03)} textAnchor="middle" fill="#ffffff" fontWeight={800} fontSize={Math.floor(size * 0.065)} style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.4))' }}>
+                  {processed.rows[hoverIdx].resolutionRate.toFixed(1)}%
+                </text>
+                <text x={center} y={center + Math.floor(size * 0.015)} textAnchor="middle" fill="rgba(255,255,255,0.92)" fontSize={Math.floor(size * 0.035)}>
+                  {processed.rows[hoverIdx].category}
+                </text>
+                <text x={center} y={center + Math.floor(size * 0.07)} textAnchor="middle" fill="rgba(255,255,255,0.75)" fontSize={Math.floor(size * 0.032)}>
+                  {`${processed.rows[hoverIdx].resolved.toLocaleString()} / ${processed.rows[hoverIdx].raised.toLocaleString()}`}
+                </text>
+              </>
+            )}
+          </g>
+        </svg>
+      </Box>
+
+      {/* Legend */}
+      <Box sx={{ flex: '1 1 260px', minWidth: 240, maxHeight: size, overflow: 'auto', pr: 1 }}>
+        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.85)', mb: 1, textAlign: 'center' }}>
+          Raised vs Resolved by Category
+        </Typography>
+        <Divider sx={{ mb: 1, borderColor: 'rgba(255,255,255,0.08)' }} />
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 0.9 }}>
+          {processed.rows.map((r: ProcessedRow, idx: number) => (
+            <Box key={`leg-${idx}`} onMouseEnter={() => setHoverIdx(idx)} onMouseLeave={() => setHoverIdx(null)} sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 0.6, borderRadius: 1, cursor: 'default', background: hoverIdx === idx ? 'rgba(255,255,255,0.06)' : 'transparent' }}>
+              <Box sx={{ width: 12, height: 12, borderRadius: '3px', background: r.category === 'Other' ? OTHER_COLOR : r.color, boxShadow: `0 0 6px ${r.color}40` }} />
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.9rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {r.category}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.77rem' }}>
+                  {r.resolved.toLocaleString()} / {r.raised.toLocaleString()} • {r.resolutionRate.toFixed(1)}%
+                </Typography>
+              </Box>
+              <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>
+                {(r.raisedShare * 100).toFixed(1)}%
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      </Box>
+    </Box>
+  );
+
   return (
     <Paper
       sx={{
@@ -42,15 +285,15 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
       }}
     >
       {/* Header */}
-      <Box sx={{ mb: 1.5, textAlign: 'center' }}>
+      <Box sx={{ mb: 1.25, textAlign: 'center' }}>
         <Typography
           variant="body1"
           sx={{
-            fontWeight: 600,
+            fontWeight: 700,
             color: '#ffffff',
             textShadow: '0 2px 4px rgba(0,0,0,0.3)',
             mb: 0.25,
-            fontSize: '0.95rem',
+            fontSize: '1rem',
           }}
         >
           Category-wise Performance
@@ -67,198 +310,14 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
         </Typography>
       </Box>
 
-      {/* Category Bars */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-        {data.map((item, index) => {
-          const resolutionPercentage = item.raised > 0 ? (item.resolved / item.raised) * 100 : 0;
-          const barColor = getResolutionColor(resolutionPercentage);
-          const status = getResolutionStatus(resolutionPercentage);
-
-          return (
-            <Box key={index}>
-              {/* Category Name and Stats */}
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  mb: 0.5,
-                  flexWrap: 'wrap',
-                  gap: 1,
-                }}
-              >
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: 'rgba(255, 255, 255, 0.9)',
-                    fontWeight: 500,
-                    fontSize: '0.8rem',
-                    minWidth: '200px',
-                    flex: 1,
-                  }}
-                >
-                  {item.category}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: 'rgba(255, 255, 255, 0.7)',
-                      fontSize: '0.7rem',
-                      fontWeight: 400,
-                    }}
-                  >
-                    {item.resolved.toLocaleString()} / {item.raised.toLocaleString()}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: barColor,
-                      fontWeight: 600,
-                      fontSize: '0.75rem',
-                      minWidth: '45px',
-                      textAlign: 'right',
-                    }}
-                  >
-                    {resolutionPercentage.toFixed(1)}%
-                  </Typography>
-                </Box>
-              </Box>
-
-              {/* Progress Bar */}
-              <Box
-                sx={{
-                  position: 'relative',
-                  height: '22px',
-                  width: '100%',
-                  backgroundColor: '#363636',
-                  borderRadius: '11px',
-                  overflow: 'hidden',
-                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)',
-                }}
-              >
-                {/* Filled portion */}
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    height: '100%',
-                    width: `${Math.min(resolutionPercentage, 100)}%`,
-                    background: `linear-gradient(90deg, ${barColor} 0%, ${barColor}CC 100%)`,
-                    borderRadius: '11px',
-                    transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
-                    boxShadow: `0 0 12px ${barColor}40, inset 0 1px 0 rgba(255,255,255,0.2)`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'flex-end',
-                    pr: 1,
-                  }}
-                >
-                  {/* Status badge inside bar (only if bar is wide enough) */}
-                  {resolutionPercentage > 25 && (
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: '#ffffff',
-                        fontWeight: 600,
-                        fontSize: '0.65rem',
-                        textShadow: '0 1px 2px rgba(0,0,0,0.4)',
-                        background: 'rgba(0, 0, 0, 0.15)',
-                        padding: '1px 6px',
-                        borderRadius: '6px',
-                        backdropFilter: 'blur(4px)',
-                        WebkitBackdropFilter: 'blur(4px)',
-                      }}
-                    >
-                      {status}
-                    </Typography>
-                  )}
-                </Box>
-
-                {/* Percentage label for very small bars */}
-                {resolutionPercentage <= 25 && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      right: 8,
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                    }}
-                  >
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: 'rgba(255, 255, 255, 0.5)',
-                        fontWeight: 500,
-                        fontSize: '0.65rem',
-                      }}
-                    >
-                      {status}
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-            </Box>
-          );
-        })}
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
+        <ToggleButtonGroup size="small" value={view} exclusive onChange={(_event: React.MouseEvent<HTMLElement>, v: ViewMode | null) => v && setView(v)}>
+          <ToggleButton value="donut">Donut</ToggleButton>
+          <ToggleButton value="bars">Bars</ToggleButton>
+        </ToggleButtonGroup>
       </Box>
 
-      {/* Legend */}
-      <Box
-        sx={{
-          mt: 1.5,
-          pt: 1.5,
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-          display: 'flex',
-          justifyContent: 'center',
-          gap: 2,
-          flexWrap: 'wrap',
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-          <Box
-            sx={{
-              width: 12,
-              height: 12,
-              borderRadius: '3px',
-              background: DSP_COLORS.SATISFACTORY,
-              boxShadow: `0 0 6px ${DSP_COLORS.SATISFACTORY}40`,
-            }}
-          />
-          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.7rem' }}>
-            Satisfactory (≥90%)
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-          <Box
-            sx={{
-              width: 12,
-              height: 12,
-              borderRadius: '3px',
-              background: DSP_COLORS.AVERAGE,
-              boxShadow: `0 0 6px ${DSP_COLORS.AVERAGE}40`,
-            }}
-          />
-          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.7rem' }}>
-            Average (50-89%)
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-          <Box
-            sx={{
-              width: 12,
-              height: 12,
-              borderRadius: '3px',
-              background: DSP_COLORS.UNSATISFACTORY,
-              boxShadow: `0 0 6px ${DSP_COLORS.UNSATISFACTORY}40`,
-            }}
-          />
-          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.7rem' }}>
-            Unsatisfactory (&lt;50%)
-          </Typography>
-        </Box>
-      </Box>
+      {view === 'donut' ? DonutView : BarsView}
     </Paper>
   );
 };
