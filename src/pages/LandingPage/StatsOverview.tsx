@@ -191,10 +191,7 @@ const DSPSection: React.FC<{ data: DSPComplaintData[] }> = ({ data }) => {
     resolvedUnsatisfactory: item.status === 'Unsatisfactory' ? item.resolved : 0,
   }));
 
-  // Totals computed from provided city data
-  const totalRaised = data.reduce((sum, item) => sum + item.raised, 0);
-  const totalResolved = data.reduce((sum, item) => sum + item.resolved, 0);
-  const overallResolutionRate = totalRaised > 0 ? (totalResolved / totalRaised) * 100 : 0;
+  
 
   return (
     <Card sx={{ height: '100%', backgroundColor: 'background.paper' }}>
@@ -220,15 +217,7 @@ const DSPSection: React.FC<{ data: DSPComplaintData[] }> = ({ data }) => {
           </ResponsiveContainer>
         </Box>
 
-        {/* Totals summary based on provided city data */}
-        <Box sx={{ mt: 2, p: 1.25, borderRadius: '8px', bgcolor: 'action.hover' }}>
-          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-            Totals (DSP)
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            Raised: {totalRaised.toLocaleString()} | Resolved: {totalResolved.toLocaleString()} | Resolution Rate: {overallResolutionRate.toFixed(2)}%
-          </Typography>
-        </Box>
+        
       </CardContent>
     </Card>
   );
