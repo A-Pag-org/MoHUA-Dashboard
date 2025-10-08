@@ -13,6 +13,9 @@ import { styled } from '@mui/material/styles';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
+import FlashOnIcon from '@mui/icons-material/FlashOn';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import { DSP_COLORS, MOCK_DSP_CITIES } from '../utils/constants';
 
 // Helper function to get color based on resolution percentage
@@ -105,6 +108,34 @@ const StatusChip = styled(Box, {
     display: 'inline-block',
   };
 });
+
+// Performance Tile for resolution time metrics
+const ResolutionTimeCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'bgColor',
+})<{ bgColor: string }>(({ theme, bgColor }) => ({
+  borderRadius: '20px',
+  background: theme.palette.mode === 'dark' 
+    ? `linear-gradient(135deg, ${bgColor}28 0%, ${bgColor}18 100%)`
+    : `linear-gradient(135deg, ${bgColor} 0%, ${bgColor}dd 100%)`,
+  backdropFilter: 'blur(12px)',
+  WebkitBackdropFilter: 'blur(12px)',
+  border: theme.palette.mode === 'dark' 
+    ? `1.5px solid ${bgColor}50`
+    : `1.5px solid ${bgColor}`,
+  boxShadow: theme.palette.mode === 'dark'
+    ? `0 12px 36px ${bgColor}35`
+    : `0 12px 36px ${bgColor}40`,
+  minHeight: '160px',
+  position: 'relative',
+  overflow: 'hidden',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? `0 16px 48px ${bgColor}45`
+      : `0 16px 48px ${bgColor}50`,
+  },
+}));
 
 // Circular Progress Indicator Component
 const CircularProgressIndicator: React.FC<{ 
@@ -312,6 +343,153 @@ const DelhiNCRPerformanceTile: React.FC = () => {
             {status} Performance ({overallResolutionRate.toFixed(1)}%)
           </StatusChip>
         </Box>
+
+        {/* Issue Resolution Time Tiles */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          {/* Fastest Resolution - Green Tile */}
+          <Grid item xs={12} md={4}>
+            <ResolutionTimeCard bgColor="#4CAF50">
+              <CardContent sx={{ p: 3, position: 'relative' }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography 
+                      variant="caption" 
+                      sx={{ 
+                        color: 'rgba(255, 255, 255, 0.95)', 
+                        fontWeight: 600,
+                        fontSize: '0.75rem',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                      }}
+                    >
+                      City with Fastest Issue Resolution
+                    </Typography>
+                  </Box>
+                  <FlashOnIcon sx={{ fontSize: 40, color: 'rgba(255, 255, 255, 0.9)', ml: 1 }} />
+                </Box>
+                
+                <Typography 
+                  variant="h3" 
+                  sx={{ 
+                    fontWeight: 800, 
+                    color: '#ffffff',
+                    mb: 0.5,
+                    textShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                  }}
+                >
+                  Noida
+                </Typography>
+                
+                <Typography 
+                  variant="body1" 
+                  sx={{ 
+                    color: 'rgba(255, 255, 255, 0.95)', 
+                    fontWeight: 500,
+                    fontSize: '0.95rem',
+                  }}
+                >
+                  Noida: 1.8 days avg
+                </Typography>
+              </CardContent>
+            </ResolutionTimeCard>
+          </Grid>
+
+          {/* Slowest Resolution - Red Tile */}
+          <Grid item xs={12} md={4}>
+            <ResolutionTimeCard bgColor="#F44336">
+              <CardContent sx={{ p: 3, position: 'relative' }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography 
+                      variant="caption" 
+                      sx={{ 
+                        color: 'rgba(255, 255, 255, 0.95)', 
+                        fontWeight: 600,
+                        fontSize: '0.75rem',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                      }}
+                    >
+                      City with Slowest Issue Resolution
+                    </Typography>
+                  </Box>
+                  <AccessTimeIcon sx={{ fontSize: 40, color: 'rgba(255, 255, 255, 0.9)', ml: 1 }} />
+                </Box>
+                
+                <Typography 
+                  variant="h3" 
+                  sx={{ 
+                    fontWeight: 800, 
+                    color: '#ffffff',
+                    mb: 0.5,
+                    textShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                  }}
+                >
+                  Ghaziabad
+                </Typography>
+                
+                <Typography 
+                  variant="body1" 
+                  sx={{ 
+                    color: 'rgba(255, 255, 255, 0.95)', 
+                    fontWeight: 500,
+                    fontSize: '0.95rem',
+                  }}
+                >
+                  Ghaziabad: 5.2 days avg
+                </Typography>
+              </CardContent>
+            </ResolutionTimeCard>
+          </Grid>
+
+          {/* Average Resolution Time - Blue Tile */}
+          <Grid item xs={12} md={4}>
+            <ResolutionTimeCard bgColor="#2196F3">
+              <CardContent sx={{ p: 3, position: 'relative' }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography 
+                      variant="caption" 
+                      sx={{ 
+                        color: 'rgba(255, 255, 255, 0.95)', 
+                        fontWeight: 600,
+                        fontSize: '0.75rem',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                      }}
+                    >
+                      Average Issue Resolution Time by City
+                    </Typography>
+                  </Box>
+                  <TrackChangesIcon sx={{ fontSize: 40, color: 'rgba(255, 255, 255, 0.9)', ml: 1 }} />
+                </Box>
+                
+                <Typography 
+                  variant="h3" 
+                  sx={{ 
+                    fontWeight: 800, 
+                    color: '#ffffff',
+                    mb: 0.5,
+                    textShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                  }}
+                >
+                  3.4 days
+                </Typography>
+                
+                <Typography 
+                  variant="body1" 
+                  sx={{ 
+                    color: 'rgba(255, 255, 255, 0.95)', 
+                    fontWeight: 500,
+                    fontSize: '0.95rem',
+                  }}
+                >
+                  Avg. Time across all cities
+                </Typography>
+              </CardContent>
+            </ResolutionTimeCard>
+          </Grid>
+        </Grid>
 
         {/* Main Metrics Grid */}
         <Grid container spacing={2.5} sx={{ mb: 3 }}>
