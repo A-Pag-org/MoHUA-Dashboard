@@ -212,7 +212,7 @@ const ConsolidatedGaugeChart: React.FC<{
   const TRACK_COLOR = 'rgba(255, 255, 255, 0.12)';
 
   const center = size / 2;
-  const outerRadius = center - 10; // outer ring padding 10
+  const outerRadius = center - 6; // outer ring padding 6
   const innerRadius = outerRadius - 14; // spacing between rings
 
   const outerCircumference = 2 * Math.PI * outerRadius;
