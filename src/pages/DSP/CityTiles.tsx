@@ -384,7 +384,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 padding: '6px 10px',
                 borderRadius: '8px',
               }}>
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
+                <Typography variant="body2" sx={{ color: '#000000', fontWeight: 500 }}>
                   Raised:
                 </Typography>
                 <Typography variant="body2" sx={(theme) => ({ fontWeight: 'bold', color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary })}>
@@ -400,7 +400,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 padding: '6px 10px',
                 borderRadius: '8px',
               }}>
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>
+                <Typography variant="body2" sx={{ color: '#000000', fontWeight: 500 }}>
                   Resolved:
                 </Typography>
                 <Typography variant="body2" sx={(theme) => ({ fontWeight: 'bold', color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary })}>
