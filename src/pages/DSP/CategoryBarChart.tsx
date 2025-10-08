@@ -246,7 +246,7 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
 
       {/* Legend */}
       <Box sx={{ flex: '1 1 260px', minWidth: 240, maxHeight: Math.floor(size * DISPLAY_SCALE), overflow: 'auto', pr: 1 }}>
-        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.85)', mb: 1, textAlign: 'center' }}>
+        <Typography variant="body2" sx={{ color: '#000000', mb: 1, textAlign: 'center' }}>
           Raised vs Resolved by Category
         </Typography>
         <Divider sx={{ mb: 1, borderColor: 'rgba(255,255,255,0.08)' }} />
