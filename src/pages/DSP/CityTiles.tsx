@@ -662,7 +662,7 @@ const CityTiles: React.FC = () => {
             background: (theme) => theme.palette.mode === 'dark' ? 'rgba(16, 27, 42, 0.65)' : 'rgba(255, 255, 255, 0.92)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            border: (theme) => theme.palette.mode === 'dark' ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(0, 0, 0, 0.06)',
+            border: (theme) => theme.palette.mode === 'dark' ? '2px solid rgba(255, 255, 255, 0.35)' : '2px solid rgba(0, 0, 0, 0.15)',
             boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 20px 60px rgba(0,0,0,0.4)' : '0 20px 60px rgba(0,0,0,0.08)',
             overflow: 'hidden',
             position: 'relative',
@@ -688,7 +688,7 @@ const CityTiles: React.FC = () => {
                 <ConsolidatedGaugeChart
                   raisedValue={totalRaised}
                   resolvedValue={totalResolved}
-                  size={150}
+                  size={210}
                 />
               </Box>
               
@@ -712,7 +712,7 @@ const CityTiles: React.FC = () => {
               background: 'rgba(255, 255, 255, 0.1)',
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
+              border: (theme) => theme.palette.mode === 'dark' ? '2px solid rgba(255, 255, 255, 0.35)' : '2px solid rgba(0, 0, 0, 0.15)',
               boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
             }}>
               <CardContent sx={{ py: 3 }}>
