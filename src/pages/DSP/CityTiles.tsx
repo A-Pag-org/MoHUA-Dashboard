@@ -295,13 +295,13 @@ const ConsolidatedGaugeChart: React.FC<{
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4, mt: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
           <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: RAISED_COLOR }} />
-          <Typography variant="body2" sx={(theme) => ({ color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary })}>
+          <Typography variant="body2" sx={{ color: '#000000' }}>
             Issues Raised ({raisedValue.toLocaleString()})
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
           <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: RESOLVED_COLOR }} />
-          <Typography variant="body2" sx={(theme) => ({ color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary })}>
+          <Typography variant="body2" sx={{ color: '#000000' }}>
             Issues Resolved ({resolvedValue.toLocaleString()})
           </Typography>
         </Box>
