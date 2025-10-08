@@ -37,8 +37,13 @@ const PerformanceTileCard = styled(Card, {
   background: theme.palette.mode === 'dark' ? 'rgba(16, 27, 42, 0.6)' : 'rgba(255, 255, 255, 0.95)',
   backdropFilter: 'blur(12px)',
   WebkitBackdropFilter: 'blur(12px)',
-  border: theme.palette.mode === 'dark' ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(0, 0, 0, 0.06)',
-  boxShadow: theme.palette.mode === 'dark' ? '0 12px 36px rgba(0,0,0,0.28)' : '0 12px 36px rgba(0,0,0,0.10)',
+  // Subtly emphasized boundary
+  border: theme.palette.mode === 'dark' 
+    ? '1.5px solid rgba(255, 255, 255, 0.16)'
+    : '1.5px solid rgba(0, 0, 0, 0.12)',
+  boxShadow: theme.palette.mode === 'dark' 
+    ? '0 12px 36px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.06)'
+    : '0 12px 36px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04)',
   position: 'relative',
   overflow: 'hidden',
   '&::before': {
@@ -107,7 +112,7 @@ const CircularProgressIndicator: React.FC<{
   color: string; 
   size?: number;
   label?: string;
-}> = ({ percentage, color, size = 120, label = 'Resolution' }) => {
+}> = ({ percentage, color, size = 160, label = 'Resolution Rate' }) => {
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}>
       <Box sx={{ position: 'relative', display: 'inline-flex' }}>
@@ -115,7 +120,7 @@ const CircularProgressIndicator: React.FC<{
           variant="determinate"
           value={100}
           size={size}
-          thickness={4}
+          thickness={5}
           sx={(theme) => ({
             color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)',
             position: 'absolute',
@@ -125,7 +130,7 @@ const CircularProgressIndicator: React.FC<{
           variant="determinate"
           value={percentage}
           size={size}
-          thickness={4}
+          thickness={5}
           sx={{
             color: color,
             filter: `drop-shadow(0 0 8px ${color}50)`,
@@ -145,17 +150,19 @@ const CircularProgressIndicator: React.FC<{
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
+            px: 1,
           }}
         >
           <Typography
-            variant="h5"
+            variant="h4"
             component="div"
             sx={(theme) => ({
               color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary,
               fontWeight: 800,
               textShadow: theme.palette.mode === 'dark' ? '0 2px 4px rgba(0,0,0,0.3)' : 'none',
               lineHeight: 1,
-              fontSize: size > 120 ? '1.8rem' : size > 100 ? '1.4rem' : '1.1rem',
+              letterSpacing: '0.5px',
+              fontSize: size >= 160 ? '2.25rem' : size > 120 ? '1.8rem' : size > 100 ? '1.4rem' : '1.1rem',
             })}
           >
             {percentage.toFixed(1)}%
@@ -163,10 +170,10 @@ const CircularProgressIndicator: React.FC<{
         </Box>
       </Box>
       <Typography
-        variant="caption"
+        variant="body2"
         sx={(theme) => ({
           color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-          fontSize: '0.85rem',
+          fontSize: '0.9rem',
           fontWeight: 500,
           mt: 1,
         })}
@@ -310,12 +317,12 @@ const DelhiNCRPerformanceTile: React.FC = () => {
         <Grid container spacing={2.5} sx={{ mb: 3 }}>
           {/* Overall Resolution Rate */}
           <Grid item xs={12} md={4}>
-            <MetricCard color={resolutionColor} sx={{ textAlign: 'center', p: 2.5 }}>
+            <MetricCard color={resolutionColor} sx={{ textAlign: 'center', p: 3 }}>
               <CircularProgressIndicator 
                 percentage={overallResolutionRate}
                 color={resolutionColor}
-                size={140}
-                label="Overall Resolution"
+                size={180}
+                label="Resolution Rate"
               />
             </MetricCard>
           </Grid>
