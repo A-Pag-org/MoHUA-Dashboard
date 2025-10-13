@@ -33,8 +33,7 @@ const renderLabel = (props: any, labelMode: LabelMode) => {
   const fitsInside = width > 30;
   const tx = fitsInside ? x + width - 4 : x + width + 6;
   const anchor = fitsInside ? 'end' : 'start';
-  const isAverage = payload?.status === 'Average';
-  const fill = fitsInside ? (isAverage ? '#000000' : '#ffffff') : (isAverage ? '#000000' : 'rgba(255,255,255,0.85)');
+  const fill = fitsInside ? '#ffffff' : 'rgba(255,255,255,0.85)';
   return (
     <text x={tx} y={y + height / 2} textAnchor={anchor} dominantBaseline="central" fill={fill} fontSize={12} fontWeight={400}>
       {text}
