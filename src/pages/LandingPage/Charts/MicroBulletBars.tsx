@@ -34,8 +34,7 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
         const color = getStatusColor(d.status);
         const safePct = isFinite(d.percentage) ? Math.max(0, Math.min(100, d.percentage)) : 0;
         const showInside = safePct >= 12; // show inside more aggressively so percentages appear on the bar
-        const isAverage = d.status === 'Average';
-        const labelTextColor = isAverage ? '#000000' : '#ffffff';
+        const labelTextColor = '#ffffff';
         const outsideTextColor = 'rgba(255,255,255,0.85)';
         return (
           <Box key={d.id} sx={{ minHeight: heightPerRow }}>
