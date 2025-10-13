@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Typography, Paper, ToggleButton, ToggleButtonGroup, Divider } from '@mui/material';
-import { DSP_COLORS } from '../../utils/constants';
+// Removed DSP_COLORS import as percentages are hidden now
 
 interface CategoryData {
   category: string;
