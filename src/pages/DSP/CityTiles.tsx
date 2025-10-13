@@ -576,16 +576,21 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
           </Button>
         </Box>
 
-        {/* City Name and Status Row */}
+        {/* City Name, Resolution % and Status Row */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Typography variant="h6" sx={{ 
               fontWeight: 600, 
-              mb: 0.5, 
               color: '#ffffff',
-              textShadow: '0 2px 4px rgba(0,0,0,0.3)' 
+              textShadow: '0 2px 4px rgba(0,0,0,0.3)'
             }}>
               {city.cityName}
+            </Typography>
+            <Typography 
+              variant="h5" 
+              sx={{ fontWeight: 800, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.35)' }}
+            >
+              {city.resolutionPercentage.toFixed(0)}%
             </Typography>
             <StatusChip 
               label={status} 
@@ -609,86 +614,7 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
         </Box>
       </DialogTitle>
 
-      {/* Stats Header Section */}
-      <Box sx={{ px: 2, pt: 1.5, pb: 1 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={3}>
-            <Paper sx={{ 
-              background: 'rgba(16, 27, 42, 0.55)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              borderRadius: '12px',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-            }}>
-              <CardContent sx={{ textAlign: 'center', py: 1, '&:last-child': { pb: 1 } }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)', fontSize: '1rem' }}>
-                  {city.complaintsRaised.toLocaleString()}
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 400, fontSize: '0.7rem' }}>
-                  Raised
-                </Typography>
-              </CardContent>
-            </Paper>
-          </Grid>
-          
-          <Grid item xs={3}>
-            <Paper sx={{ 
-              background: 'rgba(16, 27, 42, 0.55)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              borderRadius: '12px',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-            }}>
-              <CardContent sx={{ textAlign: 'center', py: 1, '&:last-child': { pb: 1 } }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)', fontSize: '1rem' }}>
-                  {city.complaintsResolved.toLocaleString()}
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 400, fontSize: '0.7rem' }}>
-                  Resolved
-                </Typography>
-              </CardContent>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={3}>
-            <Paper sx={{ 
-              background: 'rgba(16, 27, 42, 0.55)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              borderRadius: '12px',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-            }}>
-              <CardContent sx={{ textAlign: 'center', py: 1, '&:last-child': { pb: 1 } }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)', fontSize: '1rem' }}>
-                  {city.issuesRaisedByCitizens.toLocaleString()}
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 400, fontSize: '0.7rem' }}>
-                  Issues
-                </Typography>
-              </CardContent>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={3}>
-            <Paper sx={{ 
-              background: 'rgba(16, 27, 42, 0.55)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              borderRadius: '12px',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-            }}>
-              <CardContent sx={{ textAlign: 'center', py: 1, '&:last-child': { pb: 1 } }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)', fontSize: '1rem' }}>
-                  {city.roadOwningAgenciesOnboarded}
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 400, fontSize: '0.7rem' }}>
-                  Agencies
-                </Typography>
-              </CardContent>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Box>
+      {/* Stat cards row removed as per requirements */}
       
       <DialogContent sx={{ pt: 1.5, px: 2, pb: 1, background: 'transparent', overflowY: 'auto' }}>
         {/* 2-Column Layout */}
@@ -698,7 +624,7 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
             <Box sx={{ 
               display: 'flex', 
               alignItems: 'center', 
-              justifyContent: 'center',
+              justifyContent: 'flex-start',
               height: '100%',
               minHeight: '300px'
             }}>
@@ -718,9 +644,11 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
                 cityName={city.cityName}
               />
             ) : (
-              <CategoryLabelsList 
-                data={MOCK_CATEGORY_DATA[city.id] || []}
-              />
+              <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+                <CategoryLabelsList 
+                  data={MOCK_CATEGORY_DATA[city.id] || []}
+                />
+              </Box>
             )}
           </Grid>
         </Grid>
