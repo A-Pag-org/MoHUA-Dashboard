@@ -58,7 +58,7 @@ interface ProcessedRow extends CategoryData {
 }
 
 const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) => {
-  const DISPLAY_SCALE = 0.75; // scale down visual size by 25%
+  const DISPLAY_SCALE = 0.65; // scale down visual size for better fit
   // Display tuning constants
   const AGGREGATION_THRESHOLD = 0.025; // 2.5%
   const MAX_SLICES_VISIBLE = 8; // cap visible slices for readability
@@ -245,7 +245,7 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
       </Box>
 
       {/* Legend */}
-      <Box sx={{ flex: '1 1 260px', minWidth: 240, maxHeight: Math.floor(size * DISPLAY_SCALE), overflow: 'auto', pr: 1 }}>
+      <Box sx={{ flex: '1 1 260px', minWidth: 240, maxHeight: Math.floor(size * DISPLAY_SCALE * 1.15), overflow: 'auto', pr: 1 }}>
         <Typography variant="body2" sx={{ color: '#000000', mb: 1, textAlign: 'center' }}>
           Raised vs Resolved by Category
         </Typography>
