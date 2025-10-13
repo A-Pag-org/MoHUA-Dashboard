@@ -274,46 +274,55 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
         border: '1px solid rgba(255, 255, 255, 0.08)',
         boxShadow: '0 8px 24px rgba(0,0,0,0.22)',
         p: 1.5,
+        pb: 3,
         mt: 1.5,
         width: '100%',
-        height: '100%',
       }}
     >
       {/* Header */}
-      <Box sx={{ mb: 1.25, textAlign: 'center' }}>
+      <Box sx={{ mb: 1.25, position: 'relative' }}>
+        {/* City name - Top Left */}
         <Typography
-          variant="body1"
+          variant="h6"
           sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
             fontWeight: 700,
             color: '#ffffff',
             textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-            mb: 0.25,
-            fontSize: '1rem',
-          }}
-        >
-          Category-wise Performance
-        </Typography>
-        <Typography
-          variant="caption"
-          sx={{
-            color: 'rgba(255, 255, 255, 0.7)',
-            fontWeight: 400,
-            fontSize: '0.8rem',
+            fontSize: '1.5rem',
           }}
         >
           {cityName}
         </Typography>
-        <Typography
-          variant="caption"
-          sx={{
-            display: 'block',
-            color: 'rgba(255, 255, 255, 0.85)',
-            fontWeight: 500,
-            mt: 0.5,
-          }}
-        >
-          {`${processed.totalResolved.toLocaleString()} / ${processed.totalRaised.toLocaleString()} • ${processed.overallRate.toFixed(1)}%`}
-        </Typography>
+        
+        {/* Title - Centered */}
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography
+            variant="body1"
+            sx={{
+              fontWeight: 700,
+              color: '#ffffff',
+              textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+              mb: 0.25,
+              fontSize: '1rem',
+            }}
+          >
+            Category-wise Performance
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{
+              display: 'block',
+              color: 'rgba(255, 255, 255, 0.85)',
+              fontWeight: 500,
+              mt: 0.5,
+            }}
+          >
+            {`${processed.totalResolved.toLocaleString()} / ${processed.totalRaised.toLocaleString()} • ${processed.overallRate.toFixed(1)}%`}
+          </Typography>
+        </Box>
       </Box>
 
       <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
