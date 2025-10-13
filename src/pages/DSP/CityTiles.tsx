@@ -12,7 +12,6 @@ import {
   DialogActions,
   Button,
   Chip,
-  Divider,
   IconButton,
   CircularProgress,
   Paper,
@@ -20,8 +19,6 @@ import {
 import { styled } from '@mui/material/styles';
 import InfoIcon from '@mui/icons-material/Info';
 import CloseIcon from '@mui/icons-material/Close';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { DSPCity } from '../../types';
 import { DSP_COLORS, MOCK_DSP_CITIES, MOCK_CATEGORY_DATA } from '../../utils/constants';
 import CategoryBarChart from './CategoryBarChart';
