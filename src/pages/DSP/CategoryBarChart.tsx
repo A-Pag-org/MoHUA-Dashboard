@@ -275,6 +275,8 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
         boxShadow: '0 8px 24px rgba(0,0,0,0.22)',
         p: 1.5,
         mt: 1.5,
+        width: '100%',
+        height: '100%',
       }}
     >
       {/* Header */}

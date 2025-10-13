@@ -7,18 +7,13 @@ import {
   CardContent,
   CardActionArea,
   Dialog,
-  DialogTitle,
   DialogContent,
-  DialogActions,
-  Button,
   Chip,
-  IconButton,
   CircularProgress,
   Paper,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import InfoIcon from '@mui/icons-material/Info';
-import CloseIcon from '@mui/icons-material/Close';
 import { DSPCity } from '../../types';
 import { DSP_COLORS, MOCK_DSP_CITIES, MOCK_CATEGORY_DATA } from '../../utils/constants';
 import CategoryBarChart from './CategoryBarChart';
@@ -184,75 +179,6 @@ const CircularProgressIndicator: React.FC<{ percentage: number; color: string; s
           Resolution
         </Typography>
       </Box>
-    </Box>
-  );
-};
-
-// Category Labels List Component for DONUT view
-interface CategoryData {
-  category: string;
-  raised: number;
-  resolved: number;
-}
-
-const CategoryLabelsList: React.FC<{ 
-  data: CategoryData[];
-}> = ({ data }) => {
-  // Pleasant readable color palette matching CategoryBarChart
-  const CATEGORY_COLORS = [
-    '#7aa2ff', '#4fd1c5', '#ffd166', '#fb7185', '#a78bfa', '#60a5fa', '#34d399', '#fbbf24', '#f472b6', '#22c55e', '#c084fc', '#38bdf8',
-  ];
-
-  return (
-    <Box sx={{ 
-      maxHeight: 'calc(85vh - 280px)', 
-      overflowY: 'auto',
-      pr: 1,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 1.5
-    }}>
-      {data.map((item, index) => (
-        <Box 
-          key={index}
-          sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: 1.5,
-            p: 1.5,
-            background: 'rgba(255, 255, 255, 0.06)',
-            borderRadius: '10px',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-          }}
-        >
-          {/* Colored Indicator */}
-          <Box sx={{ 
-            width: 12, 
-            height: 12, 
-            borderRadius: '50%', 
-            background: CATEGORY_COLORS[index % CATEGORY_COLORS.length],
-            flexShrink: 0,
-          }} />
-          
-          {/* Label and Value */}
-          <Box sx={{ flex: 1 }}>
-            <Typography variant="body2" sx={{ 
-              color: '#ffffff', 
-              fontWeight: 500,
-              fontSize: '0.85rem',
-              mb: 0.25
-            }}>
-              {item.category}
-            </Typography>
-            <Typography variant="caption" sx={{ 
-              color: 'rgba(255, 255, 255, 0.7)',
-              fontSize: '0.75rem'
-            }}>
-              Raised: {item.raised.toLocaleString()} | Resolved: {item.resolved.toLocaleString()}
-            </Typography>
-          </Box>
-        </Box>
-      ))}
     </Box>
   );
 };
@@ -503,18 +429,13 @@ interface CityDetailsDialogProps {
 }
 
 const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClose }) => {
-  const [viewMode, setViewMode] = useState<'donut' | 'bar'>('bar');
-  
   if (!city) return null;
 
-  const resolutionColor = getResolutionColor(city.resolutionPercentage);
-  const status = getResolutionStatus(city.resolutionPercentage);
-
   return (
-      <Dialog 
+    <Dialog 
       open={open} 
       onClose={onClose} 
-      maxWidth="md" 
+      maxWidth="lg" 
       fullWidth
       PaperProps={{
         sx: {
@@ -524,156 +445,17 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
           WebkitBackdropFilter: 'blur(12px)',
           border: '1px solid rgba(255, 255, 255, 0.08)',
           boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
-          maxHeight: '85vh',
+          maxHeight: '90vh',
+          height: '90vh',
         }
       }}
     >
-      <DialogTitle sx={{ 
-        background: `linear-gradient(135deg, ${resolutionColor}26 0%, ${resolutionColor}14 100%)`,
-        color: 'text.primary',
-        pb: 1.5,
-        pt: 1.5,
-        px: 2,
-        borderRadius: '16px 16px 0 0',
-      }}>
-        {/* Toggle Buttons Row */}
-        <Box sx={{ display: 'flex', gap: 1, mb: 1.5 }}>
-          <Button 
-            variant={viewMode === 'donut' ? 'contained' : 'outlined'}
-            onClick={() => setViewMode('donut')}
-            size="small"
-            sx={{
-              textTransform: 'none',
-              fontWeight: 600,
-              fontSize: '0.75rem',
-              color: viewMode === 'donut' ? '#000000' : 'rgba(255, 255, 255, 0.85)',
-              background: viewMode === 'donut' ? '#ffffff' : 'transparent',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              '&:hover': {
-                background: viewMode === 'donut' ? '#f0f0f0' : 'rgba(255, 255, 255, 0.1)',
-              }
-            }}
-          >
-            DONUT
-          </Button>
-          <Button 
-            variant={viewMode === 'bar' ? 'contained' : 'outlined'}
-            onClick={() => setViewMode('bar')}
-            size="small"
-            sx={{
-              textTransform: 'none',
-              fontWeight: 600,
-              fontSize: '0.75rem',
-              color: viewMode === 'bar' ? '#000000' : 'rgba(255, 255, 255, 0.85)',
-              background: viewMode === 'bar' ? '#ffffff' : 'transparent',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              '&:hover': {
-                background: viewMode === 'bar' ? '#f0f0f0' : 'rgba(255, 255, 255, 0.1)',
-              }
-            }}
-          >
-            BAR
-          </Button>
-        </Box>
-
-        {/* City Name, Resolution % and Status Row */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography variant="h6" sx={{ 
-              fontWeight: 600, 
-              color: '#ffffff',
-              textShadow: '0 2px 4px rgba(0,0,0,0.3)'
-            }}>
-              {city.cityName}
-            </Typography>
-            <Typography 
-              variant="h5" 
-              sx={{ fontWeight: 800, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.35)' }}
-            >
-              {city.resolutionPercentage.toFixed(0)}%
-            </Typography>
-            <StatusChip 
-              label={status} 
-              status={status} 
-              size="small"
-            />
-          </Box>
-          <IconButton 
-            onClick={onClose} 
-            size="small"
-            sx={{
-              color: 'rgba(255, 255, 255, 0.85)',
-              background: 'rgba(255, 255, 255, 0.08)',
-              '&:hover': {
-                background: 'rgba(255, 255, 255, 0.14)',
-              }
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </Box>
-      </DialogTitle>
-
-      {/* Stat cards row removed as per requirements */}
-      
-      <DialogContent sx={{ pt: 1.5, px: 2, pb: 1, background: 'transparent', overflowY: 'auto' }}>
-        {/* 2-Column Layout */}
-        <Grid container spacing={3}>
-          {/* LEFT COLUMN - Gauge Chart */}
-          <Grid item xs={12} md={6}>
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'flex-start',
-              height: '100%',
-              minHeight: '300px'
-            }}>
-              <CircularProgressIndicator 
-                percentage={city.resolutionPercentage}
-                color={resolutionColor}
-                size={140}
-              />
-            </Box>
-          </Grid>
-
-          {/* RIGHT COLUMN - Conditional Chart/Labels based on viewMode */}
-          <Grid item xs={12} md={6}>
-            {viewMode === 'bar' ? (
-              <CategoryBarChart 
-                data={MOCK_CATEGORY_DATA[city.id] || []} 
-                cityName={city.cityName}
-              />
-            ) : (
-              <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <CategoryLabelsList 
-                  data={MOCK_CATEGORY_DATA[city.id] || []}
-                />
-              </Box>
-            )}
-          </Grid>
-        </Grid>
+      <DialogContent sx={{ p: 0, background: 'transparent', overflow: 'hidden', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <CategoryBarChart 
+          data={MOCK_CATEGORY_DATA[city.id] || []} 
+          cityName={city.cityName}
+        />
       </DialogContent>
-      
-      <DialogActions sx={{ p: 1.5, pt: 0.5, background: 'transparent' }}>
-        <Button 
-          onClick={onClose} 
-          variant="contained" 
-          sx={{ 
-            background: `linear-gradient(135deg, ${resolutionColor} 0%, ${resolutionColor}CC 100%)`,
-            '&:hover': {
-              background: `linear-gradient(135deg, ${resolutionColor}DD 0%, ${resolutionColor}AA 100%)`,
-            },
-            borderRadius: '10px',
-            px: 2.5,
-            py: 0.75,
-            fontWeight: 500,
-            textTransform: 'none',
-            boxShadow: `0 8px 24px ${resolutionColor}33`,
-          }}
-        >
-          Close
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };
