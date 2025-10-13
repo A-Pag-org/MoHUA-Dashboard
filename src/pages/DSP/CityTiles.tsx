@@ -191,6 +191,75 @@ const CircularProgressIndicator: React.FC<{ percentage: number; color: string; s
   );
 };
 
+// Category Labels List Component for DONUT view
+interface CategoryData {
+  category: string;
+  raised: number;
+  resolved: number;
+}
+
+const CategoryLabelsList: React.FC<{ 
+  data: CategoryData[];
+}> = ({ data }) => {
+  // Pleasant readable color palette matching CategoryBarChart
+  const CATEGORY_COLORS = [
+    '#7aa2ff', '#4fd1c5', '#ffd166', '#fb7185', '#a78bfa', '#60a5fa', '#34d399', '#fbbf24', '#f472b6', '#22c55e', '#c084fc', '#38bdf8',
+  ];
+
+  return (
+    <Box sx={{ 
+      maxHeight: 'calc(85vh - 280px)', 
+      overflowY: 'auto',
+      pr: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 1.5
+    }}>
+      {data.map((item, index) => (
+        <Box 
+          key={index}
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 1.5,
+            p: 1.5,
+            background: 'rgba(255, 255, 255, 0.06)',
+            borderRadius: '10px',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+          }}
+        >
+          {/* Colored Indicator */}
+          <Box sx={{ 
+            width: 12, 
+            height: 12, 
+            borderRadius: '50%', 
+            background: CATEGORY_COLORS[index % CATEGORY_COLORS.length],
+            flexShrink: 0,
+          }} />
+          
+          {/* Label and Value */}
+          <Box sx={{ flex: 1 }}>
+            <Typography variant="body2" sx={{ 
+              color: '#ffffff', 
+              fontWeight: 500,
+              fontSize: '0.85rem',
+              mb: 0.25
+            }}>
+              {item.category}
+            </Typography>
+            <Typography variant="caption" sx={{ 
+              color: 'rgba(255, 255, 255, 0.7)',
+              fontSize: '0.75rem'
+            }}>
+              Raised: {item.raised.toLocaleString()} | Resolved: {item.resolved.toLocaleString()}
+            </Typography>
+          </Box>
+        </Box>
+      ))}
+    </Box>
+  );
+};
+
 // Consolidated Gauge Chart Component for Actual Raised and Resolved (full donut with legend)
 const ConsolidatedGaugeChart: React.FC<{ 
   raisedValue: number; 
@@ -437,6 +506,8 @@ interface CityDetailsDialogProps {
 }
 
 const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClose }) => {
+  const [viewMode, setViewMode] = useState<'donut' | 'bar'>('bar');
+  
   if (!city) return null;
 
   const resolutionColor = getResolutionColor(city.resolutionPercentage);
@@ -456,148 +527,206 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
           WebkitBackdropFilter: 'blur(12px)',
           border: '1px solid rgba(255, 255, 255, 0.08)',
           boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
-          maxHeight: '90vh',
+          maxHeight: '85vh',
         }
       }}
     >
       <DialogTitle sx={{ 
         background: `linear-gradient(135deg, ${resolutionColor}26 0%, ${resolutionColor}14 100%)`,
         color: 'text.primary',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        pb: 1,
-        pt: 1,
+        pb: 1.5,
+        pt: 1.5,
         px: 2,
         borderRadius: '16px 16px 0 0',
       }}>
-        <Box>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-            {city.cityName}
-          </Typography>
-          <StatusChip 
-            label={status} 
-            status={status} 
+        {/* Toggle Buttons Row */}
+        <Box sx={{ display: 'flex', gap: 1, mb: 1.5 }}>
+          <Button 
+            variant={viewMode === 'donut' ? 'contained' : 'outlined'}
+            onClick={() => setViewMode('donut')}
             size="small"
-          />
+            sx={{
+              textTransform: 'none',
+              fontWeight: 600,
+              fontSize: '0.75rem',
+              color: viewMode === 'donut' ? '#000000' : 'rgba(255, 255, 255, 0.85)',
+              background: viewMode === 'donut' ? '#ffffff' : 'transparent',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              '&:hover': {
+                background: viewMode === 'donut' ? '#f0f0f0' : 'rgba(255, 255, 255, 0.1)',
+              }
+            }}
+          >
+            DONUT
+          </Button>
+          <Button 
+            variant={viewMode === 'bar' ? 'contained' : 'outlined'}
+            onClick={() => setViewMode('bar')}
+            size="small"
+            sx={{
+              textTransform: 'none',
+              fontWeight: 600,
+              fontSize: '0.75rem',
+              color: viewMode === 'bar' ? '#000000' : 'rgba(255, 255, 255, 0.85)',
+              background: viewMode === 'bar' ? '#ffffff' : 'transparent',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              '&:hover': {
+                background: viewMode === 'bar' ? '#f0f0f0' : 'rgba(255, 255, 255, 0.1)',
+              }
+            }}
+          >
+            BAR
+          </Button>
         </Box>
-        <IconButton 
-          onClick={onClose} 
-          size="small"
-          sx={{
-            color: 'rgba(255, 255, 255, 0.85)',
-            background: 'rgba(255, 255, 255, 0.08)',
-            '&:hover': {
-              background: 'rgba(255, 255, 255, 0.14)',
-            }
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
+
+        {/* City Name and Status Row */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography variant="h6" sx={{ 
+              fontWeight: 600, 
+              mb: 0.5, 
+              color: '#ffffff',
+              textShadow: '0 2px 4px rgba(0,0,0,0.3)' 
+            }}>
+              {city.cityName}
+            </Typography>
+            <StatusChip 
+              label={status} 
+              status={status} 
+              size="small"
+            />
+          </Box>
+          <IconButton 
+            onClick={onClose} 
+            size="small"
+            sx={{
+              color: 'rgba(255, 255, 255, 0.85)',
+              background: 'rgba(255, 255, 255, 0.08)',
+              '&:hover': {
+                background: 'rgba(255, 255, 255, 0.14)',
+              }
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
       </DialogTitle>
+
+      {/* Stats Header Section */}
+      <Box sx={{ px: 2, pt: 1.5, pb: 1 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={3}>
+            <Paper sx={{ 
+              background: 'rgba(16, 27, 42, 0.55)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              borderRadius: '12px',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+            }}>
+              <CardContent sx={{ textAlign: 'center', py: 1, '&:last-child': { pb: 1 } }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)', fontSize: '1rem' }}>
+                  {city.complaintsRaised.toLocaleString()}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 400, fontSize: '0.7rem' }}>
+                  Raised
+                </Typography>
+              </CardContent>
+            </Paper>
+          </Grid>
+          
+          <Grid item xs={3}>
+            <Paper sx={{ 
+              background: 'rgba(16, 27, 42, 0.55)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              borderRadius: '12px',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+            }}>
+              <CardContent sx={{ textAlign: 'center', py: 1, '&:last-child': { pb: 1 } }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)', fontSize: '1rem' }}>
+                  {city.complaintsResolved.toLocaleString()}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 400, fontSize: '0.7rem' }}>
+                  Resolved
+                </Typography>
+              </CardContent>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={3}>
+            <Paper sx={{ 
+              background: 'rgba(16, 27, 42, 0.55)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              borderRadius: '12px',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+            }}>
+              <CardContent sx={{ textAlign: 'center', py: 1, '&:last-child': { pb: 1 } }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)', fontSize: '1rem' }}>
+                  {city.issuesRaisedByCitizens.toLocaleString()}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 400, fontSize: '0.7rem' }}>
+                  Issues
+                </Typography>
+              </CardContent>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={3}>
+            <Paper sx={{ 
+              background: 'rgba(16, 27, 42, 0.55)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              borderRadius: '12px',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+            }}>
+              <CardContent sx={{ textAlign: 'center', py: 1, '&:last-child': { pb: 1 } }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)', fontSize: '1rem' }}>
+                  {city.roadOwningAgenciesOnboarded}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 400, fontSize: '0.7rem' }}>
+                  Agencies
+                </Typography>
+              </CardContent>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Box>
       
       <DialogContent sx={{ pt: 1.5, px: 2, pb: 1, background: 'transparent', overflowY: 'auto' }}>
-        {/* Circular Progress Indicator and Detailed statistics in one row */}
-        <Grid container spacing={1}>
-          <Grid item xs={12} sm={4}>
-            <Box sx={{ textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+        {/* 2-Column Layout */}
+        <Grid container spacing={3}>
+          {/* LEFT COLUMN - Gauge Chart */}
+          <Grid item xs={12} md={6}>
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              height: '100%',
+              minHeight: '300px'
+            }}>
               <CircularProgressIndicator 
                 percentage={city.resolutionPercentage}
                 color={resolutionColor}
-                size={75}
+                size={140}
               />
             </Box>
           </Grid>
-          
-          <Grid item xs={12} sm={4}>
-            <Paper sx={{ 
-              background: 'rgba(16, 27, 42, 0.55)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              borderRadius: '12px',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-            }}>
-              <CardContent sx={{ textAlign: 'center', py: 1.5, '&:last-child': { pb: 1.5 } }}>
-                <TrendingUpIcon sx={{ fontSize: 32, color: '#ff6b6b', mb: 0.5 }} />
-                <Typography variant="h6" sx={{ fontWeight: 600, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                  {city.complaintsRaised.toLocaleString()}
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 400, fontSize: '0.75rem' }}>
-                  Complaints Raised
-                </Typography>
-              </CardContent>
-            </Paper>
-          </Grid>
-          
-          <Grid item xs={12} sm={4}>
-            <Paper sx={{ 
-              background: 'rgba(16, 27, 42, 0.55)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              borderRadius: '12px',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-            }}>
-              <CardContent sx={{ textAlign: 'center', py: 1.5, '&:last-child': { pb: 1.5 } }}>
-                <TrendingDownIcon sx={{ fontSize: 32, color: resolutionColor, mb: 0.5 }} />
-                <Typography variant="h6" sx={{ fontWeight: 600, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                  {city.complaintsResolved.toLocaleString()}
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 400, fontSize: '0.75rem' }}>
-                  Complaints Resolved
-                </Typography>
-              </CardContent>
-            </Paper>
+
+          {/* RIGHT COLUMN - Conditional Chart/Labels based on viewMode */}
+          <Grid item xs={12} md={6}>
+            {viewMode === 'bar' ? (
+              <CategoryBarChart 
+                data={MOCK_CATEGORY_DATA[city.id] || []} 
+                cityName={city.cityName}
+              />
+            ) : (
+              <CategoryLabelsList 
+                data={MOCK_CATEGORY_DATA[city.id] || []}
+              />
+            )}
           </Grid>
         </Grid>
-
-        <Divider sx={{ my: 1.5, borderColor: 'rgba(255, 255, 255, 0.12)' }} />
-
-        {/* Additional city information */}
-        <Grid container spacing={1}>
-          <Grid item xs={12}>
-            <Box sx={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center', 
-              py: 1,
-              background: 'rgba(255, 255, 255, 0.06)',
-              borderRadius: '10px',
-              px: 1.5,
-            }}>
-              <Typography variant="body2" sx={{ fontWeight: 500, color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.85rem' }}>
-                Issues Raised by Citizens:
-              </Typography>
-              <Typography variant="body2" sx={{ fontWeight: 600, color: '#ffffff', fontSize: '0.85rem' }}>
-                {city.issuesRaisedByCitizens.toLocaleString()}
-              </Typography>
-            </Box>
-          </Grid>
-          
-          <Grid item xs={12}>
-            <Box sx={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center', 
-              py: 1,
-              background: 'rgba(255, 255, 255, 0.06)',
-              borderRadius: '10px',
-              px: 1.5,
-            }}>
-              <Typography variant="body2" sx={{ fontWeight: 500, color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.85rem' }}>
-                Road Owning Agencies Onboarded:
-              </Typography>
-              <Typography variant="body2" sx={{ fontWeight: 600, color: '#ffffff', fontSize: '0.85rem' }}>
-                {city.roadOwningAgenciesOnboarded}
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
-
-        {/* Category-wise Performance Chart */}
-        <CategoryBarChart 
-          data={MOCK_CATEGORY_DATA[city.id] || []} 
-          cityName={city.cityName}
-        />
       </DialogContent>
       
       <DialogActions sx={{ p: 1.5, pt: 0.5, background: 'transparent' }}>
