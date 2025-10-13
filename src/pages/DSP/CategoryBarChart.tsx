@@ -246,19 +246,19 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
 
       {/* Legend */}
       <Box sx={{ flex: '1 1 260px', minWidth: 240, maxHeight: Math.floor(size * DISPLAY_SCALE * 1.15), overflow: 'auto', pr: 1 }}>
-        <Typography variant="body2" sx={{ color: '#000000', mb: 1, textAlign: 'center' }}>
+        <Typography variant="body2" sx={{ color: '#ffffff', mb: 0.6, textAlign: 'center' }}>
           Raised vs Resolved by Category
         </Typography>
-        <Divider sx={{ mb: 1, borderColor: 'rgba(255,255,255,0.08)' }} />
-        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 0.9 }}>
+        <Divider sx={{ mb: 0.6, borderColor: 'rgba(255,255,255,0.08)' }} />
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 0.55 }}>
           {processed.rows.map((r: ProcessedRow, idx: number) => (
-            <Box key={`leg-${idx}`} onMouseEnter={() => setHoverIdx(idx)} onMouseLeave={() => setHoverIdx(null)} sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 0.6, borderRadius: 1, cursor: 'default', background: hoverIdx === idx ? 'rgba(255,255,255,0.06)' : 'transparent' }}>
+            <Box key={`leg-${idx}`} onMouseEnter={() => setHoverIdx(idx)} onMouseLeave={() => setHoverIdx(null)} sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 0.45, borderRadius: 1, cursor: 'default', background: hoverIdx === idx ? 'rgba(255,255,255,0.06)' : 'transparent' }}>
               <Box sx={{ width: 12, height: 12, borderRadius: '3px', background: r.category === 'Other' ? OTHER_COLOR : r.color, boxShadow: `0 0 6px ${r.color}40` }} />
               <Box sx={{ flex: 1, minWidth: 0 }}>
-                <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.9rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.75rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {r.category}
                 </Typography>
-                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.77rem' }}>
+                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.64rem' }}>
                   {r.resolved.toLocaleString()} / {r.raised.toLocaleString()} • {r.resolutionRate.toFixed(1)}%
                 </Typography>
               </Box>
@@ -312,7 +312,20 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
       </Box>
 
       <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
-        <ToggleButtonGroup size="small" value={view} exclusive onChange={(_event: React.MouseEvent<HTMLElement>, v: ViewMode | null) => v && setView(v)}>
+        <ToggleButtonGroup size="small" value={view} exclusive onChange={(_event: React.MouseEvent<HTMLElement>, v: ViewMode | null) => v && setView(v)} sx={{
+          '& .MuiToggleButton-root': {
+            color: 'rgba(255, 255, 255, 0.85)',
+            textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.1)',
+            '&.Mui-selected': {
+              color: '#ffffff',
+              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.3), 0 1px 2px rgba(255,255,255,0.1)',
+            },
+            '&:hover': {
+              boxShadow: '0 3px 6px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.15)',
+            }
+          }
+        }}>
           <ToggleButton value="donut">Donut</ToggleButton>
           <ToggleButton value="bars">Bars</ToggleButton>
         </ToggleButtonGroup>
