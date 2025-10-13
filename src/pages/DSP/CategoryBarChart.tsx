@@ -246,19 +246,19 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
 
       {/* Legend */}
       <Box sx={{ flex: '1 1 260px', minWidth: 240, maxHeight: Math.floor(size * DISPLAY_SCALE * 1.15), overflow: 'auto', pr: 1 }}>
-        <Typography variant="body2" sx={{ color: '#000000', mb: 1, textAlign: 'center' }}>
+        <Typography variant="body2" sx={{ color: '#000000', mb: 0.6, textAlign: 'center' }}>
           Raised vs Resolved by Category
         </Typography>
-        <Divider sx={{ mb: 1, borderColor: 'rgba(255,255,255,0.08)' }} />
-        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 0.9 }}>
+        <Divider sx={{ mb: 0.6, borderColor: 'rgba(255,255,255,0.08)' }} />
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 0.55 }}>
           {processed.rows.map((r: ProcessedRow, idx: number) => (
-            <Box key={`leg-${idx}`} onMouseEnter={() => setHoverIdx(idx)} onMouseLeave={() => setHoverIdx(null)} sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 0.6, borderRadius: 1, cursor: 'default', background: hoverIdx === idx ? 'rgba(255,255,255,0.06)' : 'transparent' }}>
+            <Box key={`leg-${idx}`} onMouseEnter={() => setHoverIdx(idx)} onMouseLeave={() => setHoverIdx(null)} sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 0.45, borderRadius: 1, cursor: 'default', background: hoverIdx === idx ? 'rgba(255,255,255,0.06)' : 'transparent' }}>
               <Box sx={{ width: 12, height: 12, borderRadius: '3px', background: r.category === 'Other' ? OTHER_COLOR : r.color, boxShadow: `0 0 6px ${r.color}40` }} />
               <Box sx={{ flex: 1, minWidth: 0 }}>
-                <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.9rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.75rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {r.category}
                 </Typography>
-                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.77rem' }}>
+                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.64rem' }}>
                   {r.resolved.toLocaleString()} / {r.raised.toLocaleString()} • {r.resolutionRate.toFixed(1)}%
                 </Typography>
               </Box>
