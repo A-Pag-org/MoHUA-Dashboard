@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Typography, Paper, ToggleButton, ToggleButtonGroup, Divider } from '@mui/material';
-import { DSP_COLORS } from '../../utils/constants';
+// Removed DSP_COLORS import as percentages are hidden now
 
 interface CategoryData {
   category: string;
@@ -161,9 +161,6 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
               <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.7rem' }}>
                 {r.resolved.toLocaleString()} / {r.raised.toLocaleString()}
               </Typography>
-              <Typography variant="caption" sx={{ color: r.resolutionRate >= 90 ? DSP_COLORS.SATISFACTORY : r.resolutionRate >= 50 ? DSP_COLORS.AVERAGE : DSP_COLORS.UNSATISFACTORY, fontWeight: 600 }}>
-                {r.resolutionRate.toFixed(1)}%
-              </Typography>
             </Box>
           </Box>
           <Box sx={{ position: 'relative', height: '20px', background: '#363636', borderRadius: '10px', overflow: 'hidden' }}>
@@ -220,18 +217,12 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
           <g pointerEvents="none">
             {hoverIdx === null ? (
               <>
-                <text x={center} y={center - Math.floor(size * 0.018)} textAnchor="middle" fill="#ffffff" fontWeight={800} fontSize={Math.floor(size * 0.065)} style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.4))' }}>
-                  {processed.overallRate.toFixed(1)}%
-                </text>
-                <text x={center} y={center + Math.floor(size * 0.047)} textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize={Math.floor(size * 0.035)}>
+                <text x={center} y={center + Math.floor(size * 0.02)} textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize={Math.floor(size * 0.035)}>
                   Overall Resolution
                 </text>
               </>
             ) : (
               <>
-                <text x={center} y={center - Math.floor(size * 0.03)} textAnchor="middle" fill="#ffffff" fontWeight={800} fontSize={Math.floor(size * 0.065)} style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.4))' }}>
-                  {processed.rows[hoverIdx].resolutionRate.toFixed(1)}%
-                </text>
                 <text x={center} y={center + Math.floor(size * 0.015)} textAnchor="middle" fill="rgba(255,255,255,0.92)" fontSize={Math.floor(size * 0.035)}>
                   {processed.rows[hoverIdx].category}
                 </text>
@@ -259,7 +250,7 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
                   {r.category}
                 </Typography>
                 <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.64rem' }}>
-                  {r.resolved.toLocaleString()} / {r.raised.toLocaleString()} • {r.resolutionRate.toFixed(1)}%
+                  {r.resolved.toLocaleString()} / {r.raised.toLocaleString()}
                 </Typography>
               </Box>
               <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>
