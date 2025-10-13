@@ -217,7 +217,16 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
           <g pointerEvents="none">
             {hoverIdx === null ? (
               <>
-                <text x={center} y={center + Math.floor(size * 0.02)} textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize={Math.floor(size * 0.035)}>
+                <text
+                  x={center}
+                  y={center - Math.floor(size * 0.02)}
+                  textAnchor="middle"
+                  fill="rgba(255,255,255,0.95)"
+                  fontSize={Math.floor(size * 0.10)}
+                >
+                  {processed.overallRate.toFixed(1)}%
+                </text>
+                <text x={center} y={center + Math.floor(size * 0.06)} textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize={Math.floor(size * 0.035)}>
                   Overall Resolution
                 </text>
               </>
@@ -236,7 +245,7 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
       </Box>
 
       {/* Legend */}
-      <Box sx={{ flex: '1 1 260px', minWidth: 240, maxHeight: Math.floor(size * DISPLAY_SCALE * 1.15), overflow: 'auto', pr: 1 }}>
+      <Box sx={{ flex: '1 1 260px', minWidth: 240, pr: 1 }}>
         <Typography variant="body2" sx={{ color: '#ffffff', mb: 0.6, textAlign: 'center' }}>
           Raised vs Resolved by Category
         </Typography>
@@ -245,16 +254,8 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
           {processed.rows.map((r: ProcessedRow, idx: number) => (
             <Box key={`leg-${idx}`} onMouseEnter={() => setHoverIdx(idx)} onMouseLeave={() => setHoverIdx(null)} sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 0.45, borderRadius: 1, cursor: 'default', background: hoverIdx === idx ? 'rgba(255,255,255,0.06)' : 'transparent' }}>
               <Box sx={{ width: 12, height: 12, borderRadius: '3px', background: r.category === 'Other' ? OTHER_COLOR : r.color, boxShadow: `0 0 6px ${r.color}40` }} />
-              <Box sx={{ flex: 1, minWidth: 0 }}>
-                <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.75rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {r.category}
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.64rem' }}>
-                  {r.resolved.toLocaleString()} / {r.raised.toLocaleString()}
-                </Typography>
-              </Box>
-              <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>
-                {(r.raisedShare * 100).toFixed(1)}%
+              <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {r.category}
               </Typography>
             </Box>
           ))}
@@ -299,6 +300,17 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
           }}
         >
           {cityName}
+        </Typography>
+        <Typography
+          variant="caption"
+          sx={{
+            display: 'block',
+            color: 'rgba(255, 255, 255, 0.85)',
+            fontWeight: 500,
+            mt: 0.5,
+          }}
+        >
+          {`${processed.totalResolved.toLocaleString()} / ${processed.totalRaised.toLocaleString()} • ${processed.overallRate.toFixed(1)}%`}
         </Typography>
       </Box>
 
