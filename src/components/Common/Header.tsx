@@ -26,6 +26,7 @@ const Header: React.FC = () => {
   };
 
   const isDSP = location.pathname.startsWith('/dsp');
+  const isLandingPage = location.pathname === '/';
   const dspSectionParam = new URLSearchParams(location.search).get('section');
   const dspSection = dspSectionParam === 'performance' ? 'performance' : 'citywise';
 
@@ -106,6 +107,7 @@ const Header: React.FC = () => {
                 type="button"
                 selected={isSelected('/dsp')}
                 onClick={(e) => handleNavigation('/dsp', e)}
+                sx={isLandingPage ? { backgroundColor: '#08306b', '&:hover': { backgroundColor: '#08306b' } } : undefined}
               >
                 DSP
               </PillButton>
@@ -113,6 +115,7 @@ const Header: React.FC = () => {
                 type="button"
                 selected={isSelected('/cd')}
                 onClick={(e) => handleNavigation('/cd', e)}
+                sx={isLandingPage ? { backgroundColor: '#08519c', '&:hover': { backgroundColor: '#08519c' } } : undefined}
               >
                 C&D
               </PillButton>
@@ -120,6 +123,7 @@ const Header: React.FC = () => {
                 type="button"
                 selected={isSelected('/mrs')}
                 onClick={(e) => handleNavigation('/mrs', e)}
+                sx={isLandingPage ? { backgroundColor: '#2171b5', '&:hover': { backgroundColor: '#2171b5' } } : undefined}
               >
                 MRS
               </PillButton>
