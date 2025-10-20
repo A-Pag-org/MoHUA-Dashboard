@@ -37,14 +37,14 @@ const ProgramTileCard = styled(Card)(() => ({
   cursor: 'default',
   position: 'relative',
   overflow: 'hidden',
-  background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.18) 0%, rgba(76, 175, 80, 0.32) 100%)',
+  background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.16) 100%)',
   backdropFilter: 'blur(10px)',
   WebkitBackdropFilter: 'blur(10px)',
-  border: '1px solid rgba(76, 175, 80, 0.45)',
-  boxShadow: '0 8px 24px rgba(76, 175, 80, 0.25)',
+  border: '1px solid rgba(0, 0, 0, 0.25)',
+  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
   '&:hover': {
     transform: 'translateY(-6px)',
-    boxShadow: '0 0 0 3px rgba(76, 175, 80, 0.5), 0 18px 56px rgba(76, 175, 80, 0.35)',
+    boxShadow: '0 0 0 3px rgba(0, 0, 0, 0.5), 0 18px 56px rgba(0, 0, 0, 0.35)',
     '&::before': {
       opacity: 1,
     },
@@ -56,7 +56,7 @@ const ProgramTileCard = styled(Card)(() => ({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.22) 0%, rgba(76, 175, 80, 0.12) 100%)',
+    background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0.12) 100%)',
     opacity: 0,
     transition: 'opacity 0.3s ease',
   },
@@ -67,7 +67,7 @@ const ProgramTileCard = styled(Card)(() => ({
     left: 0,
     width: '3px',
     height: '100%',
-    background: 'linear-gradient(180deg, #4CAF50 0%, rgba(76, 175, 80, 0.7) 100%)',
+    background: 'linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.7) 100%)',
     borderRadius: '0 1.5px 1.5px 0',
   },
 }));
@@ -189,13 +189,13 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
             label={city.program}
             size="small"
             sx={(theme) => ({
-              background: 'rgba(76, 175, 80, 0.22)',
+              background: 'rgba(0, 0, 0, 0.12)',
               color: theme.palette.mode === 'light' ? '#000000' : '#E6EDF3',
               fontWeight: 700,
               fontSize: '0.75rem',
               height: '26px',
               borderRadius: '8px',
-              border: '1px solid rgba(76, 175, 80, 0.45)',
+              border: '1px solid rgba(0, 0, 0, 0.25)',
             })}
           />
         </Box>
@@ -242,7 +242,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
             justifyContent: 'space-between',
             mt: 1,
             pt: 1,
-            borderTop: '1px solid rgba(76, 175, 80, 0.35)',
+            borderTop: '1px solid rgba(0, 0, 0, 0.25)',
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -346,12 +346,9 @@ const HeroSection: React.FC = () => {
           <Typography 
             variant="h3" 
             sx={{ 
-              fontWeight: 800,
+              fontWeight: 400,
               mb: 1.5,
-              background: 'linear-gradient(135deg, #4CAF50 0%, #A5D6A7 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              color: '#000000',
               textAlign: 'center',
               fontSize: { xs: '2rem', md: '3rem' }
             }}
