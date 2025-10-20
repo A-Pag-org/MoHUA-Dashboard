@@ -71,7 +71,7 @@ const Header: React.FC = () => {
             variant="h6"
             component="div"
             sx={{
-              color: '#ffffff',
+              color: isLandingPage ? '#000000' : '#ffffff',
               fontWeight: 700,
               letterSpacing: '0.5px',
               textShadow: '0 1px 2px rgba(0,0,0,0.25)'
