@@ -182,16 +182,6 @@ const getPercentForProgramRow = (program: 'DSP' | 'C&D' | 'MRS', row: DSPRow | C
   return (row as MRSRow).coveragePercentage;
 };
 
-// Compact number formatter for table columns (e.g., 17.7K, 2.4M)
-const formatCompactNumber = (value: number): string => {
-  if (!Number.isFinite(value)) return '0';
-  const abs = Math.abs(value);
-  if (abs >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(1).replace(/\.0$/, '')}B`;
-  if (abs >= 1_000_000) return `${(value / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
-  if (abs >= 1_000) return `${(value / 1_000).toFixed(1).replace(/\.0$/, '')}K`;
-  return Math.round(value).toLocaleString();
-};
-
 const ProgramLeaderboard: React.FC<{ 
   program: 'DSP' | 'C&D' | 'MRS';
   accentColor: string;
