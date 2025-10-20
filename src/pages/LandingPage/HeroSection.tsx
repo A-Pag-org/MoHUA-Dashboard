@@ -201,7 +201,7 @@ const ProgramLeaderboard: React.FC<{
   const headerStyles = {
     color: '#ffffff',
     fontWeight: 400,
-    fontSize: '0.8rem',
+    fontSize: '0.72rem', // reduced font size
     textTransform: 'uppercase' as const,
     letterSpacing: '0.06em',
   };
@@ -238,7 +238,8 @@ const ProgramLeaderboard: React.FC<{
           display: 'grid',
           gridTemplateColumns:
             program === 'DSP'
-              ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
+              // Rank, City, Resolution %
+              ? '56px 1fr minmax(120px, auto)'
               : program === 'C&D'
               ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
               : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto)',
@@ -257,8 +258,6 @@ const ProgramLeaderboard: React.FC<{
         <Typography sx={headerStyles}>City</Typography>
         {program === 'DSP' && (
           <>
-            <Typography sx={headerStyles}>Raised</Typography>
-            <Typography sx={headerStyles}>Resolved</Typography>
             <Typography sx={headerStyles}>Resolution %</Typography>
           </>
         )}
@@ -285,7 +284,7 @@ const ProgramLeaderboard: React.FC<{
             <Box key={`${program}-${index}`}
               sx={{
                 px: 2,
-                py: 1.25,
+                py: 1, // slightly tighter row height
                 '&:not(:last-of-type)': { borderBottom: '1px solid rgba(255,255,255,0.06)' },
                 transition: 'background 0.2s ease',
                 '&:hover': { background: 'rgba(255,255,255,0.04)' },
@@ -296,7 +295,8 @@ const ProgramLeaderboard: React.FC<{
                   display: 'grid',
                   gridTemplateColumns:
                     program === 'DSP'
-                      ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
+                      // Rank, City, Resolution %
+                      ? '56px 1fr minmax(120px, auto)'
                       : program === 'C&D'
                       ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
                       : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto)',
@@ -313,19 +313,21 @@ const ProgramLeaderboard: React.FC<{
                     borderRadius: '14px',
                     display: 'grid',
                     placeItems: 'center',
-                    fontWeight: 800,
+                    fontWeight: 600, // unbolded slightly
                     color: '#fff',
                     background: `${accentColor}`,
                     boxShadow: `${accentColor}55 0px 4px 14px`,
                   }}>{index + 2}</Box>
                 </Box>
-                <Typography sx={{ color: '#E6EDF3', fontWeight: 400 }}>{(row as any).city}</Typography>
+                <Typography sx={{ color: '#E6EDF3', fontWeight: 400, fontSize: '0.9rem', whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{(row as any).city}</Typography>
 
                 {program === 'DSP' && (
                   <>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as DSPRow).raised)}</Typography>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as DSPRow).resolved)}</Typography>
-                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
+                    <Typography sx={{
+                      color: getPerformanceColor(percentage),
+                      fontWeight: 400,
+                      fontVariantNumeric: 'tabular-nums',
+                    }}>{percentage.toFixed(1)}%</Typography>
                   </>
                 )}
 
