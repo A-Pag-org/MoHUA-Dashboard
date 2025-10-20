@@ -182,6 +182,16 @@ const getPercentForProgramRow = (program: 'DSP' | 'C&D' | 'MRS', row: DSPRow | C
   return (row as MRSRow).coveragePercentage;
 };
 
+// Compact number formatter for table columns (e.g., 17.7K, 2.4M)
+const formatCompactNumber = (value: number): string => {
+  if (!Number.isFinite(value)) return '0';
+  const abs = Math.abs(value);
+  if (abs >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(1).replace(/\.0$/, '')}B`;
+  if (abs >= 1_000_000) return `${(value / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
+  if (abs >= 1_000) return `${(value / 1_000).toFixed(1).replace(/\.0$/, '')}K`;
+  return Math.round(value).toLocaleString();
+};
+
 const ProgramLeaderboard: React.FC<{ 
   program: 'DSP' | 'C&D' | 'MRS';
   accentColor: string;
@@ -190,7 +200,7 @@ const ProgramLeaderboard: React.FC<{
 }> = ({ program, accentColor, rows, containerId }) => {
   const headerStyles = {
     color: '#ffffff',
-    fontWeight: 700,
+    fontWeight: 400,
     fontSize: '0.8rem',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.06em',
@@ -304,29 +314,29 @@ const ProgramLeaderboard: React.FC<{
                     boxShadow: `${accentColor}55 0px 4px 14px`,
                   }}>{index + 1}</Box>
                 </Box>
-                <Typography sx={{ color: '#E6EDF3', fontWeight: 600 }}>{(row as any).city}</Typography>
+                <Typography sx={{ color: '#E6EDF3', fontWeight: 400 }}>{(row as any).city}</Typography>
 
                 {program === 'DSP' && (
                   <>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{(row as DSPRow).raised.toLocaleString()}</Typography>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{(row as DSPRow).resolved.toLocaleString()}</Typography>
-                    <Typography sx={{ color: '#fff', fontWeight: 700 }}>{percentage.toFixed(1)}%</Typography>
+                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as DSPRow).raised)}</Typography>
+                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as DSPRow).resolved)}</Typography>
+                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
                   </>
                 )}
 
                 {program === 'C&D' && (
                   <>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{(row as CDRow).target.toLocaleString()}</Typography>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{(row as CDRow).actual.toLocaleString()}</Typography>
-                    <Typography sx={{ color: '#fff', fontWeight: 700 }}>{percentage.toFixed(1)}%</Typography>
+                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as CDRow).target)}</Typography>
+                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as CDRow).actual)}</Typography>
+                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
                   </>
                 )}
 
                 {program === 'MRS' && (
                   <>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{(row as MRSRow).targetRoadLength.toLocaleString()}</Typography>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{(row as MRSRow).actualRoadLength.toLocaleString()}</Typography>
-                    <Typography sx={{ color: '#fff', fontWeight: 700 }}>{percentage.toFixed(1)}%</Typography>
+                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as MRSRow).targetRoadLength)}</Typography>
+                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as MRSRow).actualRoadLength)}</Typography>
+                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
                   </>
                 )}
 
