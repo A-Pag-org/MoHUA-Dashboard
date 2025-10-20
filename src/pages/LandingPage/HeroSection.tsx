@@ -151,7 +151,7 @@ type MRSRow = { city: string; targetRoadLength: number; actualRoadLength: number
 // Local mock datasets for full list leaderboards (kept here to avoid changing other files)
 const DSP_LEADERBOARD_DATA: DSPRow[] = [
   { city: 'Bahadurgarh', raised: 7356, resolved: 2169, resolutionPercentage: (2169 / 7356) * 100, status: getPerformanceStatus((2169 / 7356) * 100) },
-  { city: 'Delhi', raised: 70550, resolved: 52984, resolutionPercentage: (52984 / 70550) * 100, status: getPerformanceStatus((52984 / 70550) * 100) },
+  { city: 'Delhi', raised: 70550, resolved: 67728, resolutionPercentage: 96.0, status: getPerformanceStatus(96.0) },
   { city: 'Faridabad', raised: 22161, resolved: 17636, resolutionPercentage: (17636 / 22161) * 100, status: getPerformanceStatus((17636 / 22161) * 100) },
   { city: 'Ghaziabad', raised: 30814, resolved: 26505, resolutionPercentage: (26505 / 30814) * 100, status: getPerformanceStatus((26505 / 30814) * 100) },
   { city: 'Greater Noida', raised: 12705, resolved: 9575, resolutionPercentage: (9575 / 12705) * 100, status: getPerformanceStatus((9575 / 12705) * 100) },
@@ -164,7 +164,7 @@ const CD_LEADERBOARD_DATA: CDRow[] = [
   { city: 'Delhi', target: 1200, actual: 1150, achievementPercentage: 95.8, status: 'Satisfactory' },
   { city: 'Faridabad', target: 1000, actual: 750, achievementPercentage: 75.0, status: 'Average' },
   { city: 'Ghaziabad', target: 800, actual: 350, achievementPercentage: 43.8, status: 'Unsatisfactory' },
-  { city: 'Greater Noida', target: 700, actual: 680, achievementPercentage: 97.1, status: 'Satisfactory' },
+  { city: 'Greater Noida', target: 700, actual: 686, achievementPercentage: 98.0, status: 'Satisfactory' },
   { city: 'Gurgaon', target: 600, actual: 420, achievementPercentage: 70.0, status: 'Average' },
 ];
 
@@ -172,7 +172,7 @@ const MRS_LEADERBOARD_DATA: MRSRow[] = [
   { city: 'Delhi', targetRoadLength: 2500, actualRoadLength: 2380, coveragePercentage: 95.2, status: 'Satisfactory' },
   { city: 'Faridabad', targetRoadLength: 2200, actualRoadLength: 1650, coveragePercentage: 75.0, status: 'Average' },
   { city: 'Ghaziabad', targetRoadLength: 1800, actualRoadLength: 720, coveragePercentage: 40.0, status: 'Unsatisfactory' },
-  { city: 'Greater Noida', targetRoadLength: 1600, actualRoadLength: 1520, coveragePercentage: 95.0, status: 'Satisfactory' },
+  { city: 'Greater Noida', targetRoadLength: 1600, actualRoadLength: 1552, coveragePercentage: 97.0, status: 'Satisfactory' },
   { city: 'Gurgaon', targetRoadLength: 1400, actualRoadLength: 910, coveragePercentage: 65.0, status: 'Average' },
 ];
 
