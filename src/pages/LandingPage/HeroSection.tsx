@@ -27,6 +27,13 @@ const STATUS_COLORS = {
   UNSATISFACTORY: '#F44336', // Red - <50%
 };
 
+// Header program button colors to ensure consistency with leaderboard tiles
+const HEADER_PROGRAM_COLORS = {
+  'DSP': '#08306b',
+  'C&D': '#08519c',
+  'MRS': '#2171b5',
+} as const;
+
 // Helper for status legend colors is provided by STATUS_COLORS above.
 
 const ProgramTileCard = styled(Card)(() => ({
@@ -188,14 +195,15 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           <Chip
             label={city.program}
             size="small"
-            sx={(theme) => ({
-              background: 'rgba(0, 0, 0, 0.12)',
-              color: theme.palette.mode === 'light' ? '#000000' : '#E6EDF3',
+            sx={() => ({
+              backgroundColor: HEADER_PROGRAM_COLORS[city.program],
+              color: '#ffffff',
               fontWeight: 700,
               fontSize: '0.75rem',
               height: '26px',
               borderRadius: '8px',
-              border: '1px solid rgba(0, 0, 0, 0.25)',
+              border: 'none',
+              boxShadow: `0 4px 14px ${HEADER_PROGRAM_COLORS[city.program]}33`,
             })}
           />
         </Box>
