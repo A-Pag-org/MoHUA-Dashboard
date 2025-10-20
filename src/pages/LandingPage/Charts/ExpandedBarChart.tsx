@@ -73,8 +73,8 @@ const ExpandedBarChart: React.FC<ExpandedBarChartProps> = ({ data, labelMode }) 
             props?.payload ? { city: props.payload.city, percentage: `${props.payload.percentage.toFixed(1)}%`, status: props.payload.status } : undefined,
           ]}
         />
-        <Bar dataKey="base" name="Target/Raised" fill={DSP_COLORS.RAISED} radius={[6, 6, 0, 0]} />
-        <Bar dataKey="value" name="Actual/Resolved" radius={[6, 6, 0, 0]} fillOpacity={1}>
+        <Bar dataKey="base" name="Target/Raised" fill={DSP_COLORS.RAISED} radius={[6, 6, 0, 0]} barSize={2} />
+        <Bar dataKey="value" name="Actual/Resolved" radius={[6, 6, 0, 0]} fillOpacity={1} barSize={2}>
           {rechartsData.map((row, idx) => (
             <Cell key={`c-${idx}`} fill={getColor(row.status)} />
           ))}

@@ -48,9 +48,9 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
             <Box
               sx={{
                 position: 'relative',
-                height: 15,
+                height: 2,
                 width: '100%',
-                borderRadius: 10,
+                borderRadius: 2,
                 // Stronger grey track behind the filled bar (superimposed look)
                 backgroundColor: '#363636',
                 overflow: 'hidden',
@@ -65,7 +65,7 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
                   height: '100%',
                   width: `${safePct}%`,
                   background: `linear-gradient(90deg, ${color} 0%, ${color}CC 100%)`,
-                  borderRadius: 10,
+                  borderRadius: 2,
                   transition: 'width 0.6s ease',
                   boxShadow: `0 0 10px ${color}40, inset 0 1px 0 rgba(255,255,255,0.15)`,
                 }}
@@ -76,9 +76,9 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
                 variant="caption"
                 sx={{
                   position: 'absolute',
-                  left: 8,
-                  top: '50%',
-                  transform: 'translateY(-50%)',
+                  left: 0,
+                  top: -16,
+                  transform: 'none',
                   color: labelTextColor,
                   fontWeight: 600,
                   pointerEvents: 'none',
@@ -97,9 +97,9 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
                   variant="caption"
                   sx={{
                     position: 'absolute',
-                    right: 8,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
+                    right: 0,
+                    top: -16,
+                    transform: 'none',
                     color: labelTextColor,
                     fontWeight: 400,
                     pointerEvents: 'none',
@@ -114,9 +114,8 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
                   sx={{
                     position: 'absolute',
                     left: `calc(${safePct}% - 4px)`,
-                    // slight negative translate so text hugs the bar end and appears on it
-                    transform: 'translate(-100%, -50%)',
-                    top: '50%',
+                    transform: 'translate(-100%, -16px)',
+                    top: 0,
                     color: outsideTextColor,
                     fontWeight: 400,
                     pointerEvents: 'none',
