@@ -206,7 +206,13 @@ const ProgramLeaderboard: React.FC<{
     letterSpacing: '0.06em',
   };
 
-  const sortedRows = [...rows].sort((a, b) => getPercentForProgramRow(program, b) - getPercentForProgramRow(program, a));
+  // Determine top performer city based on program
+  const topPerformerCity = program === 'DSP' ? 'Delhi' : 'Greater Noida';
+  
+  // Filter out top performer and sort remaining cities
+  const sortedRows = [...rows]
+    .filter((row) => (row as any).city !== topPerformerCity)
+    .sort((a, b) => getPercentForProgramRow(program, b) - getPercentForProgramRow(program, a));
 
   return (
     <Box
@@ -232,12 +238,12 @@ const ProgramLeaderboard: React.FC<{
           display: 'grid',
           gridTemplateColumns:
             program === 'DSP'
-              ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto) 110px'
+              ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
               : program === 'C&D'
-              ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto) 110px'
-              : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto) 110px',
+              ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
+              : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto)',
           alignItems: 'center',
-          gap: 1.5,
+          gap: 1,
           px: 2,
           py: 1,
           background: 'linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%)',
@@ -270,7 +276,6 @@ const ProgramLeaderboard: React.FC<{
             <Typography sx={headerStyles}>Coverage %</Typography>
           </>
         )}
-        <Typography sx={{ ...headerStyles, textAlign: 'right' }}>Status</Typography>
       </Box>
 
       <Box sx={{ maxHeight: 260, overflowY: 'auto', overflowX: 'hidden', width: '100%', minWidth: 0 }}>
@@ -291,12 +296,12 @@ const ProgramLeaderboard: React.FC<{
                   display: 'grid',
                   gridTemplateColumns:
                     program === 'DSP'
-                      ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto) 110px'
+                      ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
                       : program === 'C&D'
-                      ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto) 110px'
-                      : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto) 110px',
+                      ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
+                      : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto)',
                   alignItems: 'center',
-                  gap: 1.5,
+                  gap: 1,
                   width: '100%',
                   minWidth: 0,
                 }}
@@ -312,7 +317,7 @@ const ProgramLeaderboard: React.FC<{
                     color: '#fff',
                     background: `${accentColor}`,
                     boxShadow: `${accentColor}55 0px 4px 14px`,
-                  }}>{index + 1}</Box>
+                  }}>{index + 2}</Box>
                 </Box>
                 <Typography sx={{ color: '#E6EDF3', fontWeight: 400 }}>{(row as any).city}</Typography>
 
@@ -339,9 +344,6 @@ const ProgramLeaderboard: React.FC<{
                     <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
                   </>
                 )}
-
-                {/* Status chip removed as requested */}
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }} />
               </Box>
               <LinearProgress
                 variant="determinate"
