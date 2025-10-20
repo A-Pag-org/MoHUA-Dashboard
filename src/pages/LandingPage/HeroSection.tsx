@@ -207,6 +207,11 @@ const ProgramLeaderboard: React.FC<{
   };
 
   const sortedRows = [...rows].sort((a, b) => getPercentForProgramRow(program, b) - getPercentForProgramRow(program, a));
+  // For DSP, exclude Delhi from the list because it is displayed as the top performer (Rank 1)
+  const displayRows =
+    program === 'DSP'
+      ? sortedRows.filter((r) => (r as any).city?.toLowerCase() !== 'delhi')
+      : sortedRows;
 
   return (
     <Box
@@ -232,12 +237,12 @@ const ProgramLeaderboard: React.FC<{
           display: 'grid',
           gridTemplateColumns:
             program === 'DSP'
-              ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto) 110px'
+              ? '52px minmax(0,1fr) repeat(2, minmax(68px, auto)) minmax(92px, auto)'
               : program === 'C&D'
-              ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto) 110px'
-              : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto) 110px',
+              ? '52px minmax(0,1fr) repeat(2, minmax(68px, auto)) minmax(92px, auto)'
+              : '52px minmax(0,1fr) repeat(2, minmax(88px, auto)) minmax(92px, auto)',
           alignItems: 'center',
-          gap: 1.5,
+          gap: 1,
           px: 2,
           py: 1,
           background: 'linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%)',
@@ -270,11 +275,10 @@ const ProgramLeaderboard: React.FC<{
             <Typography sx={headerStyles}>Coverage %</Typography>
           </>
         )}
-        <Typography sx={{ ...headerStyles, textAlign: 'right' }}>Status</Typography>
       </Box>
 
       <Box sx={{ maxHeight: 260, overflowY: 'auto', overflowX: 'hidden', width: '100%', minWidth: 0 }}>
-        {sortedRows.map((row, index) => {
+        {displayRows.map((row, index) => {
           const percentage = getPercentForProgramRow(program, row);
           return (
             <Box key={`${program}-${index}`}
@@ -291,12 +295,12 @@ const ProgramLeaderboard: React.FC<{
                   display: 'grid',
                   gridTemplateColumns:
                     program === 'DSP'
-                      ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto) 110px'
+                      ? '52px minmax(0,1fr) repeat(2, minmax(68px, auto)) minmax(92px, auto)'
                       : program === 'C&D'
-                      ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto) 110px'
-                      : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto) 110px',
+                      ? '52px minmax(0,1fr) repeat(2, minmax(68px, auto)) minmax(92px, auto)'
+                      : '52px minmax(0,1fr) repeat(2, minmax(88px, auto)) minmax(92px, auto)',
                   alignItems: 'center',
-                  gap: 1.5,
+                  gap: 1,
                   width: '100%',
                   minWidth: 0,
                 }}
@@ -312,7 +316,7 @@ const ProgramLeaderboard: React.FC<{
                     color: '#fff',
                     background: `${accentColor}`,
                     boxShadow: `${accentColor}55 0px 4px 14px`,
-                  }}>{index + 1}</Box>
+                  }}>{program === 'DSP' ? index + 2 : index + 1}</Box>
                 </Box>
                 <Typography sx={{ color: '#E6EDF3', fontWeight: 400 }}>{(row as any).city}</Typography>
 
@@ -339,9 +343,6 @@ const ProgramLeaderboard: React.FC<{
                     <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
                   </>
                 )}
-
-                {/* Status chip removed as requested */}
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }} />
               </Box>
               <LinearProgress
                 variant="determinate"
