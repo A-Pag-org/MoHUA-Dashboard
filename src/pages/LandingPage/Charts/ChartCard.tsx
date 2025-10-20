@@ -11,7 +11,18 @@ export interface ChartCardProps {
 
 const ChartCard: React.FC<ChartCardProps> = ({ title, subtitle, children, onExpand }) => {
   return (
-    <Card sx={{ height: '100%', backgroundColor: 'background.paper', position: 'relative' }}>
+    <Card
+      sx={{
+        height: '100%',
+        borderRadius: '16px',
+        background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.16) 100%)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        border: '1px solid rgba(0, 0, 0, 0.25)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
+        position: 'relative',
+      }}
+    >
       <CardContent sx={{ pr: 1.5 }}>
         <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 1 }}>
           <Box>
