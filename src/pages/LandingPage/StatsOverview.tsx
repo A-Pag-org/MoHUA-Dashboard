@@ -323,7 +323,7 @@ const MRSSection: React.FC<{
       subtitle="Percent road length covered"
       onExpand={() => onExpand({ title: 'MRS — Road Coverage', rows: csvRows, chart: expandedChart })}
     >
-      <MicroBulletBars data={microData} />
+      <MicroBulletBars data={microData} absoluteUnit="KM" />
     </ChartCard>
   );
 };
