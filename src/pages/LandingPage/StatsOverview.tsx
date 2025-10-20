@@ -354,18 +354,15 @@ const StatsOverview: React.FC = () => {
   return (
     <Container maxWidth="xl" sx={{ py: 3, position: 'relative' }}>
       <Typography
-        variant="h4"
+        variant="h3"
         component="h2"
         gutterBottom
         sx={{ 
           textAlign: 'center', 
-          mb: 4, 
-          fontWeight: 'bold',
-          background: 'linear-gradient(135deg, #7aa2ff 0%, #89d0ff 100%)',
-          backgroundClip: 'text',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          textShadow: '0 2px 6px rgba(0,0,0,0.25)'
+          mb: 4,
+          color: '#000000',
+          fontWeight: 400,
+          fontSize: { xs: '2rem', md: '3rem' }
         }}
       >
         Program Overview Statistics

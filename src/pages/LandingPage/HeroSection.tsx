@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import InfoIcon from '@mui/icons-material/Info';
 import { LeadingCity } from '../../types';
 import { MOCK_LEADING_CITIES, DSP_COLORS } from '../../utils/constants';
+import PillButton from '../../components/Common/PillButton';
 
 // Helper functions and styled components to mirror DSP city tile aesthetics
 const getPerformanceColor = (percentage: number): string => {
@@ -113,7 +114,7 @@ const CircularProgressIndicator: React.FC<{
   percentage: number;
   color: string;
   size?: number;
-}> = ({ percentage, color, size = 69 }) => {
+}> = ({ percentage, color, size = 92 }) => {
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
       <CircularProgress
@@ -160,7 +161,7 @@ const CircularProgressIndicator: React.FC<{
             fontWeight: 800,
             textShadow: theme.palette.mode === 'light' ? 'none' : '0 2px 4px rgba(0,0,0,0.3)',
             lineHeight: 1,
-            fontSize: size > 100 ? '1.4rem' : '1.1rem',
+            fontSize: size > 100 ? '1.5rem' : '1.25rem',
           })}
         >
           {percentage.toFixed(1)}%
@@ -192,20 +193,22 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
       >
         {/* Program label in top left corner */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 1 }}>
-          <Chip
-            label={city.program}
-            size="small"
-            sx={() => ({
+          <PillButton
+            type="button"
+            sx={{
               backgroundColor: HEADER_PROGRAM_COLORS[city.program],
+              '&:hover': { backgroundColor: HEADER_PROGRAM_COLORS[city.program] },
               color: '#ffffff',
-              fontWeight: 700,
-              fontSize: '0.75rem',
-              height: '26px',
-              borderRadius: '8px',
-              border: 'none',
+              pointerEvents: 'none',
+              padding: '8px 16px',
+              borderRadius: '10px',
+              fontSize: '0.95rem',
+              minHeight: '36px',
               boxShadow: `0 4px 14px ${HEADER_PROGRAM_COLORS[city.program]}33`,
-            })}
-          />
+            }}
+          >
+            {city.program}
+          </PillButton>
         </Box>
 
         {/* City name in top middle - highlighted and prominent */}
