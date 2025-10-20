@@ -479,7 +479,7 @@ const StatsOverview: React.FC = () => {
                       if (pctDiff !== 0) return pctDiff;
                       return b.actualOrResolved - a.actualOrResolved;
                     })
-                    .map((row, idx, arr) => {
+                    .map((row, idx) => {
                       const rank = idx + 2; // Start from 2 since Delhi is Rank 1
                       return (
                         <TableRow key={`${row.city}-${idx}`} hover>
