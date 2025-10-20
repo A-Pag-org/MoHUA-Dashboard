@@ -14,6 +14,13 @@ const getPerformanceColor = (percentage: number): string => {
   return DSP_COLORS.UNSATISFACTORY;
 };
 
+// Abbreviate city names to the first 4 letters to ensure fit
+const abbreviateCityName = (name: string): string => {
+  if (!name) return '';
+  // Remove leading/trailing spaces and take first 4 visible characters
+  return name.trim().slice(0, 4);
+};
+
 const getPerformanceStatus = (
   percentage: number
 ): 'Satisfactory' | 'Average' | 'Unsatisfactory' => {
@@ -232,10 +239,13 @@ const ProgramLeaderboard: React.FC<{
           display: 'grid',
           gridTemplateColumns:
             program === 'DSP'
-              ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto) 110px'
+              // Rank | City(4 letters) | Raised | Resolved | Resolution % | Status
+              ? '56px 72px 110px 110px 120px 110px'
               : program === 'C&D'
-              ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto) 110px'
-              : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto) 110px',
+              // Rank | City | Target | Actual | Achievement % | Status
+              ? '56px 72px 110px 110px 120px 110px'
+              // Rank | City | Target KM | Actual KM | Coverage % | Status
+              : '56px 72px 120px 120px 120px 110px',
           alignItems: 'center',
           gap: 1.5,
           px: 2,
@@ -251,23 +261,23 @@ const ProgramLeaderboard: React.FC<{
         <Typography sx={headerStyles}>City</Typography>
         {program === 'DSP' && (
           <>
-            <Typography sx={headerStyles}>Raised</Typography>
-            <Typography sx={headerStyles}>Resolved</Typography>
-            <Typography sx={headerStyles}>Resolution %</Typography>
+            <Typography sx={{ ...headerStyles, textAlign: 'right' }}>Raised</Typography>
+            <Typography sx={{ ...headerStyles, textAlign: 'right' }}>Resolved</Typography>
+            <Typography sx={{ ...headerStyles, textAlign: 'right' }}>Resolution %</Typography>
           </>
         )}
         {program === 'C&D' && (
           <>
-            <Typography sx={headerStyles}>Target</Typography>
-            <Typography sx={headerStyles}>Actual</Typography>
-            <Typography sx={headerStyles}>Achievement %</Typography>
+            <Typography sx={{ ...headerStyles, textAlign: 'right' }}>Target</Typography>
+            <Typography sx={{ ...headerStyles, textAlign: 'right' }}>Actual</Typography>
+            <Typography sx={{ ...headerStyles, textAlign: 'right' }}>Achievement %</Typography>
           </>
         )}
         {program === 'MRS' && (
           <>
-            <Typography sx={headerStyles}>Target KM</Typography>
-            <Typography sx={headerStyles}>Actual KM</Typography>
-            <Typography sx={headerStyles}>Coverage %</Typography>
+            <Typography sx={{ ...headerStyles, textAlign: 'right' }}>Target KM</Typography>
+            <Typography sx={{ ...headerStyles, textAlign: 'right' }}>Actual KM</Typography>
+            <Typography sx={{ ...headerStyles, textAlign: 'right' }}>Coverage %</Typography>
           </>
         )}
         <Typography sx={{ ...headerStyles, textAlign: 'right' }}>Status</Typography>
@@ -291,10 +301,10 @@ const ProgramLeaderboard: React.FC<{
                   display: 'grid',
                   gridTemplateColumns:
                     program === 'DSP'
-                      ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto) 110px'
+                      ? '56px 72px 110px 110px 120px 110px'
                       : program === 'C&D'
-                      ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto) 110px'
-                      : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto) 110px',
+                      ? '56px 72px 110px 110px 120px 110px'
+                      : '56px 72px 120px 120px 120px 110px',
                   alignItems: 'center',
                   gap: 1.5,
                   width: '100%',
@@ -314,29 +324,43 @@ const ProgramLeaderboard: React.FC<{
                     boxShadow: `${accentColor}55 0px 4px 14px`,
                   }}>{index + 1}</Box>
                 </Box>
-                <Typography sx={{ color: '#E6EDF3', fontWeight: 400 }}>{(row as any).city}</Typography>
+                <Typography sx={{ color: '#E6EDF3', fontWeight: 400 }}>
+                  {abbreviateCityName((row as any).city)}
+                </Typography>
 
                 {program === 'DSP' && (
                   <>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as DSPRow).raised)}</Typography>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as DSPRow).resolved)}</Typography>
-                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
+                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums', textAlign: 'right' }}>
+                      {formatCompactNumber((row as DSPRow).raised)}
+                    </Typography>
+                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums', textAlign: 'right' }}>
+                      {formatCompactNumber((row as DSPRow).resolved)}
+                    </Typography>
+                    <Typography sx={{ color: '#fff', fontWeight: 400, textAlign: 'right' }}>{percentage.toFixed(1)}%</Typography>
                   </>
                 )}
 
                 {program === 'C&D' && (
                   <>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as CDRow).target)}</Typography>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as CDRow).actual)}</Typography>
-                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
+                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums', textAlign: 'right' }}>
+                      {formatCompactNumber((row as CDRow).target)}
+                    </Typography>
+                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums', textAlign: 'right' }}>
+                      {formatCompactNumber((row as CDRow).actual)}
+                    </Typography>
+                    <Typography sx={{ color: '#fff', fontWeight: 400, textAlign: 'right' }}>{percentage.toFixed(1)}%</Typography>
                   </>
                 )}
 
                 {program === 'MRS' && (
                   <>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as MRSRow).targetRoadLength)}</Typography>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as MRSRow).actualRoadLength)}</Typography>
-                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
+                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums', textAlign: 'right' }}>
+                      {formatCompactNumber((row as MRSRow).targetRoadLength)}
+                    </Typography>
+                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums', textAlign: 'right' }}>
+                      {formatCompactNumber((row as MRSRow).actualRoadLength)}
+                    </Typography>
+                    <Typography sx={{ color: '#fff', fontWeight: 400, textAlign: 'right' }}>{percentage.toFixed(1)}%</Typography>
                   </>
                 )}
 
