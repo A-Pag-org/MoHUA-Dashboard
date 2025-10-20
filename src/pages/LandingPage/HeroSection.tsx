@@ -204,6 +204,9 @@ const ProgramLeaderboard: React.FC<{
     fontSize: '0.8rem',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.06em',
+    whiteSpace: 'nowrap' as const,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   };
 
   // Determine top performer city based on program
@@ -236,12 +239,8 @@ const ProgramLeaderboard: React.FC<{
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns:
-            program === 'DSP'
-              ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
-              : program === 'C&D'
-              ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
-              : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto)',
+          // Unify grid template across programs to prevent city column collapsing
+          gridTemplateColumns: '56px minmax(120px, 1fr) repeat(2, minmax(80px, auto)) minmax(120px, auto)',
           alignItems: 'center',
           gap: 1,
           px: 2,
@@ -294,12 +293,8 @@ const ProgramLeaderboard: React.FC<{
               <Box
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns:
-                    program === 'DSP'
-                      ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
-                      : program === 'C&D'
-                      ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
-                      : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto)',
+                  // Match header grid template so content aligns and city text doesn't wrap vertically
+                  gridTemplateColumns: '56px minmax(120px, 1fr) repeat(2, minmax(80px, auto)) minmax(120px, auto)',
                   alignItems: 'center',
                   gap: 1,
                   width: '100%',
@@ -319,7 +314,7 @@ const ProgramLeaderboard: React.FC<{
                     boxShadow: `${accentColor}55 0px 4px 14px`,
                   }}>{index + 2}</Box>
                 </Box>
-                <Typography sx={{ color: '#E6EDF3', fontWeight: 400 }}>{(row as any).city}</Typography>
+                <Typography sx={{ color: '#E6EDF3', fontWeight: 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{(row as any).city}</Typography>
 
                 {program === 'DSP' && (
                   <>
