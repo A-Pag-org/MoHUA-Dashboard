@@ -39,21 +39,26 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
       {data.map((d) => {
         const color = getStatusColor(d.status);
         const safePct = isFinite(d.percentage) ? Math.max(0, Math.min(100, d.percentage)) : 0;
-        const labelTextColor = '#ffffff';
+        const labelTextColor = '#000000';
         const formattedFill = Number.isFinite(d.fill) ? Math.round(d.fill).toLocaleString() : '0';
         const formattedTrack = Number.isFinite(d.track) ? Math.round(d.track).toLocaleString() : '0';
         return (
           <Box key={d.id} sx={{ minHeight: heightPerRow }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5, gap: 1 }}>
-              <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 500, minWidth: 140 }}>
-                {d.label}
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+                <Typography variant="body2" sx={{ color: '#000000', fontWeight: 600, minWidth: 140 }}>
+                  {d.label}
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#000000', fontWeight: 500 }}>
+                  {`${formattedFill}${unit} of ${formattedTrack}${unit}`}
+                </Typography>
+              </Box>
             </Box>
 
             <Box
               sx={{
                 position: 'relative',
-                height: 2,
+                height: 4,
                 width: '100%',
                 borderRadius: 2,
                 // Stronger grey track behind the filled bar (superimposed look)
@@ -76,23 +81,7 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
                 }}
               />
 
-              {/* Absolute numbers on the left, percentage on the right, both above the line */}
-              <Typography
-                variant="caption"
-                sx={{
-                  position: 'absolute',
-                  left: 0,
-                  top: -16,
-                  transform: 'none',
-                  color: 'rgba(255,255,255,0.85)',
-                  fontWeight: 600,
-                  pointerEvents: 'none',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {`${formattedFill}${unit} of ${formattedTrack}${unit}`}
-              </Typography>
-
+              {/* Percentage on the right, above the line */}
               <Typography
                 variant="caption"
                 sx={{
@@ -125,10 +114,10 @@ const MicroBulletBars: React.FC<MicroBulletBarsProps> = ({ data, heightPerRow = 
           justifyContent: 'space-between',
         }}
       >
-        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
+        <Typography variant="caption" sx={{ color: '#000000', fontWeight: 600 }}>
           {`Totals: ${Math.round(totalFill).toLocaleString()}${unit} of ${Math.round(totalTrack).toLocaleString()}${unit}`}
         </Typography>
-        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
+        <Typography variant="caption" sx={{ color: '#000000' }}>
           {totalPct.toFixed(1)}%
         </Typography>
       </Box>
