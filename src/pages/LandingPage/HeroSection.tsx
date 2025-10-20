@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Box, Typography, Card, CardContent, Chip, CircularProgress, Collapse, IconButton, LinearProgress } from '@mui/material';
+import { Box, Typography, Card, CardContent, CircularProgress, Collapse, IconButton, LinearProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import InfoIcon from '@mui/icons-material/Info';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -22,12 +22,7 @@ const getPerformanceStatus = (
   return 'Unsatisfactory';
 };
 
-// Color scheme per user requirement for legend/chips
-const STATUS_COLORS = {
-  SATISFACTORY: '#4CAF50', // Green - >=90%
-  AVERAGE: '#FFC107',      // Amber - 50-89%
-  UNSATISFACTORY: '#F44336', // Red - <50%
-};
+// Status legend removed; no local color constants needed here
 
 // Header program button colors to ensure consistency with leaderboard tiles
 const HEADER_PROGRAM_COLORS = {
@@ -36,7 +31,7 @@ const HEADER_PROGRAM_COLORS = {
   'MRS': '#2171b5',
 } as const;
 
-// Helper for status legend colors is provided by STATUS_COLORS above.
+// Helper for status legend colors was removed with legend
 
 const ProgramTileCard = styled(Card)(() => ({
   minHeight: '280px',
@@ -81,35 +76,7 @@ const ProgramTileCard = styled(Card)(() => ({
   },
 }));
 
-const StatusChip = styled(Chip, {
-  shouldForwardProp: (prop) => prop !== 'status',
-})<{ status: string }>(({ theme, status }) => {
-  const getStatusColor = () => {
-    switch (status) {
-      case 'Satisfactory':
-        return DSP_COLORS.SATISFACTORY;
-      case 'Average':
-        return DSP_COLORS.AVERAGE;
-      case 'Unsatisfactory':
-        return DSP_COLORS.UNSATISFACTORY;
-      default:
-        return DSP_COLORS.AVERAGE;
-    }
-  };
-
-  return {
-    background: `linear-gradient(135deg, ${getStatusColor()}33 0%, ${getStatusColor()}1f 100%)`,
-  color: theme.palette.mode === 'light' ? '#000000' : '#E6EDF3',
-    fontWeight: 700,
-    fontSize: '0.72rem',
-    height: '24px',
-    borderRadius: '12px',
-    border: `1px solid ${getStatusColor()}3d`,
-    backdropFilter: 'blur(8px)',
-    WebkitBackdropFilter: 'blur(8px)',
-    boxShadow: `0 4px 14px ${getStatusColor()}1f`,
-  };
-});
+// StatusChip removed
 
 const CircularProgressIndicator: React.FC<{
   percentage: number;
@@ -244,6 +211,9 @@ const ProgramLeaderboard: React.FC<{
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
         overflow: 'hidden',
+        overflowX: 'hidden',
+        maxWidth: '100%',
+        minWidth: 0,
       }}
     >
       {/* Headings */}
@@ -262,6 +232,9 @@ const ProgramLeaderboard: React.FC<{
           py: 1,
           background: 'linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%)',
           borderBottom: '1px solid rgba(255,255,255,0.08)',
+          width: '100%',
+          minWidth: 0,
+          overflowX: 'hidden',
         }}
       >
         <Typography sx={headerStyles}>Rank</Typography>
@@ -290,10 +263,9 @@ const ProgramLeaderboard: React.FC<{
         <Typography sx={{ ...headerStyles, textAlign: 'right' }}>Status</Typography>
       </Box>
 
-      <Box sx={{ maxHeight: 260, overflowY: 'auto' }}>
+      <Box sx={{ maxHeight: 260, overflowY: 'auto', overflowX: 'hidden', width: '100%', minWidth: 0 }}>
         {sortedRows.map((row, index) => {
           const percentage = getPercentForProgramRow(program, row);
-          const status = getPerformanceStatus(percentage);
           return (
             <Box key={`${program}-${index}`}
               sx={{
@@ -315,6 +287,8 @@ const ProgramLeaderboard: React.FC<{
                       : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto) 110px',
                   alignItems: 'center',
                   gap: 1.5,
+                  width: '100%',
+                  minWidth: 0,
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -356,9 +330,8 @@ const ProgramLeaderboard: React.FC<{
                   </>
                 )}
 
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <StatusChip label={status} status={status} size="small" />
-                </Box>
+                {/* Status chip removed as requested */}
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }} />
               </Box>
               <LinearProgress
                 variant="determinate"
@@ -383,7 +356,6 @@ const ProgramLeaderboard: React.FC<{
 
 const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
   const color = getPerformanceColor(city.value);
-  const status = getPerformanceStatus(city.value);
   const [open, setOpen] = useState(false);
   const collapseId = `lb-${city.program.toLowerCase()}-${city.id}`;
 
@@ -463,7 +435,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
             : 'Percentage of Target achieved'}
         </Typography>
 
-        {/* Footer with metric info and status badge */}
+        {/* Footer with metric info */}
         <Box
           sx={{
             display: 'flex',
@@ -480,8 +452,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
               Top in {city.metric}
             </Typography>
           </Box>
-          {/* Status badge in bottom right */}
-          <StatusChip label={status} status={status} size="small" />
+          {/* Right side intentionally left blank (status removed) */}
         </Box>
 
         {/* Expandable Leaderboard */}
@@ -561,48 +532,7 @@ const HeroSection: React.FC = () => {
     }}>
       {/* Program legend removed as requested */}
 
-      {/* Bottom-right status legend (Satisfactory, Average, Unsatisfactory) */}
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: { xs: 8, md: 16 },
-          right: { xs: 8, md: 16 },
-          zIndex: 2,
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            gap: 2,
-            alignItems: 'center',
-            p: 1,
-            borderRadius: '12px',
-            background: 'rgba(16, 27, 42, 0.6)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)'
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-            <Box sx={{ width: 12, height: 12, bgcolor: STATUS_COLORS.SATISFACTORY, borderRadius: '3px' }} />
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
-              Satisfactory (≥90%)
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-            <Box sx={{ width: 12, height: 12, bgcolor: STATUS_COLORS.AVERAGE, borderRadius: '3px' }} />
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
-              Average (50-89%)
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-            <Box sx={{ width: 12, height: 12, bgcolor: STATUS_COLORS.UNSATISFACTORY, borderRadius: '3px' }} />
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
-              Unsatisfactory (&lt;50%)
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
+      {/* Status legend removed */}
       <Box sx={{ maxWidth: 1200, mx: 'auto', position: 'relative', zIndex: 1 }}>
         {/* Header Section */}
         <Box sx={{ textAlign: 'center', mb: 4 }}>
@@ -626,6 +556,7 @@ const HeroSection: React.FC = () => {
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
           gap: { xs: 2, md: 2.5 },
+          alignItems: 'start',
           mt: 3,
           mb: 4
         }}>
