@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Box, Typography, Card, CardContent, Chip, CircularProgress, Collapse, IconButton, LinearProgress } from '@mui/material';
+import { Box, Typography, Card, CardContent, CircularProgress, Collapse, IconButton, LinearProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import InfoIcon from '@mui/icons-material/Info';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -22,12 +22,7 @@ const getPerformanceStatus = (
   return 'Unsatisfactory';
 };
 
-// Color scheme per user requirement for legend/chips
-const STATUS_COLORS = {
-  SATISFACTORY: '#4CAF50', // Green - >=90%
-  AVERAGE: '#FFC107',      // Amber - 50-89%
-  UNSATISFACTORY: '#F44336', // Red - <50%
-};
+// Status legend removed; no local color constants needed here
 
 // Header program button colors to ensure consistency with leaderboard tiles
 const HEADER_PROGRAM_COLORS = {
@@ -36,7 +31,7 @@ const HEADER_PROGRAM_COLORS = {
   'MRS': '#2171b5',
 } as const;
 
-// Helper for status legend colors is provided by STATUS_COLORS above.
+// Helper for status legend colors was removed with legend
 
 const ProgramTileCard = styled(Card)(() => ({
   minHeight: '280px',
@@ -81,35 +76,7 @@ const ProgramTileCard = styled(Card)(() => ({
   },
 }));
 
-const StatusChip = styled(Chip, {
-  shouldForwardProp: (prop) => prop !== 'status',
-})<{ status: string }>(({ theme, status }) => {
-  const getStatusColor = () => {
-    switch (status) {
-      case 'Satisfactory':
-        return DSP_COLORS.SATISFACTORY;
-      case 'Average':
-        return DSP_COLORS.AVERAGE;
-      case 'Unsatisfactory':
-        return DSP_COLORS.UNSATISFACTORY;
-      default:
-        return DSP_COLORS.AVERAGE;
-    }
-  };
-
-  return {
-    background: `linear-gradient(135deg, ${getStatusColor()}33 0%, ${getStatusColor()}1f 100%)`,
-  color: theme.palette.mode === 'light' ? '#000000' : '#E6EDF3',
-    fontWeight: 700,
-    fontSize: '0.72rem',
-    height: '24px',
-    borderRadius: '12px',
-    border: `1px solid ${getStatusColor()}3d`,
-    backdropFilter: 'blur(8px)',
-    WebkitBackdropFilter: 'blur(8px)',
-    boxShadow: `0 4px 14px ${getStatusColor()}1f`,
-  };
-});
+// StatusChip removed
 
 const CircularProgressIndicator: React.FC<{
   percentage: number;
@@ -299,7 +266,6 @@ const ProgramLeaderboard: React.FC<{
       <Box sx={{ maxHeight: 260, overflowY: 'auto', overflowX: 'hidden', width: '100%', minWidth: 0 }}>
         {sortedRows.map((row, index) => {
           const percentage = getPercentForProgramRow(program, row);
-          const status = getPerformanceStatus(percentage);
           return (
             <Box key={`${program}-${index}`}
               sx={{
@@ -390,7 +356,6 @@ const ProgramLeaderboard: React.FC<{
 
 const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
   const color = getPerformanceColor(city.value);
-  const status = getPerformanceStatus(city.value);
   const [open, setOpen] = useState(false);
   const collapseId = `lb-${city.program.toLowerCase()}-${city.id}`;
 
