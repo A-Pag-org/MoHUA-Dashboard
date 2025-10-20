@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { Box, Container, Typography, Grid } from '@mui/material';
+import { Box, Container, Typography, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { DSP_COLORS } from '../../utils/constants';
 import {
   DSPComplaintData,
@@ -436,7 +436,85 @@ const StatsOverview: React.FC = () => {
         onLabelModeChange={setLabelMode}
         contentRef={contentRef}
       >
-        <ExpandedBarChart data={expandedData} labelMode={labelMode} />
+        {dialogTitle.startsWith('DSP') ? (
+          <Box
+            sx={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1,
+              width: '100%',
+              maxWidth: '100%',
+              minWidth: 0,
+              overflowX: 'hidden',
+            }}
+          >
+            {/* DSP Leaderboard Table: Rank, City, Raised, Resolved, Resolution % */}
+            <TableContainer
+              component={Paper}
+              sx={{
+                flex: 1,
+                minWidth: 0,
+                maxWidth: '100%',
+                overflowX: 'hidden',
+                overflowY: 'auto',
+                bgcolor: 'background.paper',
+              }}
+            >
+              <Table size="small" stickyHeader aria-label="dsp leaderboard" sx={{ tableLayout: 'fixed', width: '100%' }}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ width: { xs: '12%', md: '10%' }, fontWeight: 700 }}>Rank</TableCell>
+                    <TableCell sx={{ width: { xs: '36%', md: '40%' }, fontWeight: 700 }}>City</TableCell>
+                    <TableCell sx={{ width: { xs: '17%', md: '16%' }, fontWeight: 700 }}>Raised</TableCell>
+                    <TableCell sx={{ width: { xs: '17%', md: '16%' }, fontWeight: 700 }}>Resolved</TableCell>
+                    <TableCell sx={{ width: { xs: '18%', md: '18%' }, fontWeight: 700 }}>Resolution %</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {expandedData
+                    .filter((row) => row.city.toLowerCase() !== 'delhi')
+                    .sort((a, b) => {
+                      const pctDiff = b.percentage - a.percentage;
+                      if (pctDiff !== 0) return pctDiff;
+                      return b.actualOrResolved - a.actualOrResolved;
+                    })
+                    .map((row, idx) => {
+                      const rank = idx + 2; // Start from 2 since Delhi is Rank 1
+                      return (
+                        <TableRow key={`${row.city}-${idx}`} hover>
+                          <TableCell
+                            sx={{
+                              whiteSpace: 'normal',
+                              wordBreak: 'break-word',
+                              overflowWrap: 'anywhere',
+                              fontWeight: 600,
+                            }}
+                          >
+                            {rank}
+                          </TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+                            {row.city}
+                          </TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+                            {Math.round(row.raisedOrTarget).toLocaleString()}
+                          </TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+                            {Math.round(row.actualOrResolved).toLocaleString()}
+                          </TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+                            {row.percentage.toFixed(1)}%
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        ) : (
+          <ExpandedBarChart data={expandedData} labelMode={labelMode} />
+        )}
       </ExpandChartDialog>
 
     </Container>
