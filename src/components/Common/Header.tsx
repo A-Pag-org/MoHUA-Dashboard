@@ -39,7 +39,9 @@ const Header: React.FC = () => {
     <AppBar 
       position="sticky" 
       sx={{ 
-        background: 'linear-gradient(135deg, rgba(7, 14, 28, 0.85) 0%, rgba(16, 27, 42, 0.85) 100%)',
+        background: isLandingPage
+          ? '#D5D5D5'
+          : 'linear-gradient(135deg, rgba(7, 14, 28, 0.85) 0%, rgba(16, 27, 42, 0.85) 100%)',
         boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
         top: 0,
         zIndex: 1100,
