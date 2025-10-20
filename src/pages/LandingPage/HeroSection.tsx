@@ -236,12 +236,7 @@ const ProgramLeaderboard: React.FC<{
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns:
-            program === 'DSP'
-              ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
-              : program === 'C&D'
-              ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
-              : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto)',
+          gridTemplateColumns: '56px 1fr minmax(120px, auto)',
           alignItems: 'center',
           gap: 1,
           px: 2,
@@ -256,25 +251,13 @@ const ProgramLeaderboard: React.FC<{
         <Typography sx={headerStyles}>Rank</Typography>
         <Typography sx={headerStyles}>City</Typography>
         {program === 'DSP' && (
-          <>
-            <Typography sx={headerStyles}>Raised</Typography>
-            <Typography sx={headerStyles}>Resolved</Typography>
-            <Typography sx={headerStyles}>Resolution %</Typography>
-          </>
+          <Typography sx={headerStyles}>Resolution %</Typography>
         )}
         {program === 'C&D' && (
-          <>
-            <Typography sx={headerStyles}>Target</Typography>
-            <Typography sx={headerStyles}>Actual</Typography>
-            <Typography sx={headerStyles}>Achievement %</Typography>
-          </>
+          <Typography sx={headerStyles}>Achievement %</Typography>
         )}
         {program === 'MRS' && (
-          <>
-            <Typography sx={headerStyles}>Target KM</Typography>
-            <Typography sx={headerStyles}>Actual KM</Typography>
-            <Typography sx={headerStyles}>Coverage %</Typography>
-          </>
+          <Typography sx={headerStyles}>Coverage %</Typography>
         )}
       </Box>
 
@@ -294,12 +277,7 @@ const ProgramLeaderboard: React.FC<{
               <Box
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns:
-                    program === 'DSP'
-                      ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
-                      : program === 'C&D'
-                      ? '56px 1fr repeat(2, minmax(80px, auto)) minmax(120px, auto)'
-                      : '56px 1fr repeat(2, minmax(110px, auto)) minmax(120px, auto)',
+                  gridTemplateColumns: '56px 1fr minmax(120px, auto)',
                   alignItems: 'center',
                   gap: 1,
                   width: '100%',
@@ -320,30 +298,7 @@ const ProgramLeaderboard: React.FC<{
                   }}>{index + 2}</Box>
                 </Box>
                 <Typography sx={{ color: '#E6EDF3', fontWeight: 400 }}>{(row as any).city}</Typography>
-
-                {program === 'DSP' && (
-                  <>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as DSPRow).raised)}</Typography>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as DSPRow).resolved)}</Typography>
-                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
-                  </>
-                )}
-
-                {program === 'C&D' && (
-                  <>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as CDRow).target)}</Typography>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as CDRow).actual)}</Typography>
-                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
-                  </>
-                )}
-
-                {program === 'MRS' && (
-                  <>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as MRSRow).targetRoadLength)}</Typography>
-                    <Typography sx={{ color: 'rgba(230,237,243,0.9)', fontVariantNumeric: 'tabular-nums' }}>{formatCompactNumber((row as MRSRow).actualRoadLength)}</Typography>
-                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
-                  </>
-                )}
+                <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
               </Box>
               <LinearProgress
                 variant="determinate"
