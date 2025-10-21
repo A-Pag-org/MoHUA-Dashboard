@@ -319,19 +319,19 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 variant="h6" 
                 sx={(theme) => ({ 
                   fontWeight: 700,
-                  color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary,
+                  color: '#000000',
                   fontSize: '1.05rem',
                   lineHeight: 1.3,
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   pr: 1,
-                  textShadow: theme.palette.mode === 'dark' ? '0 2px 6px rgba(0,0,0,0.35)' : 'none',
+                  textShadow: 'none',
                   letterSpacing: '0.3px',
-                  background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.22) 0%, rgba(76, 175, 80, 0.12) 100%)',
+                  background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0.12) 100%)',
                   padding: '6px 14px',
                   borderRadius: '6px',
-                  border: '1px solid rgba(76, 175, 80, 0.35)',
+                  border: '1px solid rgba(0, 0, 0, 0.35)',
                   backdropFilter: 'blur(8px)',
                   WebkitBackdropFilter: 'blur(8px)',
                   width: 'fit-content',
@@ -362,14 +362,14 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 alignItems: 'center',
-                background: 'rgba(76, 175, 80, 0.12)',
+                background: 'rgba(0, 0, 0, 0.12)',
                 padding: '6px 10px',
                 borderRadius: '8px',
               }}>
                 <Typography variant="body2" sx={{ color: '#000000', fontWeight: 500 }}>
                   Raised:
                 </Typography>
-                <Typography variant="body2" sx={(theme) => ({ fontWeight: 'bold', color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary })}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#000000' }}>
                   {city.complaintsRaised.toLocaleString()}
                 </Typography>
               </Box>
@@ -378,14 +378,14 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 alignItems: 'center',
-                background: 'rgba(76, 175, 80, 0.12)',
+                background: 'rgba(0, 0, 0, 0.12)',
                 padding: '6px 10px',
                 borderRadius: '8px',
               }}>
                 <Typography variant="body2" sx={{ color: '#000000', fontWeight: 500 }}>
                   Resolved:
                 </Typography>
-                <Typography variant="body2" sx={(theme) => ({ fontWeight: 'bold', color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary })}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#000000' }}>
                   {city.complaintsResolved.toLocaleString()}
                 </Typography>
               </Box>
