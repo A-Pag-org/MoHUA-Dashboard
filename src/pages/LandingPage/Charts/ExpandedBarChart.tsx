@@ -34,6 +34,10 @@ const renderLabel = (props: any, labelMode: LabelMode) => {
   const tx = fitsInside ? x + width - 4 : x + width + 6;
   const anchor = fitsInside ? 'end' : 'start';
   const fill = fitsInside ? '#ffffff' : 'rgba(255,255,255,0.85)';
+  // Choose a sensible bar thickness based on number of categories
+  const n = rechartsData.length;
+  const computedBarSize = n <= 6 ? 28 : n <= 10 ? 20 : 14;
+
   return (
     <text x={tx} y={y + height / 2} textAnchor={anchor} dominantBaseline="central" fill={fill} fontSize={12} fontWeight={400}>
       {text}
@@ -124,8 +128,8 @@ const ExpandedBarChart: React.FC<ExpandedBarChartProps> = ({ data, labelMode }) 
                 props?.payload ? { city: props.payload.city, percentage: `${props.payload.percentage.toFixed(1)}%`, status: props.payload.status } : undefined,
               ]}
             />
-            <Bar dataKey="base" name="Target/Raised" fill={DSP_COLORS.RAISED} radius={[6, 6, 0, 0]} barSize={1.5} />
-            <Bar dataKey="value" name="Actual/Resolved" radius={[6, 6, 0, 0]} fillOpacity={1} barSize={1.5}>
+            <Bar dataKey="base" name="Target/Raised" fill={DSP_COLORS.RAISED} radius={[6, 6, 0, 0]} barSize={computedBarSize} />
+            <Bar dataKey="value" name="Actual/Resolved" radius={[6, 6, 0, 0]} fillOpacity={1} barSize={computedBarSize}>
               {rechartsData.map((row, idx) => (
                 <Cell key={`c-${idx}`} fill={getColor(row.status)} />
               ))}
