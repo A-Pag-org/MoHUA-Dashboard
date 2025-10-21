@@ -495,12 +495,6 @@ const CityTiles: React.FC = () => {
     setSelectedCity(null);
   };
 
-  // Get statistics for the header
-  const totalCities = MOCK_DSP_CITIES.length;
-  const satisfactoryCities = MOCK_DSP_CITIES.filter(city => city.resolutionPercentage >= 90).length;
-  const averageCities = MOCK_DSP_CITIES.filter(city => city.resolutionPercentage >= 50 && city.resolutionPercentage < 90).length;
-  const unsatisfactoryCities = MOCK_DSP_CITIES.filter(city => city.resolutionPercentage < 50).length;
-  
   // Calculate total statistics from actual data
   const totalRaised = MOCK_DSP_CITIES.reduce((sum, city) => sum + city.complaintsRaised, 0);
   const totalResolved = MOCK_DSP_CITIES.reduce((sum, city) => sum + city.complaintsResolved, 0);
