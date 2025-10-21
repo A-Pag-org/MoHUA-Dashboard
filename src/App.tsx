@@ -65,6 +65,16 @@ const ComingSoonPage = ({ title, subtitle }: { title: string; subtitle: string }
           Coming Soon
         </Typography>
         <Typography 
+          variant="subtitle1" 
+          sx={{ 
+            color: 'rgba(255, 255, 255, 0.9)', 
+            marginBottom: '16px',
+            fontWeight: 500,
+          }}
+        >
+          {subtitle}
+        </Typography>
+        <Typography 
           variant="h6" 
           sx={{ 
             color: 'rgba(255, 255, 255, 0.8)', 
