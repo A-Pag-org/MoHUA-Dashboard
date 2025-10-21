@@ -55,7 +55,7 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
 
   // Bars view colored per Satisfactory/Average/Unsatisfactory legend
   const BarsView = (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
       {processed.rows.map((r: ProcessedRow, idx: number) => (
         <Box key={idx}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5, gap: 1, flexWrap: 'wrap' }}>
@@ -63,7 +63,7 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
               {r.category}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.7rem' }}>
+              <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>
                 {r.resolved.toLocaleString()} / {r.raised.toLocaleString()}
               </Typography>
             </Box>
@@ -149,8 +149,8 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
           variant="h6"
           sx={{
             position: 'absolute',
-            top: 0,
-            left: 0,
+            top: 8,
+            left: 8,
             fontWeight: 700,
             color: '#ffffff',
             textShadow: '0 2px 4px rgba(0,0,0,0.3)',
