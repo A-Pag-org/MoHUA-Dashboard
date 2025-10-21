@@ -136,9 +136,9 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
         WebkitBackdropFilter: 'blur(10px)',
         border: '1px solid rgba(255, 255, 255, 0.08)',
         boxShadow: '0 8px 24px rgba(0,0,0,0.22)',
-        p: 1.5,
+        p: 1.25,
         pb: 3,
-        mt: 1.5,
+        mt: 0,
         width: '100%',
       }}
     >

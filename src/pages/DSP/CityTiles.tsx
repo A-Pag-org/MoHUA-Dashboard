@@ -471,7 +471,7 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
         }
       }}
     >
-      <DialogContent sx={{ p: 3, background: 'transparent', overflow: 'auto', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <DialogContent sx={{ p: 2.5, background: 'transparent', overflow: 'auto', height: '100%', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
         <CategoryBarChart 
           data={MOCK_CATEGORY_DATA[city.id] || []} 
           cityName={city.cityName}
