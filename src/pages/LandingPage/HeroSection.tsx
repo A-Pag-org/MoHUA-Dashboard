@@ -33,7 +33,9 @@ const HEADER_PROGRAM_COLORS = {
 
 // Helper for status legend colors was removed with legend
 
-const ProgramTileCard = styled(Card)(() => ({
+const ProgramTileCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'accentColor',
+})<{ accentColor: string }>(({ accentColor }) => ({
   minHeight: '280px',
   height: 'auto',
   borderRadius: '16px',
@@ -71,7 +73,7 @@ const ProgramTileCard = styled(Card)(() => ({
     left: 0,
     width: '3px',
     height: '100%',
-    background: 'linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.7) 100%)',
+    background: `linear-gradient(180deg, ${accentColor} 0%, ${accentColor}b3 100%)`,
     borderRadius: '0 1.5px 1.5px 0',
   },
 }));
@@ -354,7 +356,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
   };
 
   return (
-    <ProgramTileCard>
+    <ProgramTileCard accentColor={HEADER_PROGRAM_COLORS[city.program]}>
       <CardContent
         sx={{
           padding: '16px',
