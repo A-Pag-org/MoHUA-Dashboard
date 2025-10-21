@@ -14,6 +14,9 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import InfoIcon from '@mui/icons-material/Info';
+import FlashOnIcon from '@mui/icons-material/FlashOn';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import { DSPCity } from '../../types';
 import { DSP_COLORS, MOCK_DSP_CITIES, MOCK_CATEGORY_DATA } from '../../utils/constants';
 import CategoryBarChart from './CategoryBarChart';
@@ -92,6 +95,34 @@ const StatusChip = styled(Chip, {
     boxShadow: `0 4px 14px ${getStatusColor()}1f`,
   };
 });
+
+// Performance Tile for resolution time metrics
+const ResolutionTimeCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'bgColor',
+})<{ bgColor: string }>(({ theme, bgColor }) => ({
+  borderRadius: '20px',
+  background: theme.palette.mode === 'dark' 
+    ? `linear-gradient(135deg, ${bgColor}28 0%, ${bgColor}18 100%)`
+    : `linear-gradient(135deg, ${bgColor} 0%, ${bgColor}dd 100%)`,
+  backdropFilter: 'blur(12px)',
+  WebkitBackdropFilter: 'blur(12px)',
+  border: theme.palette.mode === 'dark' 
+    ? `1.5px solid ${bgColor}50`
+    : `1.5px solid ${bgColor}`,
+  boxShadow: theme.palette.mode === 'dark'
+    ? `0 12px 36px ${bgColor}35`
+    : `0 12px 36px ${bgColor}40`,
+  minHeight: '160px',
+  position: 'relative',
+  overflow: 'hidden',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? `0 16px 48px ${bgColor}45`
+      : `0 16px 48px ${bgColor}50`,
+  },
+}));
 
 // Circular Progress Indicator Component
 const CircularProgressIndicator: React.FC<{ percentage: number; color: string; size?: number }> = ({ 
@@ -477,13 +508,11 @@ const CityTiles: React.FC = () => {
 
   return (
     <Box>
-      {/* Header Section */}
-      <Box sx={{ mb: 3 }}>
-
-        {/* Total Summary Card */}
-        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
+      {/* Merged Header Section: Overall Delhi NCR Performance + Performance Metrics */}
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        {/* Left: Overall Delhi NCR Performance Donut Chart */}
+        <Grid item xs={12} md={6}>
           <Paper sx={{ 
-            maxWidth: 800, 
             borderRadius: '24px', 
             background: (theme) => theme.palette.mode === 'dark' ? 'rgba(16, 27, 42, 0.65)' : 'rgba(255, 255, 255, 0.92)',
             backdropFilter: 'blur(20px)',
@@ -492,6 +521,7 @@ const CityTiles: React.FC = () => {
             boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 20px 60px rgba(0,0,0,0.4)' : '0 20px 60px rgba(0,0,0,0.08)',
             overflow: 'hidden',
             position: 'relative',
+            height: '100%',
             '&::before': {
               content: '""',
               position: 'absolute',
@@ -527,95 +557,157 @@ const CityTiles: React.FC = () => {
               </Box>
             </CardContent>
           </Paper>
-        </Box>
+        </Grid>
 
-        {/* Summary Statistics */}
-        <Grid container spacing={3} sx={{ mb: 3 }}>
-          <Grid item xs={6} sm={3}>
-            <Paper sx={{ 
-              textAlign: 'center', 
-              borderRadius: '16px', 
-              background: 'rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              border: (theme) => theme.palette.mode === 'dark' ? '2px solid rgba(255, 255, 255, 0.35)' : '2px solid rgba(0, 0, 0, 0.15)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-            }}>
-              <CardContent sx={{ py: 3 }}>
-                <Typography variant="h4" sx={(theme) => ({ fontWeight: 800, color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000', textShadow: theme.palette.mode === 'dark' ? '0 2px 4px rgba(0,0,0,0.3)' : '0 1px 2px rgba(0,0,0,0.25)' })}>
-                  {totalCities}
-                </Typography>
-                <Typography variant="body2" sx={(theme) => ({ color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#000000', fontWeight: 500 })}>
-                  Total Cities
-                </Typography>
-              </CardContent>
-            </Paper>
-          </Grid>
-          
-          <Grid item xs={6} sm={3}>
-            <Paper sx={{ 
-              textAlign: 'center', 
-              borderRadius: '16px',
-              background: `rgba(76, 175, 80, 0.2)`,
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              border: '1px solid rgba(76, 175, 80, 0.3)',
-              boxShadow: '0 8px 32px rgba(76, 175, 80, 0.1)',
-            }}>
-              <CardContent sx={{ py: 3 }}>
-                <Typography variant="h4" sx={{ fontWeight: 800, color: DSP_COLORS.SATISFACTORY, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                  {satisfactoryCities}
-                </Typography>
-                <Typography variant="body2" sx={(theme) => ({ color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)', fontWeight: 500 })}>
-                  Satisfactory (≥90%)
-                </Typography>
-              </CardContent>
-            </Paper>
-          </Grid>
-          
-          <Grid item xs={6} sm={3}>
-            <Paper sx={{ 
-              textAlign: 'center', 
-              borderRadius: '16px',
-              background: `rgba(255, 193, 7, 0.2)`,
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 193, 7, 0.3)',
-              boxShadow: '0 8px 32px rgba(255, 193, 7, 0.1)',
-            }}>
-              <CardContent sx={{ py: 3 }}>
-                <Typography variant="h4" sx={{ fontWeight: 800, color: DSP_COLORS.AVERAGE, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                  {averageCities}
-                </Typography>
-                <Typography variant="body2" sx={(theme) => ({ color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)', fontWeight: 500 })}>
-                  Average (50-89%)
-                </Typography>
-              </CardContent>
-            </Paper>
-          </Grid>
-          
-          <Grid item xs={6} sm={3}>
-            <Paper sx={{ 
-              textAlign: 'center', 
-              borderRadius: '16px',
-              background: `rgba(244, 67, 54, 0.2)`,
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              border: '1px solid rgba(244, 67, 54, 0.3)',
-              boxShadow: '0 8px 32px rgba(244, 67, 54, 0.1)',
-            }}>
-              <CardContent sx={{ py: 3 }}>
-                <Typography variant="h4" sx={{ fontWeight: 800, color: DSP_COLORS.UNSATISFACTORY, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                  {unsatisfactoryCities}
-                </Typography>
-                <Typography variant="body2" sx={(theme) => ({ color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)', fontWeight: 500 })}>
-                  Needs Attention (&lt;50%)
-                </Typography>
-              </CardContent>
-            </Paper>
+        {/* Right: Performance Metrics - 3 Tiles */}
+        <Grid item xs={12} md={6}>
+          <Grid container spacing={3} sx={{ height: '100%' }}>
+            {/* Fastest Resolution - Green Tile */}
+            <Grid item xs={12}>
+              <ResolutionTimeCard bgColor="#4CAF50">
+                <CardContent sx={{ p: 3, position: 'relative' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography 
+                        variant="caption" 
+                        sx={{ 
+                          color: '#000000', 
+                          fontWeight: 600,
+                          fontSize: '0.75rem',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                        }}
+                      >
+                        City with Fastest Issue Resolution
+                      </Typography>
+                    </Box>
+                    <FlashOnIcon sx={{ fontSize: 40, color: '#000000', ml: 1 }} />
+                  </Box>
+                  
+                  <Typography 
+                    variant="h3" 
+                    sx={{ 
+                      fontWeight: 800, 
+                      color: '#000000',
+                      mb: 0.5,
+                      textShadow: 'none',
+                    }}
+                  >
+                    Noida
+                  </Typography>
+                  
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      color: '#000000', 
+                      fontWeight: 500,
+                      fontSize: '0.95rem',
+                    }}
+                  >
+                    Noida: 1.8 days avg
+                  </Typography>
+                </CardContent>
+              </ResolutionTimeCard>
+            </Grid>
+
+            {/* Slowest Resolution - Red Tile */}
+            <Grid item xs={12}>
+              <ResolutionTimeCard bgColor="#F44336">
+                <CardContent sx={{ p: 3, position: 'relative' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography 
+                        variant="caption" 
+                        sx={{ 
+                          color: '#000000', 
+                          fontWeight: 600,
+                          fontSize: '0.75rem',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                        }}
+                      >
+                        City with Slowest Issue Resolution
+                      </Typography>
+                    </Box>
+                    <AccessTimeIcon sx={{ fontSize: 40, color: '#000000', ml: 1 }} />
+                  </Box>
+                  
+                  <Typography 
+                    variant="h3" 
+                    sx={{ 
+                      fontWeight: 800, 
+                      color: '#000000',
+                      mb: 0.5,
+                      textShadow: 'none',
+                    }}
+                  >
+                    Ghaziabad
+                  </Typography>
+                  
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      color: '#000000', 
+                      fontWeight: 500,
+                      fontSize: '0.95rem',
+                    }}
+                  >
+                    Ghaziabad: 5.2 days avg
+                  </Typography>
+                </CardContent>
+              </ResolutionTimeCard>
+            </Grid>
+
+            {/* Average Resolution Time - Blue Tile */}
+            <Grid item xs={12}>
+              <ResolutionTimeCard bgColor="#2196F3">
+                <CardContent sx={{ p: 3, position: 'relative' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography 
+                        variant="caption" 
+                        sx={{ 
+                          color: '#000000', 
+                          fontWeight: 600,
+                          fontSize: '0.75rem',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                        }}
+                      >
+                        Average Issue Resolution Time by City
+                      </Typography>
+                    </Box>
+                    <TrackChangesIcon sx={{ fontSize: 40, color: '#000000', ml: 1 }} />
+                  </Box>
+                  
+                  <Typography 
+                    variant="h3" 
+                    sx={{ 
+                      fontWeight: 800, 
+                      color: '#000000',
+                      mb: 0.5,
+                      textShadow: 'none',
+                    }}
+                  >
+                    3.4 days
+                  </Typography>
+                  
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      color: '#000000', 
+                      fontWeight: 500,
+                      fontSize: '0.95rem',
+                    }}
+                  >
+                    Avg. Time across all cities
+                  </Typography>
+                </CardContent>
+              </ResolutionTimeCard>
+            </Grid>
           </Grid>
         </Grid>
-      </Box>
+      </Grid>
 
       {/* City Tiles Grid */}
       <Grid container spacing={2}>
