@@ -1,16 +1,10 @@
 import React from 'react';
 import { Box, Container } from '@mui/material';
 import CityTiles from './CityTiles';
-import DelhiNCRPerformanceTile from '../../components/DelhiNCRPerformanceTile';
 import Header from '../../components/Common/Header';
-import { useLocation } from 'react-router-dom';
 
 
 const DSPDashboard: React.FC = () => {
-  const location = useLocation();
-  const sectionParam = new URLSearchParams(location.search).get('section');
-  const selectedSection: 'citywise' | 'performance' = sectionParam === 'performance' ? 'performance' : 'citywise';
-
   return (
     <Box sx={(theme) => ({ 
       minHeight: '100vh', 
@@ -34,11 +28,7 @@ const DSPDashboard: React.FC = () => {
       <Header />
 
       <Container maxWidth="xl" sx={{ padding: '16px 12px', position: 'relative', zIndex: 1 }}>
-        {selectedSection === 'citywise' ? (
-          <CityTiles />
-        ) : (
-          <DelhiNCRPerformanceTile />
-        )}
+        <CityTiles />
       </Container>
     </Box>
   );

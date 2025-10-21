@@ -27,13 +27,6 @@ const Header: React.FC = () => {
 
   const isDSP = location.pathname.startsWith('/dsp');
   const isLandingPage = location.pathname === '/';
-  const dspSectionParam = new URLSearchParams(location.search).get('section');
-  const dspSection = dspSectionParam === 'performance' ? 'performance' : 'citywise';
-
-  const handleDspSectionNav = (section: 'citywise' | 'performance') => {
-    if (!isDSP) return;
-    navigate(`/dsp?section=${section}`);
-  };
 
   return (
     <AppBar 
@@ -82,25 +75,6 @@ const Header: React.FC = () => {
           {/* Keep abbreviation for tests without displaying it */}
           <Typography sx={{ display: 'none' }}>MoHUA</Typography>
         </Box>
-
-        {isDSP && (
-          <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <PillButton
-              type="button"
-              selected={dspSection === 'citywise'}
-              onClick={() => handleDspSectionNav('citywise')}
-            >
-              City Overview
-            </PillButton>
-            <PillButton
-              type="button"
-              selected={dspSection === 'performance'}
-              onClick={() => handleDspSectionNav('performance')}
-            >
-              Performance
-            </PillButton>
-          </Box>
-        )}
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {!isDSP && (
