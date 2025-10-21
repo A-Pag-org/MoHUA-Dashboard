@@ -163,7 +163,7 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
               </Typography>
             </Box>
           </Box>
-          <Box sx={{ position: 'relative', height: '20px', background: '#363636', borderRadius: '10px', overflow: 'hidden' }}>
+          <Box sx={{ position: 'relative', height: '15px', background: '#363636', borderRadius: '10px', overflow: 'hidden' }}>
             <Box sx={{ position: 'absolute', inset: 0, width: `${Math.min(r.resolutionRate, 100)}%`, background: r.category === 'Other' ? OTHER_COLOR : r.color, boxShadow: `0 0 8px ${r.color}55`, transition: 'width 0.5s ease' }} />
           </Box>
         </Box>
