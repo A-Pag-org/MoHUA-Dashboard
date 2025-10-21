@@ -143,25 +143,27 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
       }}
     >
       {/* Header */}
-      <Box sx={{ mb: 1.25, position: 'relative' }}>
-        {/* City name - Top Left */}
-        <Typography
-          variant="h6"
-          sx={{
-            position: 'absolute',
-            top: 8,
-            left: 8,
-            fontWeight: 700,
-            color: '#ffffff',
-            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-            fontSize: '1.5rem',
-          }}
-        >
-          {cityName}
-        </Typography>
+      <Box sx={{ mb: 1.25, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        {/* City name - Left */}
+        <Box sx={{ flex: '0 0 auto', minWidth: 0 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              color: '#ffffff',
+              textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+              fontSize: '1.5rem',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {cityName}
+          </Typography>
+        </Box>
         
         {/* Title - Centered */}
-        <Box sx={{ textAlign: 'center' }}>
+        <Box sx={{ flex: '1 1 auto', textAlign: 'center', px: 2 }}>
           <Typography
             variant="body1"
             sx={{
@@ -186,6 +188,9 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
             {`${processed.totalResolved.toLocaleString()} / ${processed.totalRaised.toLocaleString()} • ${processed.overallRate.toFixed(1)}%`}
           </Typography>
         </Box>
+        
+        {/* Right spacer for balance */}
+        <Box sx={{ flex: '0 0 auto', minWidth: 0, width: '120px' }} />
       </Box>
 
       {BarsView}
