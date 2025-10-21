@@ -5,7 +5,6 @@ import { useTheme } from '@mui/material/styles';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import PillButton from './PillButton';
-import ArrowBack from '@mui/icons-material/ArrowBack';
 // no custom StyledButton; use shared PillButton to match landing page buttons
 
 const Header: React.FC = () => {
@@ -25,8 +24,56 @@ const Header: React.FC = () => {
     return location.pathname === path;
   };
 
-  const isDSP = location.pathname.startsWith('/dsp');
-  const isLandingPage = location.pathname === '/';
+  const pathname = location.pathname;
+  const isLandingPage = pathname === '/';
+
+  // Determine the current section based on path
+  const currentProgram: 'DSP' | 'C&D' | 'MRS' | 'HOME' = pathname.startsWith('/dsp')
+    ? 'DSP'
+    : pathname.startsWith('/cd')
+      ? 'C&D'
+      : pathname.startsWith('/mrs')
+        ? 'MRS'
+        : 'HOME';
+
+  // Build visible tabs based on current section
+  const visibleTabs = React.useMemo(() => {
+    switch (currentProgram) {
+      case 'DSP':
+        return [
+          { label: 'Home', path: '/' },
+          { label: 'C&D', path: '/cd' },
+          { label: 'MRS', path: '/mrs' },
+        ];
+      case 'C&D':
+        return [
+          { label: 'Home', path: '/' },
+          { label: 'DSP', path: '/dsp' },
+          { label: 'MRS', path: '/mrs' },
+        ];
+      case 'MRS':
+        return [
+          { label: 'Home', path: '/' },
+          { label: 'DSP', path: '/dsp' },
+          { label: 'C&D', path: '/cd' },
+        ];
+      default: // HOME and any other
+        return [
+          { label: 'DSP', path: '/dsp' },
+          { label: 'C&D', path: '/cd' },
+          { label: 'MRS', path: '/mrs' },
+        ];
+    }
+  }, [currentProgram]);
+
+  // Apply color accents for landing page program buttons
+  const getLandingSx = (path: string) => {
+    if (!isLandingPage) return undefined;
+    if (path === '/dsp') return { backgroundColor: '#08306b', '&:hover': { backgroundColor: '#08306b' } };
+    if (path === '/cd') return { backgroundColor: '#08519c', '&:hover': { backgroundColor: '#08519c' } };
+    if (path === '/mrs') return { backgroundColor: '#2171b5', '&:hover': { backgroundColor: '#2171b5' } };
+    return undefined;
+  };
 
   return (
     <AppBar 
@@ -45,15 +92,6 @@ const Header: React.FC = () => {
     >
       <Toolbar sx={{ justifyContent: 'space-between', padding: '0 24px' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {isDSP && (
-            <IconButton
-              aria-label="Back to landing"
-              onClick={(e) => handleNavigation('/', e)}
-              sx={{ color: '#ffffff', mr: 1.5 }}
-            >
-              <ArrowBack />
-            </IconButton>
-          )}
           <Box
             component="img"
             src="https://www.presentations.gov.in/wp-content/uploads/2020/01/NE_Preview1.png"
@@ -77,34 +115,17 @@ const Header: React.FC = () => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {!isDSP && (
-            <>
-              <PillButton
-                type="button"
-                selected={isSelected('/dsp')}
-                onClick={(e) => handleNavigation('/dsp', e)}
-                sx={isLandingPage ? { backgroundColor: '#08306b', '&:hover': { backgroundColor: '#08306b' } } : undefined}
-              >
-                DSP
-              </PillButton>
-              <PillButton
-                type="button"
-                selected={isSelected('/cd')}
-                onClick={(e) => handleNavigation('/cd', e)}
-                sx={isLandingPage ? { backgroundColor: '#08519c', '&:hover': { backgroundColor: '#08519c' } } : undefined}
-              >
-                C&D
-              </PillButton>
-              <PillButton
-                type="button"
-                selected={isSelected('/mrs')}
-                onClick={(e) => handleNavigation('/mrs', e)}
-                sx={isLandingPage ? { backgroundColor: '#2171b5', '&:hover': { backgroundColor: '#2171b5' } } : undefined}
-              >
-                MRS
-              </PillButton>
-            </>
-          )}
+          {visibleTabs.map((tab) => (
+            <PillButton
+              key={tab.path}
+              type="button"
+              selected={isSelected(tab.path)}
+              onClick={(e) => handleNavigation(tab.path, e)}
+              sx={getLandingSx(tab.path)}
+            >
+              {tab.label}
+            </PillButton>
+          ))}
           <IconButton
             aria-label="toggle theme"
             onClick={() => window.dispatchEvent(new Event('toggle-color-mode'))}
