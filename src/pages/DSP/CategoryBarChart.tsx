@@ -169,52 +169,17 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
         </Box>
       ))}
       
-      {/* Performance Legend */}
-      <Box sx={{ 
-        mt: 3, 
-        pt: 2,
-        borderTop: '1px solid rgba(255,255,255,0.1)',
-        display: 'flex', 
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-        <Box sx={{ display: 'flex', gap: 3, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box sx={{ 
-              width: 14, 
-              height: 14, 
-              borderRadius: '50%', 
-              background: '#4CAF50',
-              boxShadow: '0 0 8px #4CAF5040',
-            }} />
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
-              Satisfactory (≥90%)
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box sx={{ 
-              width: 14, 
-              height: 14, 
-              borderRadius: '50%', 
-              background: '#FFD54F',
-              boxShadow: '0 0 8px #FFD54F40',
-            }} />
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
-              Average (50-89%)
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box sx={{ 
-              width: 14, 
-              height: 14, 
-              borderRadius: '50%', 
-              background: '#F44336',
-              boxShadow: '0 0 8px #F4433640',
-            }} />
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
-              Unsatisfactory (&lt;50%)
-            </Typography>
-          </Box>
+      {/* Category Legend (color per category) */}
+      <Box sx={{ mt: 3, pt: 2, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
+          {processed.rows.map((r: ProcessedRow, idx: number) => (
+            <Box key={`bars-leg-${idx}`} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ width: 12, height: 12, borderRadius: '3px', background: r.category === 'Other' ? OTHER_COLOR : r.color, boxShadow: `0 0 6px ${r.color}40` }} />
+              <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
+                {r.category}
+              </Typography>
+            </Box>
+          ))}
         </Box>
       </Box>
     </Box>
