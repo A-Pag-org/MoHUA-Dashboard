@@ -348,9 +348,9 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
               <Typography 
                 variant="h6" 
-                sx={{ 
+                sx={(theme) => ({ 
                   fontWeight: 700,
-                  color: '#000000',
+                  color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
                   fontSize: '1.05rem',
                   lineHeight: 1.3,
                   whiteSpace: 'nowrap',
@@ -367,7 +367,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                   WebkitBackdropFilter: 'blur(8px)',
                   width: 'fit-content',
                   maxWidth: '65%',
-                }}
+                })}
               >
                 {city.cityName}
               </Typography>
@@ -471,7 +471,7 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
         }
       }}
     >
-      <DialogContent sx={{ p: 3, background: 'transparent', overflow: 'auto', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <DialogContent sx={{ p: 2.5, background: 'transparent', overflow: 'auto', height: '100%', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
         <CategoryBarChart 
           data={MOCK_CATEGORY_DATA[city.id] || []} 
           cityName={city.cityName}
