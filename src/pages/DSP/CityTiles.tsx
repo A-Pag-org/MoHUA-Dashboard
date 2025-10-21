@@ -112,7 +112,7 @@ const ResolutionTimeCard = styled(Card, {
   boxShadow: theme.palette.mode === 'dark'
     ? `0 12px 36px ${bgColor}35`
     : `0 12px 36px ${bgColor}40`,
-  minHeight: '160px',
+  minHeight: '128px',
   position: 'relative',
   overflow: 'hidden',
   transition: 'all 0.3s ease',
@@ -495,12 +495,6 @@ const CityTiles: React.FC = () => {
     setSelectedCity(null);
   };
 
-  // Get statistics for the header
-  const totalCities = MOCK_DSP_CITIES.length;
-  const satisfactoryCities = MOCK_DSP_CITIES.filter(city => city.resolutionPercentage >= 90).length;
-  const averageCities = MOCK_DSP_CITIES.filter(city => city.resolutionPercentage >= 50 && city.resolutionPercentage < 90).length;
-  const unsatisfactoryCities = MOCK_DSP_CITIES.filter(city => city.resolutionPercentage < 50).length;
-  
   // Calculate total statistics from actual data
   const totalRaised = MOCK_DSP_CITIES.reduce((sum, city) => sum + city.complaintsRaised, 0);
   const totalResolved = MOCK_DSP_CITIES.reduce((sum, city) => sum + city.complaintsResolved, 0);
@@ -534,13 +528,13 @@ const CityTiles: React.FC = () => {
                 : 'linear-gradient(135deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.01) 100%)',
             }
           }}>
-            <CardContent sx={{ textAlign: 'center', py: 4, position: 'relative', zIndex: 1 }}>
-              <Typography variant="h4" sx={(theme) => ({ fontWeight: 800, mb: 4, color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000', textShadow: theme.palette.mode === 'dark' ? '0 2px 4px rgba(0,0,0,0.3)' : '0 1px 2px rgba(0,0,0,0.25)' })}>
+            <CardContent sx={{ textAlign: 'center', py: 3.2, position: 'relative', zIndex: 1 }}>
+              <Typography variant="h4" sx={(theme) => ({ fontWeight: 800, mb: 3.2, color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000', textShadow: theme.palette.mode === 'dark' ? '0 2px 4px rgba(0,0,0,0.3)' : '0 1px 2px rgba(0,0,0,0.25)' })}>
                 Overall Delhi NCR Performance
               </Typography>
               
               {/* Consolidated Donut with Center Percentage and Legend */}
-              <Box sx={{ mb: 4 }}>
+              <Box sx={{ mb: 3.2 }}>
                 <ConsolidatedGaugeChart
                   raisedValue={totalRaised}
                   resolvedValue={totalResolved}
@@ -660,7 +654,7 @@ const CityTiles: React.FC = () => {
 
             {/* Average Resolution Time - Blue Tile */}
             <Grid item xs={12}>
-              <ResolutionTimeCard bgColor="#2196F3">
+              <ResolutionTimeCard bgColor="#9E9E9E">
                 <CardContent sx={{ p: 3, position: 'relative' }}>
                   <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
                     <Box sx={{ flex: 1 }}>
