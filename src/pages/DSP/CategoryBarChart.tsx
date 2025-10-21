@@ -51,9 +51,6 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
     };
   }, [data]);
 
-  const [view, setView] = useState<ViewMode>('donut');
-  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
-
   // Donut-related geometry and angles removed for bar-only component
 
   // Bars view colored per Satisfactory/Average/Unsatisfactory legend
@@ -71,7 +68,7 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
               </Typography>
             </Box>
           </Box>
-          <Box sx={{ position: 'relative', height: '20px', background: '#363636', borderRadius: '10px', overflow: 'hidden' }}>
+          <Box sx={{ position: 'relative', height: '10px', background: '#363636', borderRadius: '5px', overflow: 'hidden' }}>
             <Box sx={{ position: 'absolute', inset: 0, width: `${Math.min(r.resolutionRate, 100)}%`, background: r.statusColor, boxShadow: `0 0 8px ${r.statusColor}55`, transition: 'width 0.5s ease' }} />
           </Box>
         </Box>
