@@ -51,8 +51,7 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
     };
   }, [data]);
 
-  const [view, setView] = useState<ViewMode>('donut');
-  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+  // State for donut/hover removed as component renders bar view only
 
   // Donut-related geometry and angles removed for bar-only component
 
