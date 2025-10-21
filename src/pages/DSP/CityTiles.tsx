@@ -399,8 +399,8 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 pt: 1,
                 borderTop: '1px solid rgba(255, 255, 255, 0.08)',
               }}>
-                <InfoIcon sx={{ fontSize: '15px', color: 'rgba(255, 255, 255, 0.65)', mr: 0.5 }} />
-                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.65)', fontSize: '0.72rem' }}>
+                <InfoIcon sx={{ fontSize: '15px', color: '#000000', mr: 0.5 }} />
+                <Typography variant="caption" sx={{ color: '#000000', fontSize: '0.72rem' }}>
                   Click for details
                 </Typography>
               </Box>
