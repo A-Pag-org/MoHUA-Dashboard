@@ -42,14 +42,14 @@ const CityTileCard = styled(Card)(() => ({
   cursor: 'pointer',
   position: 'relative',
   overflow: 'hidden',
-  background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.18) 0%, rgba(76, 175, 80, 0.32) 100%)',
+  background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.16) 100%)',
   backdropFilter: 'blur(10px)',
   WebkitBackdropFilter: 'blur(10px)',
-  border: '1px solid rgba(76, 175, 80, 0.45)',
-  boxShadow: '0 8px 24px rgba(76, 175, 80, 0.25)',
+  border: '1px solid rgba(0, 0, 0, 0.25)',
+  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
   '&:hover': {
     transform: 'translateY(-6px)',
-    boxShadow: '0 0 0 3px rgba(76, 175, 80, 0.5), 0 18px 56px rgba(76, 175, 80, 0.35)',
+    boxShadow: '0 0 0 3px rgba(0, 0, 0, 0.5), 0 18px 56px rgba(0, 0, 0, 0.35)',
     '&::before': {
       opacity: 1,
     }
@@ -61,20 +61,10 @@ const CityTileCard = styled(Card)(() => ({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.22) 0%, rgba(76, 175, 80, 0.12) 100%)',
+    background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0.12) 100%)',
     opacity: 0,
     transition: 'opacity 0.3s ease',
   },
-  '&::after': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '3px',
-    height: '100%',
-    background: 'linear-gradient(180deg, #4CAF50 0%, rgba(76, 175, 80, 0.7) 100%)',
-    borderRadius: '0 1.5px 1.5px 0',
-  }
 }));
 
 const StatusChip = styled(Chip, {
@@ -329,19 +319,19 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 variant="h6" 
                 sx={(theme) => ({ 
                   fontWeight: 700,
-                  color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary,
+                  color: '#000000',
                   fontSize: '1.05rem',
                   lineHeight: 1.3,
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   pr: 1,
-                  textShadow: theme.palette.mode === 'dark' ? '0 2px 6px rgba(0,0,0,0.35)' : 'none',
+                  textShadow: 'none',
                   letterSpacing: '0.3px',
-                  background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.22) 0%, rgba(76, 175, 80, 0.12) 100%)',
+                  background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0.12) 100%)',
                   padding: '6px 14px',
                   borderRadius: '6px',
-                  border: '1px solid rgba(76, 175, 80, 0.35)',
+                  border: '1px solid rgba(0, 0, 0, 0.35)',
                   backdropFilter: 'blur(8px)',
                   WebkitBackdropFilter: 'blur(8px)',
                   width: 'fit-content',
@@ -372,14 +362,14 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 alignItems: 'center',
-                background: 'rgba(76, 175, 80, 0.12)',
+                background: 'rgba(0, 0, 0, 0.12)',
                 padding: '6px 10px',
                 borderRadius: '8px',
               }}>
                 <Typography variant="body2" sx={{ color: '#000000', fontWeight: 500 }}>
                   Raised:
                 </Typography>
-                <Typography variant="body2" sx={(theme) => ({ fontWeight: 'bold', color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary })}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#000000' }}>
                   {city.complaintsRaised.toLocaleString()}
                 </Typography>
               </Box>
@@ -388,14 +378,14 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 alignItems: 'center',
-                background: 'rgba(76, 175, 80, 0.12)',
+                background: 'rgba(0, 0, 0, 0.12)',
                 padding: '6px 10px',
                 borderRadius: '8px',
               }}>
                 <Typography variant="body2" sx={{ color: '#000000', fontWeight: 500 }}>
                   Resolved:
                 </Typography>
-                <Typography variant="body2" sx={(theme) => ({ fontWeight: 'bold', color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.text.primary })}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#000000' }}>
                   {city.complaintsResolved.toLocaleString()}
                 </Typography>
               </Box>
