@@ -143,44 +143,50 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
       }}
     >
       {/* Header */}
-      <Box sx={{ mb: 1.25, position: 'relative' }}>
-        {/* City name - Top Left */}
-        <Typography
-          variant="h6"
-          sx={{
-            position: 'absolute',
-            top: 8,
-            left: 8,
-            fontWeight: 700,
-            color: '#ffffff',
-            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-            fontSize: '1.5rem',
-          }}
-        >
-          {cityName}
-        </Typography>
-        
-        {/* Title - Centered */}
-        <Box sx={{ textAlign: 'center' }}>
+      <Box sx={{ mb: 1.25 }}>
+        {/* Header row with city name (left) and title (center) */}
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', alignItems: 'center', gap: 2, mb: 0.5 }}>
+          {/* City name - Left */}
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              color: '#ffffff',
+              textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+              fontSize: '1.5rem',
+              gridColumn: '1',
+            }}
+          >
+            {cityName}
+          </Typography>
+          
+          {/* Title - Centered */}
           <Typography
             variant="body1"
             sx={{
               fontWeight: 700,
               color: '#ffffff',
               textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-              mb: 0.25,
               fontSize: '1rem',
+              textAlign: 'center',
+              gridColumn: '2',
             }}
           >
             Category-wise Performance
           </Typography>
+          
+          {/* Empty spacer for balance */}
+          <Box sx={{ gridColumn: '3' }} />
+        </Box>
+        
+        {/* Subtitle - Centered */}
+        <Box sx={{ textAlign: 'center' }}>
           <Typography
             variant="caption"
             sx={{
               display: 'block',
               color: 'rgba(255, 255, 255, 0.85)',
               fontWeight: 500,
-              mt: 0.5,
             }}
           >
             {`${processed.totalResolved.toLocaleString()} / ${processed.totalRaised.toLocaleString()} • ${processed.overallRate.toFixed(1)}%`}
