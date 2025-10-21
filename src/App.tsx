@@ -75,6 +75,17 @@ const ComingSoonPage = ({ title, subtitle }: { title: string; subtitle: string }
         >
           We're working hard to bring you advanced {title.toLowerCase()} dashboard features and analytics.
         </Typography>
+        <Typography
+          variant="body2"
+          sx={{ 
+            color: 'rgba(255, 255, 255, 0.75)', 
+            mb: 2,
+            fontWeight: 500,
+            letterSpacing: '0.3px',
+          }}
+        >
+          {subtitle}
+        </Typography>
         <Box sx={{
           display: 'inline-flex',
           alignItems: 'center',
