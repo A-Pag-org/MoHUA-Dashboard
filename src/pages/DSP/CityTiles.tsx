@@ -317,7 +317,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
               <Typography 
                 variant="h6" 
-                sx={(theme) => ({ 
+                sx={{ 
                   fontWeight: 700,
                   color: '#000000',
                   fontSize: '1.05rem',
@@ -336,7 +336,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
                   WebkitBackdropFilter: 'blur(8px)',
                   width: 'fit-content',
                   maxWidth: '65%',
-                })}
+                }}
               >
                 {city.cityName}
               </Typography>
