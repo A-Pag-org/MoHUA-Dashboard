@@ -149,6 +149,30 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
   }, [processed.rows]);
 
   // Bars view reused from original but simplified; kept for optional toggle
+  // Performance legend (reusable)
+  const PerformanceLegend = (
+    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+        <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: '#4CAF50', boxShadow: '0 0 6px #4CAF5040' }} />
+        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
+          Satisfactory (≥90%)
+        </Typography>
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+        <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: '#FFD54F', boxShadow: '0 0 6px #FFD54F40' }} />
+        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
+          Average (50-89%)
+        </Typography>
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+        <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: '#F44336', boxShadow: '0 0 6px #F4433640' }} />
+        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
+          Unsatisfactory (&lt;50%)
+        </Typography>
+      </Box>
+    </Box>
+  );
+
   const BarsView = (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
       {processed.rows.map((r: ProcessedRow, idx: number) => (
@@ -168,55 +192,6 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
           </Box>
         </Box>
       ))}
-      
-      {/* Performance Legend */}
-      <Box sx={{ 
-        mt: 3, 
-        pt: 2,
-        borderTop: '1px solid rgba(255,255,255,0.1)',
-        display: 'flex', 
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-        <Box sx={{ display: 'flex', gap: 3, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box sx={{ 
-              width: 14, 
-              height: 14, 
-              borderRadius: '50%', 
-              background: '#4CAF50',
-              boxShadow: '0 0 8px #4CAF5040',
-            }} />
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
-              Satisfactory (≥90%)
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box sx={{ 
-              width: 14, 
-              height: 14, 
-              borderRadius: '50%', 
-              background: '#FFD54F',
-              boxShadow: '0 0 8px #FFD54F40',
-            }} />
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
-              Average (50-89%)
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box sx={{ 
-              width: 14, 
-              height: 14, 
-              borderRadius: '50%', 
-              background: '#F44336',
-              boxShadow: '0 0 8px #F4433640',
-            }} />
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>
-              Unsatisfactory (&lt;50%)
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
     </Box>
   );
 
@@ -329,7 +304,7 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
       }}
     >
       {/* Header */}
-      <Box sx={{ mb: 1.25, position: 'relative' }}>
+      <Box sx={{ mb: 1.25, pt: 1.25, position: 'relative', minHeight: 40 }}>
         {/* City name - Top Left */}
         <Typography
           variant="h6"
@@ -346,6 +321,13 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
           {cityName}
         </Typography>
         
+        {/* Performance Legend - Top Right (Bars view only) */}
+        {view === 'bars' && (
+          <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
+            {PerformanceLegend}
+          </Box>
+        )}
+
         {/* Title - Centered */}
         <Box sx={{ textAlign: 'center' }}>
           <Typography
