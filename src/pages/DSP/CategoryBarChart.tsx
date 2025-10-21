@@ -346,6 +346,56 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
           {cityName}
         </Typography>
         
+        {/* Performance Legend - Top Right (only in bars view) */}
+        {view === 'bars' && (
+          <Box sx={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            background: '#52627A',
+            borderRadius: '8px',
+            px: 2,
+            py: 1,
+            display: 'flex',
+            gap: 2,
+            alignItems: 'center',
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+              <Box sx={{ 
+                width: 12, 
+                height: 12, 
+                borderRadius: '50%', 
+                background: '#4CAF50',
+              }} />
+              <Typography variant="caption" sx={{ color: '#ffffff', fontWeight: 500, fontSize: '0.7rem' }}>
+                Satisfactory (≥90%)
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+              <Box sx={{ 
+                width: 12, 
+                height: 12, 
+                borderRadius: '50%', 
+                background: '#FFD54F',
+              }} />
+              <Typography variant="caption" sx={{ color: '#ffffff', fontWeight: 500, fontSize: '0.7rem' }}>
+                Average (50-89%)
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+              <Box sx={{ 
+                width: 12, 
+                height: 12, 
+                borderRadius: '50%', 
+                background: '#F44336',
+              }} />
+              <Typography variant="caption" sx={{ color: '#ffffff', fontWeight: 500, fontSize: '0.7rem' }}>
+                Unsatisfactory (&lt;50%)
+              </Typography>
+            </Box>
+          </Box>
+        )}
+        
         {/* Title - Centered */}
         <Box sx={{ textAlign: 'center' }}>
           <Typography
