@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Container } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import CityTiles from './CityTiles';
 import Header from '../../components/Common/Header';
 
@@ -28,6 +28,17 @@ const DSPDashboard: React.FC = () => {
       <Header />
 
       <Container maxWidth="xl" sx={{ padding: '16px 12px', position: 'relative', zIndex: 1 }}>
+        <Typography 
+          variant="h4" 
+          sx={{ 
+            textAlign: 'center', 
+            mb: 3, 
+            fontWeight: 700,
+            color: (theme) => theme.palette.mode === 'dark' ? '#ffffff' : '#000000'
+          }}
+        >
+          Dispersed Source Programme (DSP)
+        </Typography>
         <CityTiles />
       </Container>
     </Box>
