@@ -1,8 +1,8 @@
 import { Routes, Route } from 'react-router-dom'
-import { Box, Typography, Container, AppBar, Toolbar } from '@mui/material'
+import { Box, Typography, Container } from '@mui/material'
 import LandingPage from './pages/LandingPage/LandingPage'
 import DSPDashboard from './pages/DSP/DSPDashboard'
-import BackButton from './components/Common/BackButton'
+import Header from './components/Common/Header'
 
 // Coming Soon Page Component
 const ComingSoonPage = ({ title, subtitle }: { title: string; subtitle: string }) => (
@@ -21,61 +21,7 @@ const ComingSoonPage = ({ title, subtitle }: { title: string; subtitle: string }
       pointerEvents: 'none',
     }
   }}>
-    <AppBar 
-      position="sticky" 
-      sx={{ 
-        background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%)',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
-        top: 0,
-        zIndex: 1100,
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-      }}
-    >
-      <Toolbar sx={{ padding: '16px 32px', position: 'relative', zIndex: 1 }}>
-        <BackButton sx={{ marginRight: '16px' }} />
-        <Typography
-          variant="h4"
-          component="div"
-          sx={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            fontWeight: 800,
-            letterSpacing: '2px',
-            textShadow: '0 4px 8px rgba(0,0,0,0.3)',
-          }}
-        >
-          Ministry of Housing & Urban Affairs
-        </Typography>
-        <Box sx={{ flex: 1, textAlign: 'center', marginX: 4 }}>
-          <Typography
-            variant="h5"
-            component="div"
-            sx={{
-              color: '#ffffff',
-              fontWeight: 700,
-              letterSpacing: '1px',
-              textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-            }}
-          >
-            {title}
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{
-              color: 'rgba(255, 255, 255, 0.7)',
-              fontSize: '0.85rem',
-              letterSpacing: '0.5px',
-            }}
-          >
-            {subtitle}
-          </Typography>
-        </Box>
-      </Toolbar>
-    </AppBar>
+    <Header />
 
     <Container maxWidth="xl" sx={{ padding: '64px 16px', position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 120px)' }}>
       <Box
