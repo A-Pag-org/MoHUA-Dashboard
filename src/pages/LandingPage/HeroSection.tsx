@@ -409,7 +409,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
             <Box
               sx={{
                 backgroundColor: totalColor,
-                color: '#000000',
+                color: (totalColor === DSP_COLORS.SATISFACTORY || totalColor === DSP_COLORS.UNSATISFACTORY) ? '#ffffff' : '#000000',
                 px: 1.5,
                 py: 0.5,
                 borderRadius: '10px',
