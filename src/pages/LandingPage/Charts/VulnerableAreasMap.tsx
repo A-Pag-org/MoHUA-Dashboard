@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import DeckGL from '@deck.gl/react';
 import { ColumnLayer, GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers';
-import Map from 'react-map-gl';
+import Map from 'react-map-gl/maplibre';
 import maplibregl from 'maplibre-gl';
 import type { Feature, FeatureCollection } from 'geojson';
 
@@ -142,7 +142,7 @@ export default function VulnerableAreasMap(): JSX.Element {
   }, [city]);
 
   const layers = useMemo(() => {
-    const boundaryLayer = new GeoJsonLayer<Feature<GeoJSON.Polygon, CityProps>>({
+    const boundaryLayer = new GeoJsonLayer<CityProps>({
       id: 'city-boundaries',
       data: filteredBoundaries,
       stroked: true,
@@ -182,7 +182,8 @@ export default function VulnerableAreasMap(): JSX.Element {
     return viewMode === '2d' ? [boundaryLayer, scatterLayer] : [boundaryLayer, columnLayer];
   }, [filteredBoundaries, filteredPoints, viewMode]);
 
-  const tooltip = ({ object }: { object: any }) => {
+  const tooltip = (info: any): string | null => {
+    const { object } = info ?? {};
     if (!object) return null;
     if ('severity' in object && 'city' in object) {
       return `${object.city} • ${object.category}\nSeverity: ${object.severity}`;
