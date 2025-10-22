@@ -262,6 +262,21 @@ const ProgramLeaderboard: React.FC<{
       <Box sx={{ maxHeight: 260, overflowY: 'auto', overflowX: 'hidden', width: '100%', minWidth: 0 }}>
         {sortedRows.map((row, index) => {
           const percentage = getPercentForProgramRow(program, row);
+
+          const formatNumber = (num: number): string => Math.round(num).toLocaleString();
+
+          let absoluteLabel = '';
+          if (program === 'DSP') {
+            const r = row as DSPRow;
+            absoluteLabel = ` (${formatNumber(r.resolved)} / ${formatNumber(r.raised)})`;
+          } else if (program === 'C&D') {
+            const c = row as CDRow;
+            absoluteLabel = ` (${formatNumber(c.actual)} / ${formatNumber(c.target)})`;
+          } else {
+            const m = row as MRSRow;
+            absoluteLabel = ` (${formatNumber(m.actualRoadLength)} / ${formatNumber(m.targetRoadLength)} KM)`;
+          }
+
           return (
             <Box key={`${program}-${index}`}
               sx={{
@@ -303,19 +318,19 @@ const ProgramLeaderboard: React.FC<{
                       color: getPerformanceColor(percentage),
                       fontWeight: 400,
                       fontVariantNumeric: 'tabular-nums',
-                    }}>{percentage.toFixed(1)}%</Typography>
+                    }}>{`${percentage.toFixed(1)}%${absoluteLabel}`}</Typography>
                   </>
                 )}
 
                 {program === 'C&D' && (
                   <>
-                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
+                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{`${percentage.toFixed(1)}%${absoluteLabel}`}</Typography>
                   </>
                 )}
 
                 {program === 'MRS' && (
                   <>
-                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{percentage.toFixed(1)}%</Typography>
+                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{`${percentage.toFixed(1)}%${absoluteLabel}`}</Typography>
                   </>
                 )}
               </Box>
