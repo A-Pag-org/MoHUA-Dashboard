@@ -356,7 +356,7 @@ const StatsOverview: React.FC = () => {
           fontSize: { xs: '2rem', md: '3rem' }
         }}
       >
-        Program Overview
+        Program Overview Statistics
       </Typography>
       
       <Grid container spacing={3}>
