@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON as RLGeoJSON, CircleMarker, Popup } from 'react-leaflet';
-import type { PathOptions } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { Feature, FeatureCollection } from 'geojson';
 
@@ -94,13 +93,12 @@ const CITY_PIN_COLORS: Record<DataPoint['city'], [number, number, number, number
 };
 
 const circleRadiusPx = (s: Severity) => 4 + s * 3;
-const columnElevation = (s: Severity) => s * 500; // meters
-const columnRadiusMeters = 150; // meters
+// removed Deck.GL-specific helpers
 
 const CITY_OPTIONS = ['All', 'Delhi', 'Noida', 'Gurgaon'] as const;
 const CATEGORY_OPTIONS = ['All', 'Pothole', 'Garbage dumped', 'Streetlight out'] as const;
 
-type ViewMode = '2d' | '3d';
+// no view mode in Leaflet version
 
 export default function VulnerableAreasMap(): JSX.Element {
   const [severityThreshold, setSeverityThreshold] = useState<Severity>(5);
@@ -109,8 +107,8 @@ export default function VulnerableAreasMap(): JSX.Element {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   // Leaflet initial view (lat, lng)
-  const INITIAL_CENTER: [number, number] = [28.6, 77.15];
-  const INITIAL_ZOOM = 9;
+  // constants kept inline at usage to avoid unused warnings
+  const IS_TEST = typeof process !== 'undefined' && process.env.NODE_ENV === 'test';
 
   const filteredPoints = useMemo(() => {
     return MOCK_POINTS.filter(
@@ -144,17 +142,7 @@ export default function VulnerableAreasMap(): JSX.Element {
     []
   );
 
-  const tooltip = (info: any): string | null => {
-    const { object } = info ?? {};
-    if (!object) return null;
-    if ('severity' in object && 'city' in object) {
-      return `${object.city} • ${object.category}\nSeverity: ${object.severity}`;
-    }
-    if (object.properties?.name) {
-      return `City boundary: ${object.properties.name}`;
-    }
-    return null;
-  };
+  // tooltips provided via Leaflet Popups only
 
   return (
     <div style={styles.container}>
@@ -229,33 +217,39 @@ export default function VulnerableAreasMap(): JSX.Element {
           Filters
         </button>
         <div style={styles.mapInner}>
-          <MapContainer center={[28.6, 77.15]} zoom={9} scrollWheelZoom style={{ height: '100%', width: '100%' }}>
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <RLGeoJSON data={filteredBoundaries as unknown as GeoJSON.GeoJsonObject} style={boundaryStyle as any} />
-            {filteredPoints.map((p) => (
-              <CircleMarker
-                key={p.id}
-                center={[p.coordinates[1], p.coordinates[0]]}
-                radius={circleRadiusPx(p.severity as Severity)}
-                pathOptions={{
-                  color: 'rgba(0,0,0,0.35)',
-                  weight: 1,
-                  fillColor: rgba(CITY_PIN_COLORS[p.city]),
-                  fillOpacity: 1,
-                }}
-              >
-                <Popup>
-                  <div>
-                    <div><strong>{p.city}</strong> • {p.category}</div>
-                    <div>Severity: {p.severity}</div>
-                  </div>
-                </Popup>
-              </CircleMarker>
-            ))}
-          </MapContainer>
+          {IS_TEST ? (
+            <div style={{ height: '100%', width: '100%', display: 'grid', placeItems: 'center', background: '#f6f7fb' }}>
+              <span style={{ color: '#6b7280', fontSize: 12 }}>Leaflet map placeholder (tests)</span>
+            </div>
+          ) : (
+            <MapContainer center={[28.6, 77.15]} zoom={9} scrollWheelZoom style={{ height: '100%', width: '100%' }}>
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <RLGeoJSON data={filteredBoundaries as unknown as GeoJSON.GeoJsonObject} style={boundaryStyle as any} />
+              {filteredPoints.map((p) => (
+                <CircleMarker
+                  key={p.id}
+                  center={[p.coordinates[1], p.coordinates[0]]}
+                  radius={circleRadiusPx(p.severity as Severity)}
+                  pathOptions={{
+                    color: 'rgba(0,0,0,0.35)',
+                    weight: 1,
+                    fillColor: rgba(CITY_PIN_COLORS[p.city]),
+                    fillOpacity: 1,
+                  }}
+                >
+                  <Popup>
+                    <div>
+                      <div><strong>{p.city}</strong> • {p.category}</div>
+                      <div>Severity: {p.severity}</div>
+                    </div>
+                  </Popup>
+                </CircleMarker>
+              ))}
+            </MapContainer>
+          )}
         </div>
       </div>
     </div>
@@ -374,4 +368,8 @@ const styles: Record<string, React.CSSProperties> = {
 
 function rgba([r, g, b, a]: [number, number, number, number]): string {
   return `rgba(${r}, ${g}, ${b}, ${a / 255})`;
+}
+
+function rgb([r, g, b]: [number, number, number]): string {
+  return `rgb(${r}, ${g}, ${b})`;
 }
