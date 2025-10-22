@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { MapContainer, TileLayer, GeoJSON as RLGeoJSON, CircleMarker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON as RLGeoJSON, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import { divIcon } from 'leaflet';
 import type { Feature, FeatureCollection } from 'geojson';
 
 // Types
@@ -92,8 +93,19 @@ const CITY_PIN_COLORS: Record<DataPoint['city'], [number, number, number, number
   Gurgaon: [244, 143, 177, 230], // pink
 };
 
-const circleRadiusPx = (s: Severity) => 4 + s * 3;
-// removed Deck.GL-specific helpers
+// Helper to create a colored pin icon per city using a DivIcon
+function createCityPin(colorCss: string) {
+  // Simple CSS pin (drop shape) rendered via HTML; avoids external image assets
+  const html = `
+    <div style="position: relative; width: 26px; height: 38px;">
+      <span style="position:absolute; left:3px; top:0; width:20px; height:20px; 
+        background:${colorCss}; border-radius:50% 50% 50% 0; transform:rotate(-45deg); 
+        box-shadow:0 0 0 1px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.25);"></span>
+      <span style="position:absolute; left:9px; top:6px; width:6px; height:6px; background:#ffffff; border-radius:50%;"></span>
+    </div>
+  `;
+  return divIcon({ className: 'city-colored-pin', html, iconSize: [26, 38], iconAnchor: [13, 36], popupAnchor: [0, -28] });
+}
 
 const CITY_OPTIONS = ['All', 'Delhi', 'Noida', 'Gurgaon'] as const;
 const CATEGORY_OPTIONS = ['All', 'Pothole', 'Garbage dumped', 'Streetlight out'] as const;
@@ -118,6 +130,24 @@ export default function VulnerableAreasMap(): JSX.Element {
         (category === 'All' || p.category === category)
     );
   }, [severityThreshold, city, category]);
+
+  // For the requirement: "one pin each for the most vulnerable zone/ward per city"
+  // Compute, per city, the single highest-severity point (ties resolved by first occurrence).
+  // This aggregation ignores the severity threshold so we always show exactly one pin per city
+  // (still honoring the selected city and category filters).
+  const topPointPerCity = useMemo(() => {
+    const base = MOCK_POINTS.filter(
+      (p) => (city === 'All' || p.city === city) && (category === 'All' || p.category === category)
+    );
+    const bestByCity = new Map<DataPoint['city'], DataPoint>();
+    for (const p of base) {
+      const current = bestByCity.get(p.city);
+      if (!current || p.severity > current.severity) {
+        bestByCity.set(p.city, p);
+      }
+    }
+    return Array.from(bestByCity.values());
+  }, [city, category]);
 
   const filteredBoundaries: CityGeo = useMemo(() => {
     if (city === 'All') return CITY_BOUNDARIES;
@@ -228,25 +258,21 @@ export default function VulnerableAreasMap(): JSX.Element {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               <RLGeoJSON data={filteredBoundaries as unknown as GeoJSON.GeoJsonObject} style={boundaryStyle as any} />
-              {filteredPoints.map((p) => (
-                <CircleMarker
+              {/* One colored pin per city at its most vulnerable ward/zone */}
+              {topPointPerCity.map((p) => (
+                <Marker
                   key={p.id}
-                  center={[p.coordinates[1], p.coordinates[0]]}
-                  radius={circleRadiusPx(p.severity as Severity)}
-                  pathOptions={{
-                    color: 'rgba(0,0,0,0.35)',
-                    weight: 1,
-                    fillColor: rgba(CITY_PIN_COLORS[p.city]),
-                    fillOpacity: 1,
-                  }}
+                  position={[p.coordinates[1], p.coordinates[0]]}
+                  icon={createCityPin(rgba(CITY_PIN_COLORS[p.city]))}
                 >
                   <Popup>
                     <div>
-                      <div><strong>{p.city}</strong> • {p.category}</div>
+                      <div><strong>{p.city}</strong> — Most vulnerable location</div>
+                      <div>Category: {p.category}</div>
                       <div>Severity: {p.severity}</div>
                     </div>
                   </Popup>
-                </CircleMarker>
+                </Marker>
               ))}
             </MapContainer>
           )}
