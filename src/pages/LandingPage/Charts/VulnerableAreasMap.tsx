@@ -1,8 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import DeckGL from '@deck.gl/react';
-import { ColumnLayer, GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers';
-import Map from 'react-map-gl/maplibre';
-import maplibregl from 'maplibre-gl';
+import React, { useMemo, useState } from 'react';
+import { MapContainer, TileLayer, GeoJSON as RLGeoJSON, CircleMarker, Popup } from 'react-leaflet';
+import type { PathOptions } from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import type { Feature, FeatureCollection } from 'geojson';
 
 // Types
@@ -104,23 +103,14 @@ const CATEGORY_OPTIONS = ['All', 'Pothole', 'Garbage dumped', 'Streetlight out']
 type ViewMode = '2d' | '3d';
 
 export default function VulnerableAreasMap(): JSX.Element {
-  const [viewMode, setViewMode] = useState<ViewMode>('2d');
   const [severityThreshold, setSeverityThreshold] = useState<Severity>(5);
   const [city, setCity] = useState<typeof CITY_OPTIONS[number]>('All');
   const [category, setCategory] = useState<typeof CATEGORY_OPTIONS[number]>('All');
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
-  const [viewState, setViewState] = useState({
-    longitude: 77.15,
-    latitude: 28.60,
-    zoom: 9,
-    pitch: 0,
-    bearing: 0,
-  });
-
-  useEffect(() => {
-    setViewState((v) => ({ ...v, pitch: viewMode === '3d' ? 45 : 0 }));
-  }, [viewMode]);
+  // Leaflet initial view (lat, lng)
+  const INITIAL_CENTER: [number, number] = [28.6, 77.15];
+  const INITIAL_ZOOM = 9;
 
   const filteredPoints = useMemo(() => {
     return MOCK_POINTS.filter(
@@ -138,49 +128,21 @@ export default function VulnerableAreasMap(): JSX.Element {
     ) as Feature<GeoJSON.Polygon, CityProps>[];
     return { type: 'FeatureCollection', features };
   }, [city]);
-
-  const layers = useMemo(() => {
-    const boundaryLayer = new GeoJsonLayer<CityProps>({
-      id: 'city-boundaries',
-      data: filteredBoundaries,
-      stroked: true,
-      filled: true,
-      getLineColor: (f) => f.properties?.color ?? [60, 60, 60],
-      getFillColor: (f) => f.properties?.fill ?? [200, 200, 200, 30],
-      lineWidthMinPixels: 2,
-      pickable: true,
-      autoHighlight: true,
-    });
-
-    const scatterLayer = new ScatterplotLayer<DataPoint>({
-      id: 'severity-scatter',
-      data: filteredPoints,
-      getPosition: (d) => d.coordinates,
-      getRadius: (d) => circleRadiusPx(d.severity as Severity),
-      radiusUnits: 'pixels',
-      // Color pins by city
-      getFillColor: (d) => CITY_PIN_COLORS[d.city],
-      getLineColor: [0, 0, 0, 120],
-      lineWidthMinPixels: 0.5,
-      pickable: true,
-    });
-
-    const columnLayer = new ColumnLayer<DataPoint>({
-      id: 'severity-columns',
-      data: filteredPoints,
-      diskResolution: 12,
-      radius: columnRadiusMeters,
-      extruded: true,
-      elevationScale: 1,
-      getPosition: (d) => d.coordinates,
-      // Color columns by city for consistency with 2D pins
-      getFillColor: (d) => CITY_PIN_COLORS[d.city],
-      getElevation: (d) => columnElevation(d.severity as Severity),
-      pickable: true,
-    });
-
-    return viewMode === '2d' ? [boundaryLayer, scatterLayer] : [boundaryLayer, columnLayer];
-  }, [filteredBoundaries, filteredPoints, viewMode]);
+  
+  // Style function for city boundaries (Leaflet)
+  const boundaryStyle = useMemo(
+    () =>
+      (feature: Feature<GeoJSON.Polygon, CityProps>) => {
+        const props = feature?.properties;
+        return {
+          color: props?.color ? rgb(props.color) : '#3c3c3c',
+          weight: 2,
+          fillColor: props?.fill ? rgba(props.fill) : 'rgba(200,200,200,0.12)',
+          fillOpacity: props?.fill ? props.fill[3] / 255 : 0.12,
+        } as any;
+      },
+    []
+  );
 
   const tooltip = (info: any): string | null => {
     const { object } = info ?? {};
@@ -243,23 +205,7 @@ export default function VulnerableAreasMap(): JSX.Element {
           />
         </div>
 
-        <div style={styles.controlGroup}>
-          <label>View</label>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button
-              onClick={() => setViewMode('2d')}
-              style={{ ...styles.toggleBtn, ...(viewMode === '2d' ? styles.toggleBtnActive : {}) }}
-            >
-              2D
-            </button>
-            <button
-              onClick={() => setViewMode('3d')}
-              style={{ ...styles.toggleBtn, ...(viewMode === '3d' ? styles.toggleBtnActive : {}) }}
-            >
-              3D
-            </button>
-          </div>
-        </div>
+        {/* View toggle removed for Leaflet (2D only) */}
 
         <div style={styles.legendBlock}>
           <div style={{ marginBottom: 6 }}>
@@ -283,19 +229,33 @@ export default function VulnerableAreasMap(): JSX.Element {
           Filters
         </button>
         <div style={styles.mapInner}>
-          <DeckGL
-            layers={layers}
-            viewState={viewState}
-            onViewStateChange={(e: any) => setViewState(e.viewState)}
-            controller
-            getTooltip={tooltip}
-          >
-            <Map
-              mapLib={maplibregl}
-              reuseMaps
-              mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+          <MapContainer center={[28.6, 77.15]} zoom={9} scrollWheelZoom style={{ height: '100%', width: '100%' }}>
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-          </DeckGL>
+            <RLGeoJSON data={filteredBoundaries as unknown as GeoJSON.GeoJsonObject} style={boundaryStyle as any} />
+            {filteredPoints.map((p) => (
+              <CircleMarker
+                key={p.id}
+                center={[p.coordinates[1], p.coordinates[0]]}
+                radius={circleRadiusPx(p.severity as Severity)}
+                pathOptions={{
+                  color: 'rgba(0,0,0,0.35)',
+                  weight: 1,
+                  fillColor: rgba(CITY_PIN_COLORS[p.city]),
+                  fillOpacity: 1,
+                }}
+              >
+                <Popup>
+                  <div>
+                    <div><strong>{p.city}</strong> • {p.category}</div>
+                    <div>Severity: {p.severity}</div>
+                  </div>
+                </Popup>
+              </CircleMarker>
+            ))}
+          </MapContainer>
         </div>
       </div>
     </div>
