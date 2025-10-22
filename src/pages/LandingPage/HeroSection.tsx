@@ -362,6 +362,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
   const [open, setOpen] = useState(false);
   const collapseId = `lb-${city.program.toLowerCase()}-${city.id}`;
   const totalStats = MOCK_PROGRAM_STATS.find((s) => s.program === city.program);
+  const totalColor = totalStats ? getPerformanceColor(totalStats.percentage) : DSP_COLORS.AVERAGE;
 
   const handleToggle = () => setOpen((prev) => !prev);
   const handleKeyToggle = (e: React.KeyboardEvent<HTMLButtonElement>) => {
@@ -385,8 +386,8 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           zIndex: 1,
         }}
       >
-        {/* Program label in top left corner */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 1 }}>
+        {/* Header row: Program label (left) and Total (right) */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
           <PillButton
             type="button"
             sx={{
@@ -403,28 +404,27 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           >
             {city.program}
           </PillButton>
-        </Box>
 
-        {/* Totals badge */}
-        {totalStats && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
+          {totalStats && (
             <Box
               sx={{
-                backgroundColor: DSP_COLORS.AVERAGE,
+                backgroundColor: totalColor,
                 color: '#000000',
                 px: 1.5,
                 py: 0.5,
                 borderRadius: '10px',
-                boxShadow: `0 0 10px ${DSP_COLORS.AVERAGE}66` ,
+                boxShadow: `0 0 10px ${totalColor}66`,
                 fontWeight: 700,
                 fontSize: '0.9rem',
-                border: '1px solid rgba(0,0,0,0.25)'
+                border: '1px solid rgba(0,0,0,0.25)',
+                whiteSpace: 'nowrap',
+                ml: 2,
               }}
             >
               {`Total : ${totalStats.percentage.toFixed(1)}% (${totalStats.resolved.toLocaleString()}/${totalStats.raised.toLocaleString()})`}
             </Box>
-          </Box>
-        )}
+          )}
+        </Box>
 
         {/* City name in top middle - highlighted and prominent */}
         <Box sx={{ textAlign: 'center', mb: 2 }}>
