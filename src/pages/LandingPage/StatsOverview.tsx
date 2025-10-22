@@ -175,18 +175,6 @@ const DSPSection: React.FC<{
   data: DSPComplaintData[];
   onExpand: (expanded: { title: string; rows: any[]; chart: ExpandedBarDatum[] }) => void;
 }> = ({ data, onExpand }) => {
-  const microData: MicroBulletDatum[] = useMemo(
-    () =>
-      data.map((item, i) => ({
-        id: `${i}-${item.city}`,
-        label: item.city,
-        track: item.raised,
-        fill: item.resolved,
-        percentage: item.resolutionPercentage,
-        status: item.status,
-      })),
-    [data]
-  );
 
   const expandedChart: ExpandedBarDatum[] = useMemo(
     () =>

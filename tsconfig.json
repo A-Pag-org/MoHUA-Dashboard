@@ -5,6 +5,10 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@deck.gl/core/src/*": ["node_modules/@deck.gl/core/dist/*"]
+    },
 
     /* Node resolution for TS 4.9 */
     "moduleResolution": "node",
