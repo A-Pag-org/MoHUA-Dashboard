@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import InfoIcon from '@mui/icons-material/Info';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { LeadingCity } from '../../types';
-import { MOCK_LEADING_CITIES, DSP_COLORS } from '../../utils/constants';
+import { MOCK_LEADING_CITIES, MOCK_PROGRAM_STATS, DSP_COLORS } from '../../utils/constants';
 import PillButton from '../../components/Common/PillButton';
 
 // Helper functions and styled components to mirror DSP city tile aesthetics
@@ -361,6 +361,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
   const color = getPerformanceColor(city.value);
   const [open, setOpen] = useState(false);
   const collapseId = `lb-${city.program.toLowerCase()}-${city.id}`;
+  const totalStats = MOCK_PROGRAM_STATS.find((s) => s.program === city.program);
 
   const handleToggle = () => setOpen((prev) => !prev);
   const handleKeyToggle = (e: React.KeyboardEvent<HTMLButtonElement>) => {
@@ -403,6 +404,27 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
             {city.program}
           </PillButton>
         </Box>
+
+        {/* Totals badge */}
+        {totalStats && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
+            <Box
+              sx={{
+                backgroundColor: DSP_COLORS.AVERAGE,
+                color: '#000000',
+                px: 1.5,
+                py: 0.5,
+                borderRadius: '10px',
+                boxShadow: `0 0 10px ${DSP_COLORS.AVERAGE}66` ,
+                fontWeight: 700,
+                fontSize: '0.9rem',
+                border: '1px solid rgba(0,0,0,0.25)'
+              }}
+            >
+              {`Total : ${totalStats.percentage.toFixed(1)}% (${totalStats.resolved.toLocaleString()}/${totalStats.raised.toLocaleString()})`}
+            </Box>
+          </Box>
+        )}
 
         {/* City name in top middle - highlighted and prominent */}
         <Box sx={{ textAlign: 'center', mb: 2 }}>
