@@ -193,7 +193,7 @@ const ProgramLeaderboard: React.FC<{
   const headerStyles = {
     color: '#ffffff',
     fontWeight: 400,
-    fontSize: '0.72rem', // reduced font size
+    fontSize: '0.68rem', // reduced font size
     textTransform: 'uppercase' as const,
     letterSpacing: '0.06em',
   };
@@ -222,6 +222,7 @@ const ProgramLeaderboard: React.FC<{
         overflowX: 'hidden',
         maxWidth: '100%',
         minWidth: 0,
+        fontSize: '0.85rem', // slightly reduce overall font size in dropdown
       }}
     >
       {/* Headings */}
@@ -310,13 +311,14 @@ const ProgramLeaderboard: React.FC<{
                     boxShadow: `${accentColor}55 0px 4px 14px`,
                   }}>{index + 2}</Box>
                 </Box>
-                <Typography sx={{ color: '#E6EDF3', fontWeight: 400, fontSize: '0.9rem', whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{(row as any).city}</Typography>
+                <Typography sx={{ color: '#E6EDF3', fontWeight: 400, fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: 0 }}>{(row as any).city}</Typography>
 
                 {program === 'DSP' && (
                   <>
                     <Typography sx={{
                       color: getPerformanceColor(percentage),
                       fontWeight: 400,
+                      fontSize: '0.8rem',
                       fontVariantNumeric: 'tabular-nums',
                     }}>{`${percentage.toFixed(1)}%${absoluteLabel}`}</Typography>
                   </>
