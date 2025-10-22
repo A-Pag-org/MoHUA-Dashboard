@@ -87,13 +87,11 @@ const MOCK_POINTS: DataPoint[] = [
   { id: 'g3', city: 'Gurgaon', category: 'Streetlight out', severity: 4, coordinates: [76.98, 28.42] },
 ];
 
-// Severity styling helpers
-const SEVERITY_COLORS: Record<Severity, [number, number, number, number]> = {
-  1: [255, 241, 118, 180],
-  2: [255, 213, 79, 200],
-  3: [255, 179, 0, 210],
-  4: [255, 87, 34, 220],
-  5: [198, 40, 40, 240],
+// City-based pin colors (RGBA)
+const CITY_PIN_COLORS: Record<DataPoint['city'], [number, number, number, number]> = {
+  Delhi: [33, 150, 243, 230], // blue
+  Noida: [0, 200, 83, 230], // green
+  Gurgaon: [244, 143, 177, 230], // pink
 };
 
 const circleRadiusPx = (s: Severity) => 4 + s * 3;
@@ -160,7 +158,8 @@ export default function VulnerableAreasMap(): JSX.Element {
       getPosition: (d) => d.coordinates,
       getRadius: (d) => circleRadiusPx(d.severity as Severity),
       radiusUnits: 'pixels',
-      getFillColor: (d) => SEVERITY_COLORS[d.severity as Severity],
+      // Color pins by city
+      getFillColor: (d) => CITY_PIN_COLORS[d.city],
       getLineColor: [0, 0, 0, 120],
       lineWidthMinPixels: 0.5,
       pickable: true,
@@ -174,7 +173,8 @@ export default function VulnerableAreasMap(): JSX.Element {
       extruded: true,
       elevationScale: 1,
       getPosition: (d) => d.coordinates,
-      getFillColor: (d) => SEVERITY_COLORS[d.severity as Severity],
+      // Color columns by city for consistency with 2D pins
+      getFillColor: (d) => CITY_PIN_COLORS[d.city],
       getElevation: (d) => columnElevation(d.severity as Severity),
       pickable: true,
     });
@@ -263,12 +263,12 @@ export default function VulnerableAreasMap(): JSX.Element {
 
         <div style={styles.legendBlock}>
           <div style={{ marginBottom: 6 }}>
-            <strong>Legend</strong> (hidden on map)
+            <strong>Legend</strong> — pin colors by city
           </div>
-          {[5, 4, 3, 2, 1].map((s) => (
-            <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-              <span style={{ ...styles.legendSwatch, backgroundColor: rgba(SEVERITY_COLORS[s as Severity]) }} />
-              <span>Severity {s}</span>
+          {(['Delhi', 'Noida', 'Gurgaon'] as const).map((c) => (
+            <div key={c} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+              <span style={{ ...styles.legendSwatch, backgroundColor: rgba(CITY_PIN_COLORS[c]) }} />
+              <span>{c}</span>
             </div>
           ))}
         </div>
