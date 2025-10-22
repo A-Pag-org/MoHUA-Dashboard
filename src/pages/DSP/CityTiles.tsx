@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Box,
   Typography,
@@ -20,6 +20,7 @@ import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import { DSPCity } from '../../types';
 import { DSP_COLORS, MOCK_DSP_CITIES, MOCK_CATEGORY_DATA } from '../../utils/constants';
 import CategoryBarChart from './CategoryBarChart';
+import PillButton from '../../components/Common/PillButton';
 
 // Helper function to get color based on resolution percentage
 const getResolutionColor = (percentage: number): string => {
@@ -484,6 +485,7 @@ const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClo
 const CityTiles: React.FC = () => {
   const [selectedCity, setSelectedCity] = useState<DSPCity | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [consolidatedOpen, setConsolidatedOpen] = useState(false);
 
   const handleMoreInfo = (city: DSPCity) => {
     setSelectedCity(city);
@@ -499,6 +501,20 @@ const CityTiles: React.FC = () => {
   const totalRaised = MOCK_DSP_CITIES.reduce((sum, city) => sum + city.complaintsRaised, 0);
   const totalResolved = MOCK_DSP_CITIES.reduce((sum, city) => sum + city.complaintsResolved, 0);
   const overallResolutionRate = (totalResolved / totalRaised * 100);
+
+  // Aggregate consolidated category-wise data across all cities
+  const consolidatedCategoryData = useMemo(() => {
+    const sums: Record<string, { category: string; raised: number; resolved: number }> = {};
+    Object.values(MOCK_CATEGORY_DATA).forEach((arr) => {
+      arr.forEach(({ category, raised, resolved }) => {
+        const current = sums[category] || { category, raised: 0, resolved: 0 };
+        current.raised += raised;
+        current.resolved += resolved;
+        sums[category] = current;
+      });
+    });
+    return Object.values(sums).sort((a, b) => b.raised - a.raised);
+  }, []);
 
   return (
     <Box>
@@ -530,7 +546,7 @@ const CityTiles: React.FC = () => {
           }}>
             <CardContent sx={{ textAlign: 'center', py: 3.2, position: 'relative', zIndex: 1 }}>
               <Typography variant="h4" sx={(theme) => ({ fontWeight: 800, mb: 3.2, color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000', textShadow: theme.palette.mode === 'dark' ? '0 2px 4px rgba(0,0,0,0.3)' : '0 1px 2px rgba(0,0,0,0.25)' })}>
-                Overall Delhi NCR Performance
+                Overall Delhi NCR<br />Performance
               </Typography>
               
               {/* Consolidated Donut with Center Percentage and Legend */}
@@ -548,6 +564,13 @@ const CityTiles: React.FC = () => {
                   status={getResolutionStatus(overallResolutionRate)}
                   sx={{ fontSize: '1rem', px: 3, py: 1, height: 'auto' }}
                 />
+              </Box>
+
+              {/* Action row */}
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                <PillButton onClick={() => setConsolidatedOpen(true)} variant="contained">
+                  Category Wise
+                </PillButton>
               </Box>
             </CardContent>
           </Paper>
@@ -787,6 +810,33 @@ const CityTiles: React.FC = () => {
         open={dialogOpen}
         onClose={handleCloseDialog}
       />
+
+      {/* Consolidated Category-wise Dialog */}
+      <Dialog 
+        open={consolidatedOpen} 
+        onClose={() => setConsolidatedOpen(false)} 
+        maxWidth="lg" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: '16px',
+            background: 'rgba(16, 27, 42, 0.65)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
+            maxHeight: '90vh',
+            height: '90vh',
+          }
+        }}
+      >
+        <DialogContent sx={{ p: 2.5, background: 'transparent', overflow: 'auto', height: '100%', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+          <CategoryBarChart 
+            data={consolidatedCategoryData} 
+            cityName="Delhi NCR"
+          />
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
