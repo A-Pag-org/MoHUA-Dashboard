@@ -9,6 +9,7 @@ import {
 } from '../../types';
 import ChartCard from './Charts/ChartCard';
 import MicroBulletBars, { MicroBulletDatum } from './Charts/MicroBulletBars';
+import VulnerableAreasMap from './Charts/VulnerableAreasMap';
 import ExpandChartDialog, { LabelMode } from './Charts/ExpandChartDialog';
 import ExpandedBarChart, { ExpandedBarDatum } from './Charts/ExpandedBarChart';
 import { exportRowsToCSV, exportSVGContainerToPNG } from './Charts/exportUtils';
@@ -214,10 +215,12 @@ const DSPSection: React.FC<{
   return (
     <ChartCard
       title="Complaint Status: Road repairs & Civic Infra"
-      subtitle="Percent resolved"
-      onExpand={() => onExpand({ title: 'DSP — Complaints Resolved', rows: csvRows, chart: expandedChart })}
+      subtitle="Highest vulnerable areas — interactive map"
+      onExpand={() => onExpand({ title: 'DSP — Vulnerable Areas Map', rows: csvRows, chart: expandedChart })}
     >
-      <MicroBulletBars data={microData} />
+      <div style={{ width: '100%' }}>
+        <VulnerableAreasMap />
+      </div>
     </ChartCard>
   );
 };
