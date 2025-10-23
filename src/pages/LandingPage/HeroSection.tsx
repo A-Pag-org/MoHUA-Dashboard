@@ -358,7 +358,9 @@ const ProgramLeaderboard: React.FC<{
 };
 
 const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
-  const color = getPerformanceColor(city.value);
+  const dspGaugePercentage = (70550 / 75000) * 100;
+  const effectivePercentage = city.program === 'DSP' ? dspGaugePercentage : city.value;
+  const color = getPerformanceColor(effectivePercentage);
   const [open, setOpen] = useState(false);
   const collapseId = `lb-${city.program.toLowerCase()}-${city.id}`;
   const totalStats = MOCK_PROGRAM_STATS.find((s) => s.program === city.program);
@@ -405,7 +407,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
             {city.program}
           </PillButton>
 
-          {totalStats && (
+          {totalStats && city.program !== 'DSP' && (
             <Box
               sx={{
                 backgroundColor: totalColor,
@@ -445,7 +447,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
 
         {/* Circular Progress Indicator */}
         <Box sx={{ textAlign: 'center', mb: 1.5, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <CircularProgressIndicator percentage={city.value} color={color} />
+          <CircularProgressIndicator percentage={effectivePercentage} color={color} />
         </Box>
 
         {/* Gauge label just below the chart */}
@@ -454,7 +456,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           sx={(theme) => ({ color: theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.85)' : 'rgba(255, 255, 255, 0.85)', textAlign: 'center', display: 'block', mb: 1 })}
         >
           {city.program === 'DSP'
-            ? 'Percentage of Resolution'
+            ? 'Total issues raised vs. target (70,550 / 75,000 )'
             : city.program === 'C&D'
             ? 'Percentage of Target Achieved'
             : 'Percentage of Target achieved'}
