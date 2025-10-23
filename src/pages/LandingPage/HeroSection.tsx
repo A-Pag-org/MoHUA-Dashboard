@@ -565,7 +565,7 @@ const HeroSection: React.FC = () => {
               fontSize: { xs: '2rem', md: '3rem' }
             }}
           >
-            Program Leaderboard: City Wise
+            Program Leaderboard (Target based) : City Wise
           </Typography>
           {/* City chips removed as requested */}
         </Box>
