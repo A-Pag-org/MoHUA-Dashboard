@@ -257,7 +257,7 @@ const ProgramLeaderboard: React.FC<{
         <Typography sx={headerStyles}>City</Typography>
         {program === 'DSP' && (
           <>
-            <Typography sx={headerStyles}>Total issues raised vs. target</Typography>
+            <Typography sx={headerStyles}>Issues Raised Vs Target</Typography>
           </>
         )}
         {program === 'C&D' && (
