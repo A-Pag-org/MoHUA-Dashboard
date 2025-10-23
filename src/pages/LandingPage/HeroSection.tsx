@@ -485,8 +485,8 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
         {isDSP ? (
           <Box sx={{ width: '100%', mb: 1.5 }}>
             {/* Row 1: Total issues raised vs. target */}
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, mb: 1.25 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 2, mb: 1.25, flexWrap: 'wrap', rowGap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, flex: '1 1 auto', minWidth: 0 }}>
                 <Box sx={{
                   px: 1.25,
                   py: 0.75,
@@ -495,7 +495,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
                   color: (theme) => (theme.palette.mode === 'light' ? '#000000' : '#E6EDF3'),
                   fontWeight: 600,
                   fontSize: '0.8rem',
-                  whiteSpace: 'nowrap',
+                  whiteSpace: 'normal',
                 }}>
                   Total issues raised vs. target
                 </Box>
@@ -507,19 +507,21 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
                   color: (theme) => (theme.palette.mode === 'light' ? '#000000' : '#E6EDF3'),
                   fontWeight: 600,
                   fontSize: '0.8rem',
-                  whiteSpace: 'nowrap',
+                  whiteSpace: 'normal',
                 }}>
                   {`${dspRaised.toLocaleString()} / ${dspTarget.toLocaleString()}`}
                 </Box>
               </Box>
-              <SmallRadialGauge percentage={pctRaisedVsTarget} />
+              <Box sx={{ flex: '0 0 auto', ml: 'auto' }}>
+                <SmallRadialGauge percentage={pctRaisedVsTarget} />
+              </Box>
             </Box>
 
             <Box sx={{ height: 1, background: 'rgba(0,0,0,0.20)', borderRadius: 1, mb: 1.25 }} />
 
             {/* Row 2: Total issues Resolved vs.Raised */}
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 2, flexWrap: 'wrap', rowGap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, flex: '1 1 auto', minWidth: 0 }}>
                 <Box sx={{
                   px: 1.25,
                   py: 0.75,
@@ -528,7 +530,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
                   color: (theme) => (theme.palette.mode === 'light' ? '#000000' : '#E6EDF3'),
                   fontWeight: 600,
                   fontSize: '0.8rem',
-                  whiteSpace: 'nowrap',
+                  whiteSpace: 'normal',
                 }}>
                   Total issues Resolved vs.Raised
                 </Box>
@@ -540,12 +542,14 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
                   color: (theme) => (theme.palette.mode === 'light' ? '#000000' : '#E6EDF3'),
                   fontWeight: 600,
                   fontSize: '0.8rem',
-                  whiteSpace: 'nowrap',
+                  whiteSpace: 'normal',
                 }}>
                   {`${dspResolved.toLocaleString()} / ${dspRaised.toLocaleString()}`}
                 </Box>
               </Box>
-              <SmallRadialGauge percentage={pctResolvedVsRaised} />
+              <Box sx={{ flex: '0 0 auto', ml: 'auto' }}>
+                <SmallRadialGauge percentage={pctResolvedVsRaised} />
+              </Box>
             </Box>
 
             <Box sx={{ height: 1.25, background: 'rgba(0,0,0,0.24)', borderRadius: 1, mt: 1.5 }} />
