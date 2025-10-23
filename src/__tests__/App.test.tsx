@@ -16,7 +16,7 @@ function renderApp(initialPath = '/') {
 describe('App routing', () => {
   it('renders LandingPage on /', () => {
     renderApp('/');
-    expect(screen.getByText(/Program Overview Statistics/i)).toBeInTheDocument();
+    expect(screen.getByText(/Program Leaderboard \(Resolution based\) : City Wise/i)).toBeInTheDocument();
   });
 
   it('renders DSP dashboard on /dsp', () => {
