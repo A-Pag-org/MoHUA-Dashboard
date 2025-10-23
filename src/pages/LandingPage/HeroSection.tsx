@@ -80,9 +80,10 @@ const ProgramTileCard = styled(Card, {
 
 // StatusChip removed
 
-// Small radial gauge for inline rows (no center text)
+// Small radial gauge for inline rows (with centered % label)
 const SmallRadialGauge: React.FC<{ percentage: number; size?: number }> = ({ percentage, size = 54 }) => {
   const color = getPerformanceColor(percentage);
+  const clamped = Math.max(0, Math.min(100, percentage));
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
       <CircularProgress
@@ -97,7 +98,7 @@ const SmallRadialGauge: React.FC<{ percentage: number; size?: number }> = ({ per
       />
       <CircularProgress
         variant="determinate"
-        value={Math.max(0, Math.min(100, percentage))}
+        value={clamped}
         size={size}
         thickness={4}
         sx={{
@@ -106,6 +107,32 @@ const SmallRadialGauge: React.FC<{ percentage: number; size?: number }> = ({ per
           '& .MuiCircularProgress-circle': { strokeLinecap: 'round' },
         }}
       />
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+        }}
+      >
+        <Typography
+          component="div"
+          sx={(theme) => ({
+            color: theme.palette.mode === 'light' ? '#000000' : '#ffffff',
+            fontWeight: 800,
+            lineHeight: 1,
+            fontSize: size <= 54 ? '0.75rem' : '0.85rem',
+            textShadow: theme.palette.mode === 'light' ? 'none' : '0 1px 2px rgba(0,0,0,0.3)',
+          })}
+        >
+          {`${Math.round(clamped)}%`}
+        </Typography>
+      </Box>
     </Box>
   );
 };
@@ -425,7 +452,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
         }}
       >
         {/* Header row: Program label (left) and Total (right) */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1, position: 'relative' }}>
           <PillButton
             type="button"
             sx={{
@@ -442,6 +469,28 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           >
             {city.program}
           </PillButton>
+
+          {isDSP && (
+            <Typography
+              variant="h5"
+              sx={(theme) => ({
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                textAlign: 'center',
+                fontWeight: 900,
+                color: theme.palette.mode === 'light' ? '#000000' : '#ffffff',
+                fontSize: '1.4rem',
+                lineHeight: 1.2,
+                textShadow: theme.palette.mode === 'light' ? 'none' : '0 3px 8px rgba(0,0,0,0.35)',
+                letterSpacing: '0.6px',
+                textTransform: 'uppercase',
+                pointerEvents: 'none',
+              })}
+            >
+              {city.name}
+            </Typography>
+          )}
 
           {totalStats && !isDSP && (
             <Box
@@ -464,26 +513,28 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           )}
         </Box>
 
-        {/* City name - remove highlight for DSP to match request */}
-        <Box sx={{ textAlign: 'center', mb: isDSP ? 1.5 : 2 }}>
-          <Typography
-            variant="h5"
-            sx={(theme) => ({
-              fontWeight: 900,
-              color: theme.palette.mode === 'light' ? '#000000' : '#ffffff',
-              fontSize: '1.4rem',
-              lineHeight: 1.2,
-              textShadow: theme.palette.mode === 'light' ? 'none' : '0 3px 8px rgba(0,0,0,0.35)',
-              letterSpacing: '0.5px',
-            })}
-          >
-            {city.name}
-          </Typography>
-        </Box>
+        {/* City name (shown below header only for non-DSP) */}
+        {!isDSP && (
+          <Box sx={{ textAlign: 'center', mb: 2 }}>
+            <Typography
+              variant="h5"
+              sx={(theme) => ({
+                fontWeight: 900,
+                color: theme.palette.mode === 'light' ? '#000000' : '#ffffff',
+                fontSize: '1.4rem',
+                lineHeight: 1.2,
+                textShadow: theme.palette.mode === 'light' ? 'none' : '0 3px 8px rgba(0,0,0,0.35)',
+                letterSpacing: '0.5px',
+              })}
+            >
+              {city.name}
+            </Typography>
+          </Box>
+        )}
 
         {/* Center content: DSP gets two radial rows; others keep the large gauge */}
         {isDSP ? (
-          <Box sx={{ width: '100%', mb: 1.5 }}>
+          <Box sx={{ width: '100%', mb: 1.5, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             {/* Row 1: Total issues raised vs. target */}
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 2, mb: 1.25, flexWrap: 'wrap', rowGap: 1 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, flex: '1 1 auto', minWidth: 0 }}>
