@@ -1,346 +1,336 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { Box, Container, Typography, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import { DSP_COLORS } from '../../utils/constants';
-import {
-  DSPComplaintData,
-  CDCollectionData,
-  MRSUsageData,
-  ProgramOverviewData,
-} from '../../types';
-import ChartCard from './Charts/ChartCard';
-import MicroBulletBars, { MicroBulletDatum } from './Charts/MicroBulletBars';
-import VulnerableAreasMap from './Charts/VulnerableAreasMap';
-import ExpandChartDialog, { LabelMode } from './Charts/ExpandChartDialog';
-import ExpandedBarChart, { ExpandedBarDatum } from './Charts/ExpandedBarChart';
-import { exportRowsToCSV, exportSVGContainerToPNG } from './Charts/exportUtils';
+import React, { useMemo, useState } from 'react';
+import { Box, Container, Typography, Grid, Card, CardContent, CircularProgress, Collapse, IconButton, LinearProgress } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import InfoIcon from '@mui/icons-material/Info';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import PillButton from '../../components/Common/PillButton';
+import { DSP_COLORS, MOCK_LEADING_CITIES } from '../../utils/constants';
 
-// Color constants matching tile styles (use shared DSP_COLORS)
-const COLORS = {
-  BLACK: '#0E1525',
-  SATISFACTORY: DSP_COLORS.SATISFACTORY,
-  AVERAGE: DSP_COLORS.AVERAGE,
-  UNSATISFACTORY: DSP_COLORS.UNSATISFACTORY,
+// Helpers and styled components mirroring the DSP/SCC/MRS tiles used on Home Hero
+const getPerformanceColor = (percentage: number): string => {
+  if (percentage >= 90) return DSP_COLORS.SATISFACTORY;
+  if (percentage >= 50) return DSP_COLORS.AVERAGE;
+  return DSP_COLORS.UNSATISFACTORY;
 };
 
-// Helper to map resolution percentage to status buckets
-const getStatusFromPercentage = (
-  percentage: number
-): 'Satisfactory' | 'Average' | 'Unsatisfactory' => {
-  if (percentage >= 90) return 'Satisfactory';
-  if (percentage >= 50) return 'Average';
-  return 'Unsatisfactory';
+const ProgramTileCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'accentColor',
+})<{ accentColor: string }>(({ accentColor }) => ({
+  minHeight: '280px',
+  height: 'auto',
+  borderRadius: '16px',
+  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+  cursor: 'default',
+  position: 'relative',
+  overflow: 'hidden',
+  background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.16) 100%)',
+  backdropFilter: 'blur(10px)',
+  WebkitBackdropFilter: 'blur(10px)',
+  border: '1px solid rgba(0, 0, 0, 0.25)',
+  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
+  '&:hover': {
+    transform: 'translateY(-6px)',
+    boxShadow: '0 0 0 3px rgba(0, 0, 0, 0.5), 0 18px 56px rgba(0, 0, 0, 0.35)',
+    '&::before': { opacity: 1 },
+  },
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0.12) 100%)',
+    opacity: 0,
+    transition: 'opacity 0.3s ease',
+  },
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '3px',
+    height: '100%',
+    background: `linear-gradient(180deg, ${accentColor} 0%, ${accentColor}b3 100%)`,
+    borderRadius: '0 1.5px 1.5px 0',
+  },
+}));
+
+const CircularProgressIndicator: React.FC<{
+  percentage: number;
+  color: string;
+  size?: number;
+  displayDecimals?: number;
+}> = ({ percentage, color, size = 92, displayDecimals = 1 }) => {
+  return (
+    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+      <CircularProgress
+        variant="determinate"
+        value={100}
+        size={size}
+        thickness={4}
+        sx={{ color: 'rgba(255, 255, 255, 0.1)', position: 'absolute' }}
+      />
+      <CircularProgress
+        variant="determinate"
+        value={percentage}
+        size={size}
+        thickness={4}
+        sx={{
+          color: color,
+          filter: `drop-shadow(0 0 8px ${color}50)`,
+          '& .MuiCircularProgress-circle': { strokeLinecap: 'round' },
+        }}
+      />
+      <Box
+        sx={{
+          top: 0, left: 0, bottom: 0, right: 0,
+          position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column',
+        }}
+      >
+        <Typography
+          variant="h6"
+          component="div"
+          sx={(theme) => ({
+            color: theme.palette.mode === 'light' ? '#000000' : '#ffffff',
+            fontWeight: 800,
+            textShadow: theme.palette.mode === 'light' ? 'none' : '0 2px 4px rgba(0,0,0,0.3)',
+            lineHeight: 1,
+            fontSize: size > 100 ? '1.5rem' : '1.25rem',
+          })}
+        >
+          {percentage.toFixed(displayDecimals)}%
+        </Typography>
+      </Box>
+    </Box>
+  );
 };
 
-// DSP city data for landing page (Raised, Resolved, Resolution Rate)
-const CITY_DSP_DATA: DSPComplaintData[] = [
-  {
-    city: 'Bahadurgarh',
-    raised: 7356,
-    resolved: 2169,
-    resolutionPercentage: (2169 / 7356) * 100,
-    status: getStatusFromPercentage((2169 / 7356) * 100),
-  },
-  {
-    city: 'Delhi',
-    raised: 70550,
-    resolved: 52984,
-    resolutionPercentage: (52984 / 70550) * 100,
-    status: getStatusFromPercentage((52984 / 70550) * 100),
-  },
-  {
-    city: 'Faridabad',
-    raised: 22161,
-    resolved: 17636,
-    resolutionPercentage: (17636 / 22161) * 100,
-    status: getStatusFromPercentage((17636 / 22161) * 100),
-  },
-  {
-    city: 'Ghaziabad',
-    raised: 30814,
-    resolved: 26505,
-    resolutionPercentage: (26505 / 30814) * 100,
-    status: getStatusFromPercentage((26505 / 30814) * 100),
-  },
-  {
-    city: 'Greater Noida',
-    raised: 12705,
-    resolved: 9575,
-    resolutionPercentage: (9575 / 12705) * 100,
-    status: getStatusFromPercentage((9575 / 12705) * 100),
-  },
-  {
-    city: 'Gurgaon',
-    raised: 26169,
-    resolved: 17656,
-    resolutionPercentage: (17656 / 26169) * 100,
-    status: getStatusFromPercentage((17656 / 26169) * 100),
-  },
-  {
-    city: 'Manesar',
-    raised: 9606,
-    resolved: 7454,
-    resolutionPercentage: (7454 / 9606) * 100,
-    status: getStatusFromPercentage((7454 / 9606) * 100),
-  },
-  {
-    city: 'Noida',
-    raised: 17742,
-    resolved: 16500,
-    resolutionPercentage: (16500 / 17742) * 100,
-    status: getStatusFromPercentage((16500 / 17742) * 100),
-  },
+// Dummy leaderboards for dropdowns
+type DSPRow = { city: string; raised: number; resolved: number; resolutionPercentage: number };
+type CDRow = { city: string; target: number; actual: number; achievementPercentage: number };
+type MRSRow = { city: string; targetUnits: number; actualUnits: number; coveragePercentage: number };
+
+const DSP_LEADERBOARD_DATA: DSPRow[] = [
+  { city: 'Bahadurgarh', raised: 7356, resolved: 2169, resolutionPercentage: (2169 / 7356) * 100 },
+  { city: 'Delhi', raised: 70550, resolved: 52984, resolutionPercentage: (52984 / 70550) * 100 },
+  { city: 'Faridabad', raised: 22161, resolved: 17636, resolutionPercentage: (17636 / 22161) * 100 },
+  { city: 'Ghaziabad', raised: 30814, resolved: 26505, resolutionPercentage: (26505 / 30814) * 100 },
+  { city: 'Greater Noida', raised: 12705, resolved: 9575, resolutionPercentage: (9575 / 12705) * 100 },
+  { city: 'Gurgaon', raised: 26169, resolved: 17656, resolutionPercentage: (17656 / 26169) * 100 },
+  { city: 'Manesar', raised: 9606, resolved: 7454, resolutionPercentage: (7454 / 9606) * 100 },
+  { city: 'Noida', raised: 17742, resolved: 16500, resolutionPercentage: (16500 / 17742) * 100 },
 ];
 
-// Program overview data (landing page)
-const mockData: ProgramOverviewData = {
-  dspData: CITY_DSP_DATA,
-  cdData: [
-    {
-      city: 'Delhi',
-      target: 1200,
-      actual: 1150,
-      achievementPercentage: 95.8,
-      status: 'Satisfactory',
-    },
-    {
-      city: 'Faridabad',
-      target: 1000,
-      actual: 750,
-      achievementPercentage: 75.0,
-      status: 'Average',
-    },
-    {
-      city: 'Ghaziabad',
-      target: 800,
-      actual: 350,
-      achievementPercentage: 43.8,
-      status: 'Unsatisfactory',
-    },
-    {
-      city: 'Greater Noida',
-      target: 700,
-      actual: 680,
-      achievementPercentage: 97.1,
-      status: 'Satisfactory',
-    },
-    {
-      city: 'Gurgaon',
-      target: 600,
-      actual: 420,
-      achievementPercentage: 70.0,
-      status: 'Average',
-    },
-  ],
-  mrsData: [
-    {
-      city: 'Delhi',
-      targetRoadLength: 2500,
-      actualRoadLength: 2380,
-      coveragePercentage: 95.2,
-      status: 'Satisfactory',
-    },
-    {
-      city: 'Faridabad',
-      targetRoadLength: 2200,
-      actualRoadLength: 1650,
-      coveragePercentage: 75.0,
-      status: 'Average',
-    },
-    {
-      city: 'Ghaziabad',
-      targetRoadLength: 1800,
-      actualRoadLength: 720,
-      coveragePercentage: 40.0,
-      status: 'Unsatisfactory',
-    },
-    {
-      city: 'Greater Noida',
-      targetRoadLength: 1600,
-      actualRoadLength: 1520,
-      coveragePercentage: 95.0,
-      status: 'Satisfactory',
-    },
-    {
-      city: 'Gurgaon',
-      targetRoadLength: 1400,
-      actualRoadLength: 910,
-      coveragePercentage: 65.0,
-      status: 'Average',
-    },
-  ],
-};
+const CD_LEADERBOARD_DATA: CDRow[] = [
+  { city: 'Delhi', target: 1200, actual: 1150, achievementPercentage: (1150 / 1200) * 100 },
+  { city: 'Faridabad', target: 1000, actual: 750, achievementPercentage: (750 / 1000) * 100 },
+  { city: 'Ghaziabad', target: 800, actual: 350, achievementPercentage: (350 / 800) * 100 },
+  { city: 'Greater Noida', target: 700, actual: 686, achievementPercentage: (686 / 700) * 100 },
+  { city: 'Gurgaon', target: 600, actual: 420, achievementPercentage: (420 / 600) * 100 },
+];
 
-// Section components render micro bars and provide expand action
-const DSPSection: React.FC<{
-  data: DSPComplaintData[];
-  onExpand: (expanded: { title: string; rows: any[]; chart: ExpandedBarDatum[] }) => void;
-}> = ({ data, onExpand }) => {
+const MRS_LEADERBOARD_DATA: MRSRow[] = [
+  { city: 'Delhi', targetUnits: 50, actualUnits: 48, coveragePercentage: (48 / 50) * 100 },
+  { city: 'Faridabad', targetUnits: 30, actualUnits: 22, coveragePercentage: (22 / 30) * 100 },
+  { city: 'Ghaziabad', targetUnits: 24, actualUnits: 10, coveragePercentage: (10 / 24) * 100 },
+  { city: 'Greater Noida', targetUnits: 20, actualUnits: 19, coveragePercentage: (19 / 20) * 100 },
+  { city: 'Gurgaon', targetUnits: 18, actualUnits: 12, coveragePercentage: (12 / 18) * 100 },
+];
 
-  const expandedChart: ExpandedBarDatum[] = useMemo(
-    () =>
-      data.map((item) => ({
-        city: item.city,
-        raisedOrTarget: item.raised,
-        actualOrResolved: item.resolved,
-        percentage: item.resolutionPercentage,
-        status: item.status,
-      })),
-    [data]
-  );
+const HEADER_PROGRAM_COLORS = {
+  DSP: '#08306b',
+  'C&D': '#08519c',
+  MRS: '#2171b5',
+} as const;
 
-  const csvRows = useMemo(
-    () =>
-      data.map((d) => ({
-        City: d.city,
-        Raised: d.raised,
-        Resolved: d.resolved,
-        ResolutionPercentage: d.resolutionPercentage.toFixed(1),
-        Status: d.status,
-      })),
-    [data]
-  );
+const ProgramLeaderboard: React.FC<{ program: 'DSP' | 'C&D' | 'MRS'; accentColor: string; containerId: string }>
+  = ({ program, accentColor, containerId }) => {
+  const headerStyles = {
+    color: '#ffffff',
+    fontWeight: 400,
+    fontSize: '0.68rem',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.06em',
+  };
+
+  const rows = program === 'DSP' ? DSP_LEADERBOARD_DATA : program === 'C&D' ? CD_LEADERBOARD_DATA : MRS_LEADERBOARD_DATA;
+  const getPercent = (row: DSPRow | CDRow | MRSRow) => {
+    if (program === 'DSP') return (row as DSPRow).resolutionPercentage;
+    if (program === 'C&D') return (row as CDRow).achievementPercentage;
+    return (row as MRSRow).coveragePercentage;
+  };
+
+  const topPerformerCity = program === 'DSP' ? 'Delhi' : 'Greater Noida';
+  const sortedRows = [...rows]
+    .filter((r: any) => r.city !== topPerformerCity)
+    .sort((a, b) => getPercent(b) - getPercent(a));
+
+  const formatNumber = (num: number): string => Math.round(num).toLocaleString();
 
   return (
-    <ChartCard
-      title="Complaint Status: Road repairs & Civic Infra"
-      subtitle="Highest vulnerable areas — interactive map"
-      onExpand={() => onExpand({ title: 'DSP — Vulnerable Areas Map', rows: csvRows, chart: expandedChart })}
-    >
-      <div style={{ width: '100%' }}>
-        <VulnerableAreasMap />
-      </div>
-    </ChartCard>
+    <Box id={containerId} sx={{
+      mt: 1.5,
+      borderRadius: '12px',
+      background: 'rgba(16, 27, 42, 0.65)',
+      border: '1px solid rgba(255, 255, 255, 0.12)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
+      overflow: 'hidden', overflowX: 'hidden', maxWidth: '100%', minWidth: 0, fontSize: '0.85rem',
+    }}>
+      <Box sx={{
+        display: 'grid', gridTemplateColumns: '56px 1fr minmax(160px, auto)', alignItems: 'center', gap: 1, px: 2, py: 1,
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%)',
+        borderBottom: '1px solid rgba(255,255,255,0.08)', width: '100%', minWidth: 0, overflowX: 'hidden',
+      }}>
+        <Typography sx={headerStyles}>Rank</Typography>
+        <Typography sx={headerStyles}>City</Typography>
+        {program === 'DSP' && <Typography sx={headerStyles}>Resolved Vs Raised</Typography>}
+        {program === 'C&D' && <Typography sx={headerStyles}>SCCs Set up Vs Target</Typography>}
+        {program === 'MRS' && <Typography sx={headerStyles}>Active Units Vs Target</Typography>}
+      </Box>
+
+      <Box sx={{ maxHeight: 260, overflowY: 'auto', overflowX: 'hidden', width: '100%', minWidth: 0 }}>
+        {sortedRows.map((row, index) => {
+          const percentage = getPercent(row);
+          let absoluteLabel = '';
+          if (program === 'DSP') {
+            const r = row as DSPRow;
+            absoluteLabel = `${formatNumber(r.resolved)} / ${formatNumber(r.raised)}`;
+          } else if (program === 'C&D') {
+            const c = row as CDRow;
+            absoluteLabel = `${formatNumber(c.actual)} / ${formatNumber(c.target)}`;
+          } else {
+            const m = row as MRSRow;
+            absoluteLabel = `${formatNumber(m.actualUnits)} / ${formatNumber(m.targetUnits)}`;
+          }
+
+          return (
+            <Box key={`${program}-${index}`} sx={{
+              px: 2, py: 1, '&:not(:last-of-type)': { borderBottom: '1px solid rgba(255,255,255,0.06)' },
+              transition: 'background 0.2s ease', '&:hover': { background: 'rgba(255,255,255,0.04)' },
+            }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '56px 1fr minmax(160px, auto)', alignItems: 'center', gap: 1, width: '100%', minWidth: 0 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box sx={{
+                    width: 28, height: 28, borderRadius: '14px', display: 'grid', placeItems: 'center', fontWeight: 600, color: '#fff',
+                    background: `${accentColor}`, boxShadow: `${accentColor}55 0px 4px 14px`,
+                  }}>{index + 2}</Box>
+                </Box>
+                <Typography sx={{ color: '#E6EDF3', fontWeight: 400, fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: 0 }}>{(row as any).city}</Typography>
+                <Typography sx={{ color: '#ffffff', fontWeight: 400, fontSize: '0.8rem', fontVariantNumeric: 'tabular-nums' }}>{`${Math.round(percentage)}% (${absoluteLabel})`}</Typography>
+              </Box>
+              <LinearProgress
+                variant="determinate"
+                value={Math.max(0, Math.min(100, percentage))}
+                sx={{ mt: 1, height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.08)', '& .MuiLinearProgress-bar': { backgroundColor: accentColor } }}
+              />
+            </Box>
+          );
+        })}
+      </Box>
+    </Box>
   );
 };
 
-// C&D Section Component
-const CDSection: React.FC<{
-  data: CDCollectionData[];
-  onExpand: (expanded: { title: string; rows: any[]; chart: ExpandedBarDatum[] }) => void;
-}> = ({ data, onExpand }) => {
-  const microData: MicroBulletDatum[] = useMemo(
-    () =>
-      data.map((item, i) => ({
-        id: `${i}-${item.city}`,
-        label: item.city,
-        track: item.target,
-        fill: item.actual,
-        percentage: item.achievementPercentage,
-        status: item.status,
-      })),
-    [data]
-  );
-
-  const expandedChart: ExpandedBarDatum[] = useMemo(
-    () =>
-      data.map((item) => ({
-        city: item.city,
-        raisedOrTarget: item.target,
-        actualOrResolved: item.actual,
-        percentage: item.achievementPercentage,
-        status: item.status,
-      })),
-    [data]
-  );
-
-  const csvRows = useMemo(
-    () =>
-      data.map((d) => ({
-        City: d.city,
-        Target: d.target,
-        Actual: d.actual,
-        AchievementPercentage: d.achievementPercentage.toFixed(1),
-        Status: d.status,
-      })),
-    [data]
-  );
+const LeaderboardTile: React.FC<{ program: 'DSP' | 'C&D' | 'MRS'; cityName: string; metric: string; percentage: number; }>
+  = ({ program, cityName, metric, percentage }) => {
+  const [open, setOpen] = useState(false);
+  const color = getPerformanceColor(percentage);
+  const collapseId = `lp-lb-${program.toLowerCase()}`;
 
   return (
-    <ChartCard
-      title="Citywise C&D Collection Status"
-      subtitle="Percent achieved"
-      onExpand={() => onExpand({ title: 'C&D — Collection Achievement', rows: csvRows, chart: expandedChart })}
-    >
-      <MicroBulletBars data={microData} />
-    </ChartCard>
+    <ProgramTileCard accentColor={HEADER_PROGRAM_COLORS[program]}>
+      <CardContent sx={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+          <PillButton
+            type="button"
+            sx={{
+              backgroundColor: HEADER_PROGRAM_COLORS[program],
+              '&:hover': { backgroundColor: HEADER_PROGRAM_COLORS[program] },
+              color: '#ffffff', pointerEvents: 'none', padding: '8px 16px', borderRadius: '10px', fontSize: '0.95rem', minHeight: '36px',
+              boxShadow: `0 4px 14px ${HEADER_PROGRAM_COLORS[program]}33`,
+            }}
+          >
+            {program === 'C&D' ? 'SCC' : program}
+          </PillButton>
+        </Box>
+
+        <Box sx={{ textAlign: 'center', mb: 2 }}>
+          <Typography variant="h5" sx={(theme) => ({ fontWeight: 900, color: theme.palette.mode === 'light' ? '#000000' : '#ffffff', fontSize: '1.5rem', lineHeight: 1.2, textShadow: theme.palette.mode === 'light' ? 'none' : '0 3px 8px rgba(0,0,0,0.35)', letterSpacing: '0.5px' })}>
+            {cityName}
+          </Typography>
+        </Box>
+
+        <Box sx={{ textAlign: 'center', mb: 1.5, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <CircularProgressIndicator percentage={percentage} color={color} displayDecimals={program === 'C&D' ? 0 : 1} />
+        </Box>
+
+        <Typography variant="caption" sx={(theme) => ({ color: theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.85)' : 'rgba(255, 255, 255, 0.85)', textAlign: 'center', display: 'block', mb: 1 })}>
+          {program === 'DSP' ? 'Percentage Resolved Vs Raised' : program === 'C&D' ? 'Number of SCCs Set up Vs Target' : 'Number of Active MRS units Vs Target'}
+        </Typography>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1, pt: 1, borderTop: '1px solid rgba(0, 0, 0, 0.25)' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <InfoIcon sx={(theme) => ({ fontSize: '15px', color: theme.palette.mode === 'light' ? '#000000' : 'rgba(230, 237, 243, 0.85)', mr: 0.5 })} />
+            <Typography variant="caption" sx={(theme) => ({ color: theme.palette.mode === 'light' ? '#000000' : 'rgba(230, 237, 243, 0.85)', fontSize: '0.72rem' })}>
+              Top in {metric}
+            </Typography>
+          </Box>
+        </Box>
+
+        <Collapse in={open} timeout={300} unmountOnExit>
+          <ProgramLeaderboard program={program} accentColor={HEADER_PROGRAM_COLORS[program]} containerId={collapseId} />
+        </Collapse>
+      </CardContent>
+
+      <Box sx={{ position: 'absolute', bottom: 8, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 2 }}>
+        <IconButton
+          aria-label={`Toggle ${program} leaderboard`}
+          aria-expanded={open}
+          aria-controls={collapseId}
+          onClick={() => setOpen((p) => !p)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setOpen((p) => !p);
+            } else if (e.key === 'Escape') {
+              if (open) setOpen(false);
+            }
+          }}
+          sx={{
+            background: 'rgba(16, 27, 42, 0.7)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+            color: '#E6EDF3',
+            boxShadow: '0 6px 14px rgba(0,0,0,0.3)',
+            transition: 'transform 0.2s ease, background 0.2s ease',
+            '&:hover': { background: 'rgba(16, 27, 42, 0.85)' },
+          }}
+          size="small"
+        >
+          <KeyboardArrowDownIcon sx={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }} />
+        </IconButton>
+      </Box>
+    </ProgramTileCard>
   );
 };
 
-// MRS Section Component
-const MRSSection: React.FC<{
-  data: MRSUsageData[];
-  onExpand: (expanded: { title: string; rows: any[]; chart: ExpandedBarDatum[] }) => void;
-}> = ({ data, onExpand }) => {
-  const microData: MicroBulletDatum[] = useMemo(
-    () =>
-      data.map((item, i) => ({
-        id: `${i}-${item.city}`,
-        label: item.city,
-        track: item.targetRoadLength,
-        fill: item.actualRoadLength,
-        percentage: item.coveragePercentage,
-        status: item.status,
-      })),
-    [data]
-  );
-
-  const expandedChart: ExpandedBarDatum[] = useMemo(
-    () =>
-      data.map((item) => ({
-        city: item.city,
-        raisedOrTarget: item.targetRoadLength,
-        actualOrResolved: item.actualRoadLength,
-        percentage: item.coveragePercentage,
-        status: item.status,
-      })),
-    [data]
-  );
-
-  const csvRows = useMemo(
-    () =>
-      data.map((d) => ({
-        City: d.city,
-        TargetRoadLength: d.targetRoadLength,
-        ActualRoadLength: d.actualRoadLength,
-        CoveragePercentage: d.coveragePercentage.toFixed(1),
-        Status: d.status,
-      })),
-    [data]
-  );
-
-  return (
-    <ChartCard
-      title="Citywise MRS Usage Status"
-      subtitle="Percent road length covered"
-      onExpand={() => onExpand({ title: 'MRS — Road Coverage', rows: csvRows, chart: expandedChart })}
-    >
-      <MicroBulletBars data={microData} absoluteUnit="KM" />
-    </ChartCard>
-  );
-};
-
-// Main StatsOverview Component
 const StatsOverview: React.FC = () => {
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [labelMode, setLabelMode] = useState<LabelMode>('percent');
-  const [dialogTitle, setDialogTitle] = useState('');
-  const [expandedData, setExpandedData] = useState<ExpandedBarDatum[]>([]);
-  const [csvRows, setCsvRows] = useState<any[]>([]);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const leadingCities = useMemo(() => MOCK_LEADING_CITIES, []);
 
-  const openExpand = (cfg: { title: string; rows: any[]; chart: ExpandedBarDatum[] }) => {
-    setDialogTitle(cfg.title);
-    setExpandedData(cfg.chart);
-    setCsvRows(cfg.rows);
-    setDialogOpen(true);
-  };
+  // Compute percentages based on dummy data
+  const dspRow = DSP_LEADERBOARD_DATA.find((r) => r.city === 'Delhi');
+  const dspPercentage = dspRow ? (dspRow.resolved / dspRow.raised) * 100 : 0;
 
-  const exportCSV = () => exportRowsToCSV(`${dialogTitle.replace(/\s+/g, '_').toLowerCase()}.csv`, csvRows);
-  const exportPNG = () => {
-    if (contentRef.current) {
-      exportSVGContainerToPNG(contentRef.current, `${dialogTitle.replace(/\s+/g, '_').toLowerCase()}.png`);
-    }
-  };
+  const cdTop = leadingCities.find((c) => c.program === 'C&D');
+  const cdRow = CD_LEADERBOARD_DATA.find((r) => r.city === cdTop?.name) || CD_LEADERBOARD_DATA[0];
+  const cdPercentage = (cdRow.actual / cdRow.target) * 100;
+
+  const mrsTop = leadingCities.find((c) => c.program === 'MRS');
+  const mrsRow = MRS_LEADERBOARD_DATA.find((r) => r.city === mrsTop?.name) || MRS_LEADERBOARD_DATA[0];
+  const mrsPercentage = (mrsRow.actualUnits / mrsRow.targetUnits) * 100;
 
   return (
     <Container maxWidth="xl" sx={{ py: 3, position: 'relative' }}>
@@ -348,166 +338,22 @@ const StatsOverview: React.FC = () => {
         variant="h3"
         component="h2"
         gutterBottom
-        sx={{ 
-          textAlign: 'center', 
-          mb: 4,
-          color: '#000000',
-          fontWeight: 400,
-          fontSize: { xs: '2rem', md: '3rem' }
-        }}
+        sx={{ textAlign: 'center', mb: 4, color: '#000000', fontWeight: 400, fontSize: { xs: '2rem', md: '3rem' } }}
       >
-        Program Overview Statistics
+        Program Leaderboard (Resolution based) : City Wise
       </Typography>
-      
+
       <Grid container spacing={3}>
-        {/* DSP Section */}
         <Grid item xs={12} lg={4}>
-          <DSPSection data={mockData.dspData} onExpand={openExpand} />
+          <LeaderboardTile program="DSP" cityName="Delhi" metric="Resolution %" percentage={dspPercentage} />
         </Grid>
-        
-        {/* C&D Section */}
         <Grid item xs={12} lg={4}>
-          <CDSection data={mockData.cdData} onExpand={openExpand} />
+          <LeaderboardTile program="C&D" cityName={cdRow.city} metric="SCCs Setup %" percentage={cdPercentage} />
         </Grid>
-        
-        {/* MRS Section */}
         <Grid item xs={12} lg={4}>
-          <MRSSection data={mockData.mrsData} onExpand={openExpand} />
+          <LeaderboardTile program="MRS" cityName={mrsRow.city} metric="Active Units %" percentage={mrsPercentage} />
         </Grid>
       </Grid>
-
-      {/* Unified status legend below the three charts */}
-      <Box
-        sx={{
-          mt: 2.5,
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            gap: 2,
-            alignItems: 'center',
-            p: 1,
-            borderRadius: '12px',
-            background: 'rgba(16, 27, 42, 0.6)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)'
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-            <Box sx={{ width: 12, height: 12, bgcolor: COLORS.SATISFACTORY, borderRadius: '3px' }} />
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
-              Satisfactory (≥90%)
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-            <Box sx={{ width: 12, height: 12, bgcolor: COLORS.AVERAGE, borderRadius: '3px' }} />
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
-              Average (50-89%)
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-            <Box sx={{ width: 12, height: 12, bgcolor: COLORS.UNSATISFACTORY, borderRadius: '3px' }} />
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.85)' }}>
-              Unsatisfactory (&lt;50%)
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
-      <ExpandChartDialog
-        open={dialogOpen}
-        title={dialogTitle}
-        onClose={() => setDialogOpen(false)}
-        onExportCSV={exportCSV}
-        onExportPNG={exportPNG}
-        labelMode={labelMode}
-        onLabelModeChange={setLabelMode}
-        contentRef={contentRef}
-      >
-        {dialogTitle.startsWith('DSP') ? (
-          <Box
-            sx={{
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 1,
-              width: '100%',
-              maxWidth: '100%',
-              minWidth: 0,
-              overflowX: 'hidden',
-            }}
-          >
-            {/* DSP Leaderboard Table: Rank, City, Raised, Resolved, Resolution % */}
-            <TableContainer
-              component={Paper}
-              sx={{
-                flex: 1,
-                minWidth: 0,
-                maxWidth: '100%',
-                overflowX: 'hidden',
-                overflowY: 'auto',
-                bgcolor: 'background.paper',
-              }}
-            >
-              <Table size="small" stickyHeader aria-label="dsp leaderboard" sx={{ tableLayout: 'fixed', width: '100%' }}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ width: { xs: '12%', md: '10%' }, fontWeight: 700 }}>Rank</TableCell>
-                    <TableCell sx={{ width: { xs: '36%', md: '40%' }, fontWeight: 700 }}>City</TableCell>
-                    <TableCell sx={{ width: { xs: '17%', md: '16%' }, fontWeight: 700 }}>Raised</TableCell>
-                    <TableCell sx={{ width: { xs: '17%', md: '16%' }, fontWeight: 700 }}>Resolved</TableCell>
-                    <TableCell sx={{ width: { xs: '18%', md: '18%' }, fontWeight: 700 }}>Resolution %</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {expandedData
-                    .filter((row) => row.city.toLowerCase() !== 'delhi')
-                    .sort((a, b) => {
-                      const pctDiff = b.percentage - a.percentage;
-                      if (pctDiff !== 0) return pctDiff;
-                      return b.actualOrResolved - a.actualOrResolved;
-                    })
-                    .map((row, idx) => {
-                      const rank = idx + 2; // Start from 2 since Delhi is Rank 1
-                      return (
-                        <TableRow key={`${row.city}-${idx}`} hover>
-                          <TableCell
-                            sx={{
-                              whiteSpace: 'normal',
-                              wordBreak: 'break-word',
-                              overflowWrap: 'anywhere',
-                              fontWeight: 600,
-                            }}
-                          >
-                            {rank}
-                          </TableCell>
-                          <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {row.city}
-                          </TableCell>
-                          <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {Math.round(row.raisedOrTarget).toLocaleString()}
-                          </TableCell>
-                          <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {Math.round(row.actualOrResolved).toLocaleString()}
-                          </TableCell>
-                          <TableCell sx={{ whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                            {row.percentage.toFixed(1)}%
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-        ) : (
-          <ExpandedBarChart data={expandedData} labelMode={labelMode} />
-        )}
-      </ExpandChartDialog>
-
     </Container>
   );
 };

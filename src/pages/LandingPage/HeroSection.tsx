@@ -372,7 +372,8 @@ const ProgramLeaderboard: React.FC<{
 };
 
 const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
-  const dspGaugePercentage = (70550 / 75000) * 100;
+  // Change to Percentage Resolved Vs Raised for DSP
+  const dspGaugePercentage = (52984 / 70550) * 100;
   const effectivePercentage = city.program === 'DSP' ? dspGaugePercentage : city.value;
   const color = getPerformanceColor(effectivePercentage);
   const [open, setOpen] = useState(false);
@@ -448,10 +449,10 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           sx={(theme) => ({ color: theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.85)' : 'rgba(255, 255, 255, 0.85)', textAlign: 'center', display: 'block', mb: 1 })}
         >
           {city.program === 'DSP'
-            ? 'Total issues raised vs. target (70,550 / 75,000 )'
+            ? 'Percentage Resolved Vs Raised'
             : city.program === 'C&D'
-            ? 'Total Malba Collected Vs. Target (MT)'
-            : 'Percentage of Total Road Length Covered by MRS/Month'}
+            ? 'Number of SCCs Set up Vs Target'
+            : 'Number of Active MRS units Vs Target'}
         </Typography>
 
         {/* Footer with metric info */}
