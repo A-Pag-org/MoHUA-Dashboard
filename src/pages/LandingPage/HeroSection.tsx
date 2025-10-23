@@ -84,7 +84,8 @@ const CircularProgressIndicator: React.FC<{
   percentage: number;
   color: string;
   size?: number;
-}> = ({ percentage, color, size = 92 }) => {
+  displayDecimals?: number;
+}> = ({ percentage, color, size = 92, displayDecimals = 1 }) => {
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
       <CircularProgress
@@ -134,7 +135,7 @@ const CircularProgressIndicator: React.FC<{
             fontSize: size > 100 ? '1.5rem' : '1.25rem',
           })}
         >
-          {percentage.toFixed(1)}%
+          {percentage.toFixed(displayDecimals)}%
         </Typography>
       </Box>
     </Box>
@@ -262,7 +263,7 @@ const ProgramLeaderboard: React.FC<{
         )}
         {program === 'C&D' && (
           <>
-            <Typography sx={headerStyles}>Malba Collected Vs Target</Typography>
+            <Typography sx={headerStyles}>Malba Collected Vs Target (MT)</Typography>
           </>
         )}
         {program === 'MRS' && (
@@ -339,7 +340,7 @@ const ProgramLeaderboard: React.FC<{
 
                 {program === 'C&D' && (
                   <>
-                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{`${percentage.toFixed(1)}%${absoluteLabel}`}</Typography>
+                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{`${Math.round(percentage)}%${absoluteLabel}`}</Typography>
                   </>
                 )}
 
@@ -460,7 +461,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
 
         {/* Circular Progress Indicator */}
         <Box sx={{ textAlign: 'center', mb: 1.5, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <CircularProgressIndicator percentage={effectivePercentage} color={color} />
+          <CircularProgressIndicator percentage={effectivePercentage} color={color} displayDecimals={city.program === 'C&D' ? 0 : 1} />
         </Box>
 
         {/* Gauge label just below the chart */}
@@ -471,7 +472,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           {city.program === 'DSP'
             ? 'Total issues raised vs. target (70,550 / 75,000 )'
             : city.program === 'C&D'
-            ? 'Total Malba Collected Vs. Target'
+            ? 'Total Malba Collected Vs. Target (MT)'
             : 'Percentage of Target achieved'}
         </Typography>
 
