@@ -80,6 +80,36 @@ const ProgramTileCard = styled(Card, {
 
 // StatusChip removed
 
+// Small radial gauge for inline rows (no center text)
+const SmallRadialGauge: React.FC<{ percentage: number; size?: number }> = ({ percentage, size = 54 }) => {
+  const color = getPerformanceColor(percentage);
+  return (
+    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+      <CircularProgress
+        variant="determinate"
+        value={100}
+        size={size}
+        thickness={4}
+        sx={(theme) => ({
+          color: theme.palette.mode === 'light' ? 'rgba(0,0,0,0.10)' : 'rgba(255,255,255,0.12)',
+          position: 'absolute',
+        })}
+      />
+      <CircularProgress
+        variant="determinate"
+        value={Math.max(0, Math.min(100, percentage))}
+        size={size}
+        thickness={4}
+        sx={{
+          color,
+          filter: `drop-shadow(0 0 8px ${color}50)`,
+          '& .MuiCircularProgress-circle': { strokeLinecap: 'round' },
+        }}
+      />
+    </Box>
+  );
+};
+
 const CircularProgressIndicator: React.FC<{
   percentage: number;
   color: string;
@@ -364,6 +394,14 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
   const totalStats = MOCK_PROGRAM_STATS.find((s) => s.program === city.program);
   const totalColor = totalStats ? getPerformanceColor(totalStats.percentage) : DSP_COLORS.AVERAGE;
 
+  const isDSP = city.program === 'DSP';
+  // Dummy top-city-only numbers to keep gauges >90%
+  const dspRaised = 70550;
+  const dspTarget = 75000; // ensures >90% of target achieved
+  const dspResolved = 67728; // 96% of raised
+  const pctRaisedVsTarget = (dspRaised / dspTarget) * 100;
+  const pctResolvedVsRaised = (dspResolved / dspRaised) * 100;
+
   const handleToggle = () => setOpen((prev) => !prev);
   const handleKeyToggle = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -405,7 +443,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
             {city.program}
           </PillButton>
 
-          {totalStats && (
+          {totalStats && !isDSP && (
             <Box
               sx={{
                 backgroundColor: totalColor,
@@ -426,39 +464,130 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           )}
         </Box>
 
-        {/* City name in top middle - highlighted and prominent */}
-        <Box sx={{ textAlign: 'center', mb: 2 }}>
+        {/* City name - pill for DSP, text for others */}
+        <Box sx={{ textAlign: 'center', mb: isDSP ? 1.5 : 2 }}>
+          {isDSP ? (
+            <PillButton
+              type="button"
+              sx={{
+                backgroundColor: HEADER_PROGRAM_COLORS[city.program],
+                '&:hover': { backgroundColor: HEADER_PROGRAM_COLORS[city.program] },
+                color: '#ffffff',
+                pointerEvents: 'none',
+                padding: '6px 16px',
+                borderRadius: '10px',
+                fontSize: '0.95rem',
+                minHeight: '32px',
+                boxShadow: `0 4px 14px ${HEADER_PROGRAM_COLORS[city.program]}33`,
+              }}
+            >
+              {city.name}
+            </PillButton>
+          ) : (
+            <Typography
+              variant="h5"
+              sx={(theme) => ({
+                fontWeight: 900,
+                color: theme.palette.mode === 'light' ? '#000000' : '#ffffff',
+                fontSize: '1.5rem',
+                lineHeight: 1.2,
+                textShadow: theme.palette.mode === 'light' ? 'none' : '0 3px 8px rgba(0,0,0,0.35)',
+                letterSpacing: '0.5px',
+              })}
+            >
+              {city.name}
+            </Typography>
+          )}
+        </Box>
+
+        {/* Center content: DSP gets two radial rows; others keep the large gauge */}
+        {isDSP ? (
+          <Box sx={{ width: '100%', mb: 1.5 }}>
+            {/* Row 1: Total issues raised vs. target */}
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, mb: 1.25 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+                <Box sx={{
+                  px: 1.25,
+                  py: 0.75,
+                  borderRadius: '10px',
+                  border: `1px solid ${HEADER_PROGRAM_COLORS[city.program]}`,
+                  color: (theme) => (theme.palette.mode === 'light' ? '#000000' : '#E6EDF3'),
+                  fontWeight: 600,
+                  fontSize: '0.86rem',
+                  whiteSpace: 'nowrap',
+                }}>
+                  Total issues raised vs. target
+                </Box>
+                <Box sx={{
+                  px: 1.25,
+                  py: 0.75,
+                  borderRadius: '10px',
+                  border: `1px solid ${HEADER_PROGRAM_COLORS[city.program]}66`,
+                  color: (theme) => (theme.palette.mode === 'light' ? '#000000' : '#E6EDF3'),
+                  fontWeight: 600,
+                  fontSize: '0.86rem',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {`${dspRaised.toLocaleString()} / ${dspTarget.toLocaleString()}`}
+                </Box>
+              </Box>
+              <SmallRadialGauge percentage={pctRaisedVsTarget} />
+            </Box>
+
+            <Box sx={{ height: 1, background: 'rgba(0,0,0,0.20)', borderRadius: 1, mb: 1.25 }} />
+
+            {/* Row 2: Total issues Resolved vs.Raised */}
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+                <Box sx={{
+                  px: 1.25,
+                  py: 0.75,
+                  borderRadius: '10px',
+                  border: `1px solid ${HEADER_PROGRAM_COLORS[city.program]}`,
+                  color: (theme) => (theme.palette.mode === 'light' ? '#000000' : '#E6EDF3'),
+                  fontWeight: 600,
+                  fontSize: '0.86rem',
+                  whiteSpace: 'nowrap',
+                }}>
+                  Total issues Resolved vs.Raised
+                </Box>
+                <Box sx={{
+                  px: 1.25,
+                  py: 0.75,
+                  borderRadius: '10px',
+                  border: `1px solid ${HEADER_PROGRAM_COLORS[city.program]}66`,
+                  color: (theme) => (theme.palette.mode === 'light' ? '#000000' : '#E6EDF3'),
+                  fontWeight: 600,
+                  fontSize: '0.86rem',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {`${dspResolved.toLocaleString()} / ${dspRaised.toLocaleString()}`}
+                </Box>
+              </Box>
+              <SmallRadialGauge percentage={pctResolvedVsRaised} />
+            </Box>
+
+            <Box sx={{ height: 1.25, background: 'rgba(0,0,0,0.24)', borderRadius: 1, mt: 1.5 }} />
+          </Box>
+        ) : (
+          <Box sx={{ textAlign: 'center', mb: 1.5, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <CircularProgressIndicator percentage={city.value} color={color} />
+          </Box>
+        )}
+
+        {/* Gauge label just below the chart (not shown for DSP custom layout) */}
+        {city.program !== 'DSP' && (
           <Typography
-            variant="h5"
-            sx={(theme) => ({
-              fontWeight: 900,
-              color: theme.palette.mode === 'light' ? '#000000' : '#ffffff',
-              fontSize: '1.5rem',
-              lineHeight: 1.2,
-              textShadow: theme.palette.mode === 'light' ? 'none' : '0 3px 8px rgba(0,0,0,0.35)',
-              letterSpacing: '0.5px',
-            })}
+            variant="caption"
+            sx={(theme) => ({ color: theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.85)' : 'rgba(255, 255, 255, 0.85)', textAlign: 'center', display: 'block', mb: 1 })}
           >
-            {city.name}
+            {city.program === 'DSP'
+              ? 'Percentage of Resolution'
+              : city.program === 'C&D'
+              ? 'Percentage of Target Achieved'
+              : 'Percentage of Target achieved'}
           </Typography>
-        </Box>
-
-        {/* Circular Progress Indicator */}
-        <Box sx={{ textAlign: 'center', mb: 1.5, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <CircularProgressIndicator percentage={city.value} color={color} />
-        </Box>
-
-        {/* Gauge label just below the chart */}
-        <Typography
-          variant="caption"
-          sx={(theme) => ({ color: theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.85)' : 'rgba(255, 255, 255, 0.85)', textAlign: 'center', display: 'block', mb: 1 })}
-        >
-          {city.program === 'DSP'
-            ? 'Percentage of Resolution'
-            : city.program === 'C&D'
-            ? 'Percentage of Target Achieved'
-            : 'Percentage of Target achieved'}
-        </Typography>
+        )}
 
         {/* Footer with metric info */}
         <Box
@@ -468,14 +597,20 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
             justifyContent: 'space-between',
             mt: 1,
             pt: 1,
-            borderTop: '1px solid rgba(0, 0, 0, 0.25)',
+            borderTop: city.program === 'DSP' ? 'none' : '1px solid rgba(0, 0, 0, 0.25)',
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <InfoIcon sx={(theme) => ({ fontSize: '15px', color: theme.palette.mode === 'light' ? '#000000' : 'rgba(230, 237, 243, 0.85)', mr: 0.5 })} />
-            <Typography variant="caption" sx={(theme) => ({ color: theme.palette.mode === 'light' ? '#000000' : 'rgba(230, 237, 243, 0.85)', fontSize: '0.72rem' })}>
-              Top in {city.metric}
-            </Typography>
+            {city.program === 'DSP' ? (
+              <Typography variant="caption" sx={(theme) => ({ color: theme.palette.mode === 'light' ? '#000000' : 'rgba(230, 237, 243, 0.85)', fontSize: '0.72rem' })}>
+                Top In Resolution
+              </Typography>
+            ) : (
+              <Typography variant="caption" sx={(theme) => ({ color: theme.palette.mode === 'light' ? '#000000' : 'rgba(230, 237, 243, 0.85)', fontSize: '0.72rem' })}>
+                Top in {city.metric}
+              </Typography>
+            )}
           </Box>
           {/* Right side intentionally left blank (status removed) */}
         </Box>
