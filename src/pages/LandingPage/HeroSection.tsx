@@ -178,6 +178,18 @@ const MRS_LEADERBOARD_DATA: MRSRow[] = [
   { city: 'Gurgaon', targetRoadLength: 1400, actualRoadLength: 910, coveragePercentage: 65.0, status: 'Average' },
 ];
 
+// Dummy targets for DSP cities to show "Total issues raised vs. target"
+const DSP_CITY_TARGETS: Record<string, number> = {
+  'Noida': 20000,
+  'Ghaziabad': 32000,
+  'Faridabad': 23000,
+  'Manesar': 10000,
+  'Greater Noida': 13000,
+  'Gurgaon': 28000,
+  'Bahadurgarh': 8000,
+  // Delhi is filtered out as top performer in the list
+};
+
 const getPercentForProgramRow = (program: 'DSP' | 'C&D' | 'MRS', row: DSPRow | CDRow | MRSRow): number => {
   if (program === 'DSP') return (row as DSPRow).resolutionPercentage;
   if (program === 'C&D') return (row as CDRow).achievementPercentage;
@@ -245,7 +257,7 @@ const ProgramLeaderboard: React.FC<{
         <Typography sx={headerStyles}>City</Typography>
         {program === 'DSP' && (
           <>
-            <Typography sx={headerStyles}>Resolution %</Typography>
+            <Typography sx={headerStyles}>Total issues raised vs. target</Typography>
           </>
         )}
         {program === 'C&D' && (
@@ -269,7 +281,8 @@ const ProgramLeaderboard: React.FC<{
           let absoluteLabel = '';
           if (program === 'DSP') {
             const r = row as DSPRow;
-            absoluteLabel = ` (${formatNumber(r.resolved)} / ${formatNumber(r.raised)})`;
+            const targetForCity = DSP_CITY_TARGETS[r.city] ?? Math.round(r.raised * 1.1);
+            absoluteLabel = `${formatNumber(r.raised)} / ${formatNumber(targetForCity)}`;
           } else if (program === 'C&D') {
             const c = row as CDRow;
             absoluteLabel = ` (${formatNumber(c.actual)} / ${formatNumber(c.target)})`;
@@ -316,11 +329,11 @@ const ProgramLeaderboard: React.FC<{
                 {program === 'DSP' && (
                   <>
                     <Typography sx={{
-                      color: getPerformanceColor(percentage),
+                      color: '#ffffff',
                       fontWeight: 400,
                       fontSize: '0.8rem',
                       fontVariantNumeric: 'tabular-nums',
-                    }}>{`${percentage.toFixed(1)}%${absoluteLabel}`}</Typography>
+                    }}>{absoluteLabel}</Typography>
                   </>
                 )}
 
