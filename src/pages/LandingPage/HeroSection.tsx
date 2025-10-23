@@ -346,7 +346,7 @@ const ProgramLeaderboard: React.FC<{
 
                 {program === 'MRS' && (
                   <>
-                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{`${percentage.toFixed(1)}%${absoluteLabel}`}</Typography>
+                    <Typography sx={{ color: '#fff', fontWeight: 400 }}>{`${Math.round(percentage)}%${absoluteLabel}`}</Typography>
                   </>
                 )}
               </Box>
