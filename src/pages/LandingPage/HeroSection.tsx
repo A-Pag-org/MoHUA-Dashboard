@@ -464,40 +464,21 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           )}
         </Box>
 
-        {/* City name - pill for DSP, text for others */}
+        {/* City name - remove highlight for DSP to match request */}
         <Box sx={{ textAlign: 'center', mb: isDSP ? 1.5 : 2 }}>
-          {isDSP ? (
-            <PillButton
-              type="button"
-              sx={{
-                backgroundColor: HEADER_PROGRAM_COLORS[city.program],
-                '&:hover': { backgroundColor: HEADER_PROGRAM_COLORS[city.program] },
-                color: '#ffffff',
-                pointerEvents: 'none',
-                padding: '6px 16px',
-                borderRadius: '10px',
-                fontSize: '0.95rem',
-                minHeight: '32px',
-                boxShadow: `0 4px 14px ${HEADER_PROGRAM_COLORS[city.program]}33`,
-              }}
-            >
-              {city.name}
-            </PillButton>
-          ) : (
-            <Typography
-              variant="h5"
-              sx={(theme) => ({
-                fontWeight: 900,
-                color: theme.palette.mode === 'light' ? '#000000' : '#ffffff',
-                fontSize: '1.5rem',
-                lineHeight: 1.2,
-                textShadow: theme.palette.mode === 'light' ? 'none' : '0 3px 8px rgba(0,0,0,0.35)',
-                letterSpacing: '0.5px',
-              })}
-            >
-              {city.name}
-            </Typography>
-          )}
+          <Typography
+            variant="h5"
+            sx={(theme) => ({
+              fontWeight: 900,
+              color: theme.palette.mode === 'light' ? '#000000' : '#ffffff',
+              fontSize: '1.4rem',
+              lineHeight: 1.2,
+              textShadow: theme.palette.mode === 'light' ? 'none' : '0 3px 8px rgba(0,0,0,0.35)',
+              letterSpacing: '0.5px',
+            })}
+          >
+            {city.name}
+          </Typography>
         </Box>
 
         {/* Center content: DSP gets two radial rows; others keep the large gauge */}
@@ -513,7 +494,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
                   border: `1px solid ${HEADER_PROGRAM_COLORS[city.program]}`,
                   color: (theme) => (theme.palette.mode === 'light' ? '#000000' : '#E6EDF3'),
                   fontWeight: 600,
-                  fontSize: '0.86rem',
+                  fontSize: '0.8rem',
                   whiteSpace: 'nowrap',
                 }}>
                   Total issues raised vs. target
@@ -525,7 +506,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
                   border: `1px solid ${HEADER_PROGRAM_COLORS[city.program]}66`,
                   color: (theme) => (theme.palette.mode === 'light' ? '#000000' : '#E6EDF3'),
                   fontWeight: 600,
-                  fontSize: '0.86rem',
+                  fontSize: '0.8rem',
                   whiteSpace: 'nowrap',
                 }}>
                   {`${dspRaised.toLocaleString()} / ${dspTarget.toLocaleString()}`}
@@ -546,7 +527,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
                   border: `1px solid ${HEADER_PROGRAM_COLORS[city.program]}`,
                   color: (theme) => (theme.palette.mode === 'light' ? '#000000' : '#E6EDF3'),
                   fontWeight: 600,
-                  fontSize: '0.86rem',
+                  fontSize: '0.8rem',
                   whiteSpace: 'nowrap',
                 }}>
                   Total issues Resolved vs.Raised
@@ -558,7 +539,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
                   border: `1px solid ${HEADER_PROGRAM_COLORS[city.program]}66`,
                   color: (theme) => (theme.palette.mode === 'light' ? '#000000' : '#E6EDF3'),
                   fontWeight: 600,
-                  fontSize: '0.86rem',
+                  fontSize: '0.8rem',
                   whiteSpace: 'nowrap',
                 }}>
                   {`${dspResolved.toLocaleString()} / ${dspRaised.toLocaleString()}`}
