@@ -42,7 +42,7 @@ const Header: React.FC = () => {
       case 'DSP':
         return [
           { label: 'Home', path: '/' },
-          { label: 'C&D', path: '/cd' },
+          { label: 'SCC', path: '/cd' },
           { label: 'MRS', path: '/mrs' },
         ];
       case 'C&D':
@@ -55,12 +55,12 @@ const Header: React.FC = () => {
         return [
           { label: 'Home', path: '/' },
           { label: 'DSP', path: '/dsp' },
-          { label: 'C&D', path: '/cd' },
+          { label: 'SCC', path: '/cd' },
         ];
       default: // HOME and any other
         return [
           { label: 'DSP', path: '/dsp' },
-          { label: 'C&D', path: '/cd' },
+          { label: 'SCC', path: '/cd' },
           { label: 'MRS', path: '/mrs' },
         ];
     }

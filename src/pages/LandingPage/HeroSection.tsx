@@ -262,7 +262,7 @@ const ProgramLeaderboard: React.FC<{
         )}
         {program === 'C&D' && (
           <>
-            <Typography sx={headerStyles}>Achievement %</Typography>
+            <Typography sx={headerStyles}>Malba Collected Vs Target</Typography>
           </>
         )}
         {program === 'MRS' && (
@@ -417,10 +417,10 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
               boxShadow: `0 4px 14px ${HEADER_PROGRAM_COLORS[city.program]}33`,
             }}
           >
-            {city.program}
+            {city.program === 'C&D' ? 'SCC' : city.program}
           </PillButton>
 
-          {totalStats && city.program !== 'DSP' && (
+          {totalStats && city.program === 'MRS' && (
             <Box
               sx={{
                 backgroundColor: totalColor,
@@ -471,7 +471,7 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           {city.program === 'DSP'
             ? 'Total issues raised vs. target (70,550 / 75,000 )'
             : city.program === 'C&D'
-            ? 'Percentage of Target Achieved'
+            ? 'Total Malba Collected Vs. Target'
             : 'Percentage of Target achieved'}
         </Typography>
 
