@@ -13,7 +13,7 @@ import {
   Paper,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import InfoIcon from '@mui/icons-material/Info';
+// InfoIcon removed (no tile-level dialog)
 import FlashOnIcon from '@mui/icons-material/FlashOn';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
@@ -328,12 +328,9 @@ const ConsolidatedGaugeChart: React.FC<{
   );
 };
 
-interface CityTileProps {
-  city: DSPCity;
-  onMoreInfo: (city: DSPCity) => void;
-}
+interface CityTileProps { city: DSPCity }
 
-const CityTile: React.FC<CityTileProps> = ({ city, onMoreInfo }) => {
+const CityTile: React.FC<CityTileProps> = ({ city }) => {
   const resolutionColor = getResolutionColor(city.resolutionPercentage);
   const status = getResolutionStatus(city.resolutionPercentage);
 
@@ -421,52 +418,11 @@ interface CityDetailsDialogProps {
   onClose: () => void;
 }
 
-const CityDetailsDialog: React.FC<CityDetailsDialogProps> = ({ city, open, onClose }) => {
-  if (!city) return null;
-
-  return (
-    <Dialog 
-      open={open} 
-      onClose={onClose} 
-      maxWidth="lg" 
-      fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: '16px',
-          background: 'rgba(16, 27, 42, 0.65)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
-          maxHeight: '90vh',
-          height: '90vh',
-        }
-      }}
-    >
-      <DialogContent sx={{ p: 2.5, background: 'transparent', overflow: 'auto', height: '100%', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
-        <CategoryBarChart 
-          data={MOCK_CATEGORY_DATA[city.id] || []} 
-          cityName={city.cityName}
-        />
-      </DialogContent>
-    </Dialog>
-  );
-};
+// Removed old CityDetailsDialog in favor of per-tab windows
 
 const CityTiles: React.FC = () => {
-  const [selectedCity, setSelectedCity] = useState<DSPCity | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [consolidatedOpen, setConsolidatedOpen] = useState(false);
-
-  const handleMoreInfo = (city: DSPCity) => {
-    setSelectedCity(city);
-    setDialogOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
-    setSelectedCity(null);
-  };
+  
 
   // Calculate total statistics from actual data
   const totalRaised = MOCK_DSP_CITIES.reduce((sum, city) => sum + city.complaintsRaised, 0);
@@ -700,11 +656,7 @@ const CityTiles: React.FC = () => {
       {/* City Tiles Grid */}
       <Grid container spacing={2}>
         {MOCK_DSP_CITIES.map((city) => (
-          <CityTile
-            key={city.id}
-            city={city}
-            onMoreInfo={handleMoreInfo}
-          />
+          <CityTile key={city.id} city={city} />
         ))}
       </Grid>
 
@@ -774,13 +726,6 @@ const CityTiles: React.FC = () => {
           </Box>
         </Paper>
       </Box>
-
-      {/* City Details Dialog */}
-      <CityDetailsDialog
-        city={selectedCity}
-        open={dialogOpen}
-        onClose={handleCloseDialog}
-      />
 
       {/* Consolidated Category-wise Dialog */}
       <Dialog 
