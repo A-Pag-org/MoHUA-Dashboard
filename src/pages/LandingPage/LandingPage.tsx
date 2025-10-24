@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 import Header from '../../components/Common/Header';
 import HeroSection from './HeroSection';
 import StatsOverview from './StatsOverview';
+import { DSP_COLORS } from '../../utils/constants';
 
 const LandingPage: React.FC = () => {
   return (
@@ -32,6 +33,42 @@ const LandingPage: React.FC = () => {
       <Header />
       <HeroSection />
       <StatsOverview />
+      {/* Status legend at bottom of home page */}
+      <Box sx={{ maxWidth: 1200, mx: 'auto', position: 'relative', zIndex: 1, mb: 4, mt: 1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Paper
+            sx={{
+              borderRadius: '16px',
+              background: 'rgba(16, 27, 42, 0.85)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+              px: 3,
+              py: 1.5,
+            }}
+          >
+            <Box sx={{ display: 'flex', gap: 3, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                <Box sx={{ width: 14, height: 14, borderRadius: '50%', background: DSP_COLORS.SATISFACTORY, boxShadow: `0 0 8px ${DSP_COLORS.SATISFACTORY}40` }} />
+                <Typography variant="body2" sx={{ color: '#ffffff', fontWeight: 600 }}>
+                  Satisfactory (≥90%)
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                <Box sx={{ width: 14, height: 14, borderRadius: '50%', background: DSP_COLORS.AVERAGE, boxShadow: `0 0 8px ${DSP_COLORS.AVERAGE}40` }} />
+                <Typography variant="body2" sx={{ color: '#ffffff', fontWeight: 600 }}>
+                  Average (50-89%)
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                <Box sx={{ width: 14, height: 14, borderRadius: '50%', background: DSP_COLORS.UNSATISFACTORY, boxShadow: `0 0 8px ${DSP_COLORS.UNSATISFACTORY}40` }} />
+                <Typography variant="body2" sx={{ color: '#ffffff', fontWeight: 600 }}>
+                  Unsatisfactory (&lt;50%)
+                </Typography>
+              </Box>
+            </Box>
+          </Paper>
+        </Box>
+      </Box>
     </Box>
   );
 };
