@@ -170,6 +170,7 @@ const CircularProgressIndicator: React.FC<{ percentage: number; color: string; s
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          // Only show the percentage number inside; caption moved below chart
           flexDirection: 'column',
         }}
       >
@@ -189,20 +190,6 @@ const CircularProgressIndicator: React.FC<{ percentage: number; color: string; s
           })}
         >
           {percentage.toFixed(0)}%
-        </Typography>
-        <Typography
-          variant="caption"
-          sx={(theme) => ({
-            color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-            fontSize: size > 120 ? '0.85rem' : size > 100 ? '0.75rem' : '0.65rem',
-            fontWeight: 500,
-            maxWidth: `${size * 0.9}px`,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          })}
-        >
-          Resolution
         </Typography>
       </Box>
     </Box>
@@ -386,6 +373,18 @@ const CityTile: React.FC<CityTileProps> = ({ city, onOpen }) => {
           {/* Gauge */}
           <Box sx={{ textAlign: 'center' }}>
             <CircularProgressIndicator percentage={city.resolutionPercentage} color={resolutionColor} size={74} />
+            <Typography
+              variant="caption"
+              sx={(theme) => ({
+                mt: 0.75,
+                display: 'block',
+                color: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)',
+                fontWeight: 600,
+                letterSpacing: 0.2,
+              })}
+            >
+              Resolution Percentage
+            </Typography>
           </Box>
 
           {/* Action Tabs in tile as per new spec */}
