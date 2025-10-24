@@ -785,7 +785,7 @@ const CityTiles: React.FC = () => {
       }}>
         <Paper sx={{
           borderRadius: '16px',
-          background: (theme) => theme.palette.mode === 'dark' ? 'rgba(16, 27, 42, 0.65)' : 'rgba(255, 255, 255, 0.92)',
+          background: (theme) => theme.palette.mode === 'dark' ? 'rgba(16, 27, 42, 0.85)' : 'rgba(255, 255, 255, 0.92)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           border: (theme) => theme.palette.mode === 'dark' ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(0, 0, 0, 0.1)',
