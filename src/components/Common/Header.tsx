@@ -109,20 +109,34 @@ const Header: React.FC = () => {
             alt="Government of India Logo"
             sx={{ height: 40, width: 'auto', mr: 2 }}
           />
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              color: isLandingPage ? '#000000' : '#ffffff',
-              fontWeight: 700,
-              letterSpacing: '0.5px',
-              textShadow: '0 1px 2px rgba(0,0,0,0.25)'
-            }}
-          >
-            Ministry of Housing & Urban Affairs
-          </Typography>
-          {/* Keep abbreviation for tests without displaying it */}
-          <Typography sx={{ display: 'none' }}>MoHUA</Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
+            <Typography
+              variant="h5"
+              component="div"
+              sx={{
+                color: isLandingPage ? '#000000' : '#ffffff',
+                fontWeight: 800,
+                letterSpacing: '0.25px',
+                textShadow: '0 1px 2px rgba(0,0,0,0.25)'
+              }}
+            >
+              MoHUA Dashboard
+            </Typography>
+            <Typography
+              variant="subtitle2"
+              component="div"
+              sx={{
+                color: isLandingPage ? '#000000' : '#ffffff',
+                fontWeight: 500,
+                opacity: isLandingPage ? 0.9 : 0.85,
+                letterSpacing: '0.2px'
+              }}
+            >
+              Ministry of Housing & Urban Affairs
+            </Typography>
+            {/* Keep abbreviation for tests without displaying it */}
+            <Typography sx={{ display: 'none' }}>MoHUA</Typography>
+          </Box>
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
