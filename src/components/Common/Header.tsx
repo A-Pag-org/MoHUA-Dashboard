@@ -7,6 +7,36 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import PillButton from './PillButton';
 // no custom StyledButton; use shared PillButton to match landing page buttons
 
+// Program tab color mapping used across the app (DSP/C&D/MRS)
+// Matches the designated colors used for program tiles and buttons
+const PROGRAM_HEADER_COLORS: Record<'DSP' | 'C&D' | 'MRS', string> = {
+  DSP: '#08306b',
+  'C&D': '#08519c',
+  MRS: '#2171b5',
+};
+
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const normalized = hex.replace('#', '');
+  if (!(normalized.length === 3 || normalized.length === 6)) return null;
+  const full = normalized.length === 3
+    ? normalized.split('').map((c) => c + c).join('')
+    : normalized;
+  const num = parseInt(full, 16);
+  return {
+    r: (num >> 16) & 255,
+    g: (num >> 8) & 255,
+    b: num & 255,
+  };
+}
+
+// Simple luminance-based contrast: returns '#000000' for light backgrounds, '#ffffff' for dark
+function getContrastText(bg: string): '#000000' | '#ffffff' {
+  const rgb = hexToRgb(bg);
+  if (!rgb) return '#ffffff';
+  const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+  return brightness > 150 ? '#000000' : '#ffffff';
+}
+
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -86,13 +116,27 @@ const Header: React.FC = () => {
     return undefined;
   };
 
+  // Determine header background based on current page's designated tab color
+  const headerBackground = isLandingPage
+    ? '#D5D5D5'
+    : currentProgram === 'DSP'
+      ? PROGRAM_HEADER_COLORS.DSP
+      : currentProgram === 'C&D'
+        ? PROGRAM_HEADER_COLORS['C&D']
+        : currentProgram === 'MRS'
+          ? PROGRAM_HEADER_COLORS.MRS
+          : 'linear-gradient(135deg, rgba(7, 14, 28, 0.85) 0%, rgba(16, 27, 42, 0.85) 100%)';
+
+  const headerTextColor: '#000000' | '#ffffff' =
+    typeof headerBackground === 'string' && headerBackground.startsWith('#')
+      ? getContrastText(headerBackground)
+      : '#ffffff';
+
   return (
     <AppBar 
       position="sticky" 
       sx={{ 
-        background: isLandingPage
-          ? '#D5D5D5'
-          : 'linear-gradient(135deg, rgba(7, 14, 28, 0.85) 0%, rgba(16, 27, 42, 0.85) 100%)',
+        background: headerBackground,
         boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
         top: 0,
         zIndex: 1100,
@@ -114,7 +158,7 @@ const Header: React.FC = () => {
               variant="h5"
               component="div"
               sx={{
-                color: isLandingPage ? '#000000' : '#ffffff',
+                color: headerTextColor,
                 fontWeight: 800,
                 letterSpacing: '0.25px',
                 textShadow: '0 1px 2px rgba(0,0,0,0.25)'
@@ -126,9 +170,9 @@ const Header: React.FC = () => {
               variant="subtitle2"
               component="div"
               sx={{
-                color: isLandingPage ? '#000000' : '#ffffff',
+                color: headerTextColor,
                 fontWeight: 500,
-                opacity: isLandingPage ? 0.9 : 0.85,
+                opacity: isLandingPage ? 0.9 : 0.9,
                 letterSpacing: '0.2px'
               }}
             >
@@ -154,7 +198,7 @@ const Header: React.FC = () => {
           <IconButton
             aria-label="toggle theme"
             onClick={() => window.dispatchEvent(new Event('toggle-color-mode'))}
-            sx={{ ml: 1, color: '#ffffff' }}
+            sx={{ ml: 1, color: headerTextColor }}
           >
             {theme.palette.mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
           </IconButton>
