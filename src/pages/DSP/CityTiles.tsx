@@ -328,9 +328,14 @@ const ConsolidatedGaugeChart: React.FC<{
   );
 };
 
-interface CityTileProps { city: DSPCity }
+type TabType = 'category' | 'agency' | 'zone' | 'vulnerable';
 
-const CityTile: React.FC<CityTileProps> = ({ city }) => {
+interface CityTileProps {
+  city: DSPCity;
+  onOpen: (type: TabType, city: DSPCity) => void;
+}
+
+const CityTile: React.FC<CityTileProps> = ({ city, onOpen }) => {
   const resolutionColor = getResolutionColor(city.resolutionPercentage);
   const status = getResolutionStatus(city.resolutionPercentage);
 
@@ -388,22 +393,22 @@ const CityTile: React.FC<CityTileProps> = ({ city }) => {
             <TileTab
               icon={<BarChartIcon sx={{ fontSize: 18 }} />}
               label="Category Wise Resolution (Resolved/Raised)"
-              onClick={() => openCategoryWindow(city)}
+              onClick={() => onOpen('category', city)}
             />
             <TileTab
               icon={<ApartmentIcon sx={{ fontSize: 18 }} />}
               label="Agency Wise Resolution Rate"
-              onClick={() => openAgencyWindow(city)}
+              onClick={() => onOpen('agency', city)}
             />
             <TileTab
               icon={<DomainIcon sx={{ fontSize: 18 }} />}
               label="Zone/Ward Wise Resolution Rate"
-              onClick={() => openZoneWindow(city)}
+              onClick={() => onOpen('zone', city)}
             />
             <TileTab
               icon={<MapIcon sx={{ fontSize: 18 }} />}
               label="Vulnerable Areas (Map)"
-              onClick={() => openVulnerableMapWindow(city)}
+              onClick={() => onOpen('vulnerable', city)}
             />
           </Box>
         </CardContent>
@@ -422,6 +427,7 @@ interface CityDetailsDialogProps {
 
 const CityTiles: React.FC = () => {
   const [consolidatedOpen, setConsolidatedOpen] = useState(false);
+  const [tabDialog, setTabDialog] = useState<null | { type: TabType; city: DSPCity }>(null);
   
 
   // Calculate total statistics from actual data
@@ -442,6 +448,116 @@ const CityTiles: React.FC = () => {
     });
     return Object.values(sums).sort((a, b) => b.raised - a.raised);
   }, []);
+
+  // Handlers for per-tile tabs
+  const openTabDialog = (type: TabType, city: DSPCity) => {
+    setTabDialog({ type, city });
+  };
+  const closeTabDialog = () => setTabDialog(null);
+
+  // Dummy categories per user spec (exact wording)
+  const USER_SPEC_CATEGORIES: string[] = [
+    'Pothole',
+    'Unpaved road',
+    'Broken footpath/divider',
+    'Unsurfaced parking lots',
+    'Malba/bricks/bori etc dumped',
+    'Garbage dumped',
+    'Mud silt/sand pile',
+    'C&D activity without safeguards',
+    'Encroachment and building material dumped',
+    'Garbage/plastic/leaves burning',
+    'Barren land to be greened',
+    'Greening of central verges',
+  ];
+
+  // Deterministic dummy generator using city id to vary numbers a bit
+  const generateCategoryDummy = (city: DSPCity): Array<{ category: string; raised: number; resolved: number }> => {
+    const seed = Number(city.id);
+    return USER_SPEC_CATEGORIES.map((category, idx) => {
+      const base = (seed * 983 + (idx + 1) * 197) % 7000; // 0..6999
+      const raised = Math.max(200, 600 + base); // >= 600
+      const rateIdx = (seed + idx) % 3; // cycle 0..2
+      const rate = rateIdx === 0 ? 0.92 : rateIdx === 1 ? 0.76 : 0.58;
+      const resolved = Math.min(raised, Math.round(raised * rate));
+      return { category, raised, resolved };
+    });
+  };
+
+  // Small row for Agency/Zone bars inside dialog
+  const BarRow: React.FC<{ label: string; raised: number; resolved: number }> = ({ label, raised, resolved }) => {
+    const pct = raised > 0 ? Math.min(100, (resolved / raised) * 100) : 0;
+    return (
+      <Box sx={{ mb: 1.25 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5, gap: 1, flexWrap: 'wrap' }}>
+          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.9)', fontWeight: 600, fontSize: '0.85rem', minWidth: '180px', flex: 1 }}>
+            {label}
+          </Typography>
+          <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+            {resolved.toLocaleString()} / {raised.toLocaleString()} ({pct.toFixed(1)}%)
+          </Typography>
+        </Box>
+        <Box sx={{ position: 'relative', height: '10px', background: '#363636', borderRadius: '5px', overflow: 'hidden' }}>
+          <Box sx={{ position: 'absolute', inset: 0, width: `${pct}%`, background: pct >= 90 ? DSP_COLORS.SATISFACTORY : pct >= 50 ? DSP_COLORS.AVERAGE : DSP_COLORS.UNSATISFACTORY, boxShadow: `0 0 8px ${pct >= 90 ? DSP_COLORS.SATISFACTORY : pct >= 50 ? DSP_COLORS.AVERAGE : DSP_COLORS.UNSATISFACTORY}55`, transition: 'width 0.5s ease' }} />
+        </Box>
+      </Box>
+    );
+  };
+
+  const renderTabDialogContent = () => {
+    if (!tabDialog) return null;
+    const { type, city } = tabDialog;
+    if (type === 'category') {
+      const data = generateCategoryDummy(city);
+      return (
+        <CategoryBarChart data={data} cityName={city.cityName} />
+      );
+    }
+    if (type === 'agency') {
+      const rows = (MOCK_AGENCY_DATA[city.id] || []);
+      return (
+        <Paper sx={{ p: 2, borderRadius: '12px', background: 'rgba(16, 27, 42, 0.55)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <Typography variant="h6" sx={{ color: '#fff', fontWeight: 800, mb: 1.5 }}>{city.cityName} — Agency-wise Resolution</Typography>
+          {rows.map((r, i) => (
+            <BarRow key={i} label={r.agency} raised={r.raised} resolved={r.resolved} />
+          ))}
+        </Paper>
+      );
+    }
+    if (type === 'zone') {
+      const rows = (MOCK_ZONE_DATA[city.id] || []);
+      return (
+        <Paper sx={{ p: 2, borderRadius: '12px', background: 'rgba(16, 27, 42, 0.55)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <Typography variant="h6" sx={{ color: '#fff', fontWeight: 800, mb: 1.5 }}>{city.cityName} — Zone/Ward-wise Resolution</Typography>
+          {rows.map((r, i) => (
+            <BarRow key={i} label={r.zone} raised={r.raised} resolved={r.resolved} />
+          ))}
+        </Paper>
+      );
+    }
+    // vulnerable
+    const points = (MOCK_VULNERABLE_POINTS[city.id] || []);
+    return (
+      <Paper sx={{ p: 2, borderRadius: '12px', background: 'rgba(16, 27, 42, 0.55)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <Typography variant="h6" sx={{ color: '#fff', fontWeight: 800, mb: 1 }}>
+          {city.cityName} — Vulnerable Areas (Dummy)
+        </Typography>
+        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.8)', display: 'block', mb: 1.5 }}>
+          Showing dummy hotspot list for demo
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          {points.map((p, i) => (
+            <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 1, borderRadius: '8px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <Typography variant="body2" sx={{ color: '#fff', fontWeight: 600 }}>{p.name}</Typography>
+              <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                Lat {p.lat.toFixed(4)}, Lng {p.lng.toFixed(4)} • Severity {p.severity}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      </Paper>
+    );
+  };
 
   return (
     <Box>
@@ -656,7 +772,7 @@ const CityTiles: React.FC = () => {
       {/* City Tiles Grid */}
       <Grid container spacing={2}>
         {MOCK_DSP_CITIES.map((city) => (
-          <CityTile key={city.id} city={city} />
+          <CityTile key={city.id} city={city} onOpen={openTabDialog} />
         ))}
       </Grid>
 
@@ -751,6 +867,32 @@ const CityTiles: React.FC = () => {
             data={consolidatedCategoryData} 
             cityName="Delhi NCR"
           />
+        </DialogContent>
+      </Dialog>
+
+      {/* Centered dialog for tile tabs */}
+      <Dialog
+        open={!!tabDialog}
+        onClose={closeTabDialog}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: '16px',
+            background: 'rgba(16, 27, 42, 0.65)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
+            maxHeight: '90vh',
+          }
+        }}
+      >
+        <DialogContent sx={{ p: 2.5, background: 'transparent', overflow: 'auto' }}>
+          {renderTabDialogContent()}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <PillButton onClick={closeTabDialog} variant="contained">Close</PillButton>
+          </Box>
         </DialogContent>
       </Dialog>
     </Box>
@@ -862,98 +1004,6 @@ const MOCK_VULNERABLE_POINTS: Record<string, VulnerablePoint[]> = Object.fromEnt
   })
 );
 
-// Simple in-window renderer utilities
-function openWindowWithHtml(title: string, bodyHtml: string, headExtra = ''): void {
-  const w = window.open('', '_blank', 'noopener,noreferrer,width=980,height=720');
-  if (!w) return;
-  const baseStyles = `
-    <style>
-      *{box-sizing:border-box} body{font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; padding:24px; background:#f6f7fb; color:#111827}
-      .card{max-width:980px;margin:0 auto;background:#fff;border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,0.08);padding:24px}
-      h1{font-size:20px;margin:0 0 12px;font-weight:800}
-      h2{font-size:14px;margin:16px 0 8px;color:#374151}
-      .row{display:flex;align-items:center;gap:12px;margin:10px 0}
-      .label{min-width:160px;font-size:12px;color:#374151}
-      .barbg{flex:1;height:10px;background:#e5e7eb;border-radius:6px;overflow:hidden}
-      .bar{height:100%;background:#16a34a}
-      .val{min-width:120px;text-align:right;font-size:12px;color:#111827}
-      .legend{display:flex;gap:16px;margin-top:10px;color:#6b7280;font-size:12px}
-      .muted{color:#6b7280}
-      #map{height:600px;border:1px solid #e5e7eb;border-radius:12px}
-      .pill{display:inline-flex;align-items:center;gap:8px;background:#111827;color:#fff;border-radius:999px;padding:8px 12px;font-size:12px}
-    </style>
-  `;
-  w.document.open();
-  w.document.write(`<!doctype html><html><head><meta charset="utf-8"/><title>${title}</title>${baseStyles}${headExtra}</head><body><div class="card">${bodyHtml}</div></body></html>`);
-  w.document.close();
-}
-
-function rate(resolved: number, raised: number): number {
-  return raised > 0 ? Math.min(100, (resolved / raised) * 100) : 0;
-}
-
-function tableBars(title: string, rows: Array<{ label: string; raised: number; resolved: number }>): string {
-  const items = rows
-    .map((r) => {
-      const pct = rate(r.resolved, r.raised).toFixed(1);
-      return `
-        <div class="row">
-          <div class="label">${r.label}</div>
-          <div class="barbg"><div class="bar" style="width:${pct}%"></div></div>
-          <div class="val">${r.resolved.toLocaleString()} / ${r.raised.toLocaleString()} (${pct}%)</div>
-        </div>
-      `;
-    })
-    .join('');
-  return `<h1>${title}</h1>${items}`;
-}
-
-function openCategoryWindow(city: DSPCity): void {
-  const data = (MOCK_CATEGORY_DATA[city.id] || []).map((d) => ({ label: d.category, raised: d.raised, resolved: d.resolved }));
-  const html = tableBars(`${city.cityName} — Category Wise Resolution`, data);
-  openWindowWithHtml(`${city.cityName} Category-wise`, html);
-}
-
-function openAgencyWindow(city: DSPCity): void {
-  const rows = (MOCK_AGENCY_DATA[city.id] || []).map((d) => ({ label: d.agency, raised: d.raised, resolved: d.resolved }));
-  const html = tableBars(`${city.cityName} — Agency Wise Resolution`, rows);
-  openWindowWithHtml(`${city.cityName} Agency-wise`, html);
-}
-
-function openZoneWindow(city: DSPCity): void {
-  const rows = (MOCK_ZONE_DATA[city.id] || []).map((d) => ({ label: d.zone, raised: d.raised, resolved: d.resolved }));
-  const html = tableBars(`${city.cityName} — Zone/Ward Wise Resolution`, rows);
-  openWindowWithHtml(`${city.cityName} Zone/Ward-wise`, html);
-}
-
-function openVulnerableMapWindow(city: DSPCity): void {
-  const points = (MOCK_VULNERABLE_POINTS[city.id] || []);
-  const center = CITY_CENTER[city.id] || { lat: 28.6139, lng: 77.209 };
-  const headExtra = `
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  `;
-  const script = `
-    <script>
-      const points = ${JSON.stringify(points)};
-      const map = L.map('map').setView([${center.lat}, ${center.lng}], 12);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-      const markers = points.map(p => L.marker([p.lat, p.lng]).addTo(map).bindPopup(p.name + ' — Severity ' + p.severity));
-      if (markers.length) {
-        const grp = L.featureGroup(markers);
-        map.fitBounds(grp.getBounds().pad(0.2));
-      }
-    </script>
-  `;
-  const html = `
-    <h1>${city.cityName} — Vulnerable Areas</h1>
-    <div class="muted" style="margin-bottom:8px">Showing dummy locations (lat/lng) for demo</div>
-    <div id="map"></div>
-    ${script}
-  `;
-  openWindowWithHtml(`${city.cityName} Vulnerable Areas`, html, headExtra);
-}
-
 // Small presentational component for tile actions
 function TileTab({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick: () => void }) {
   return (
@@ -969,6 +1019,13 @@ function TileTab({ icon, label, onClick }: { icon: React.ReactNode; label: strin
           px: 1.25,
           py: 1,
           color: '#000000',
+          transition: 'transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
+          '&:hover': {
+            transform: 'translateY(-2px)',
+            background: 'rgba(0, 0, 0, 0.18)',
+            borderColor: 'rgba(0,0,0,0.25)',
+            boxShadow: '0 6px 18px rgba(0,0,0,0.18)',
+          },
         }}
       >
         <Box sx={{ display: 'grid', placeItems: 'center', width: 24, height: 24 }}>{icon}</Box>
