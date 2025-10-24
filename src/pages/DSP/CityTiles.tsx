@@ -17,10 +17,10 @@ import { styled } from '@mui/material/styles';
 import FlashOnIcon from '@mui/icons-material/FlashOn';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import ApartmentIcon from '@mui/icons-material/Apartment';
-import MapIcon from '@mui/icons-material/Map';
-import DomainIcon from '@mui/icons-material/Domain';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import HandshakeIcon from '@mui/icons-material/Handshake';
+import PlaceIcon from '@mui/icons-material/Place';
+import GppBadIcon from '@mui/icons-material/GppBad';
 import { DSPCity } from '../../types';
 import { DSP_COLORS, MOCK_DSP_CITIES, MOCK_CATEGORY_DATA } from '../../utils/constants';
 import CategoryBarChart from './CategoryBarChart';
@@ -391,22 +391,22 @@ const CityTile: React.FC<CityTileProps> = ({ city, onOpen }) => {
           {/* Action Tabs in tile as per new spec */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             <TileTab
-              icon={<BarChartIcon sx={{ fontSize: 18 }} />}
+              icon={<FolderOpenIcon sx={{ fontSize: 18 }} />}
               label="Category Wise Resolution (Resolved/Raised)"
               onClick={() => onOpen('category', city)}
             />
             <TileTab
-              icon={<ApartmentIcon sx={{ fontSize: 18 }} />}
+              icon={<HandshakeIcon sx={{ fontSize: 18 }} />}
               label="Agency Wise Resolution Rate"
               onClick={() => onOpen('agency', city)}
             />
             <TileTab
-              icon={<DomainIcon sx={{ fontSize: 18 }} />}
+              icon={<PlaceIcon sx={{ fontSize: 18 }} />}
               label="Zone/Ward Wise Resolution Rate"
               onClick={() => onOpen('zone', city)}
             />
             <TileTab
-              icon={<MapIcon sx={{ fontSize: 18 }} />}
+              icon={<GppBadIcon sx={{ fontSize: 18 }} />}
               label="Vulnerable Areas (Map)"
               onClick={() => onOpen('vulnerable', city)}
             />
