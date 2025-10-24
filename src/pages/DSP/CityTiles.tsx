@@ -324,7 +324,6 @@ interface CityTileProps {
 
 const CityTile: React.FC<CityTileProps> = ({ city, onOpen }) => {
   const resolutionColor = getResolutionColor(city.resolutionPercentage);
-  const status = getResolutionStatus(city.resolutionPercentage);
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
