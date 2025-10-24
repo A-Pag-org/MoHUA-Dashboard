@@ -66,6 +66,29 @@ const Header: React.FC = () => {
     }
   }, [currentProgram]);
 
+  // Determine header background color based on the current program/page
+  const programHeaderColors: Record<'HOME' | 'DSP' | 'C&D' | 'MRS', string> = {
+    HOME: '#0b5ed7', // Home Blue as requested
+    DSP: '#08306b',  // DSP designated tab color
+    'C&D': '#08519c', // SCC designated tab color
+    MRS: '#2171b5',  // MRS designated tab color
+  };
+
+  const headerBackgroundColor = programHeaderColors[currentProgram];
+
+  // Compute readable text color (black/white) based on header background
+  const getReadableTextColor = (hexColor: string): '#000000' | '#ffffff' => {
+    const hex = hexColor.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    // Perceived brightness (ITU-R BT.601)
+    const brightness = (299 * r + 587 * g + 114 * b) / 1000;
+    return brightness > 150 ? '#000000' : '#ffffff';
+  };
+
+  const headerTextColor = getReadableTextColor(headerBackgroundColor);
+
   // Apply color accents for landing page program buttons
   const getLandingSx = (path: string) => {
     if (!isLandingPage) return undefined;
@@ -90,9 +113,7 @@ const Header: React.FC = () => {
     <AppBar 
       position="sticky" 
       sx={{ 
-        background: isLandingPage
-          ? '#D5D5D5'
-          : 'linear-gradient(135deg, rgba(7, 14, 28, 0.85) 0%, rgba(16, 27, 42, 0.85) 100%)',
+        background: headerBackgroundColor,
         boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
         top: 0,
         zIndex: 1100,
@@ -113,7 +134,7 @@ const Header: React.FC = () => {
             variant="h6"
             component="div"
             sx={{
-              color: isLandingPage ? '#000000' : '#ffffff',
+              color: headerTextColor,
               fontWeight: 700,
               letterSpacing: '0.5px',
               textShadow: '0 1px 2px rgba(0,0,0,0.25)'
@@ -140,7 +161,7 @@ const Header: React.FC = () => {
           <IconButton
             aria-label="toggle theme"
             onClick={() => window.dispatchEvent(new Event('toggle-color-mode'))}
-            sx={{ ml: 1, color: '#ffffff' }}
+            sx={{ ml: 1, color: headerTextColor }}
           >
             {theme.palette.mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
           </IconButton>
