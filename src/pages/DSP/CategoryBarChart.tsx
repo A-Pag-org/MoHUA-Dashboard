@@ -64,7 +64,7 @@ const CategoryBarChart: React.FC<CategoryBarChartProps> = ({ data, cityName }) =
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>
-                {r.resolved.toLocaleString()} / {r.raised.toLocaleString()}
+                ({Math.min(r.resolutionRate, 100).toFixed(1)}%) {r.resolved.toLocaleString()} / {r.raised.toLocaleString()}
               </Typography>
             </Box>
           </Box>
