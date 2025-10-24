@@ -75,6 +75,17 @@ const Header: React.FC = () => {
     return undefined;
   };
 
+  // Apply color accents for tabs when inside the DSP section
+  // - Match SCC and MRS colors to landing page
+  // - Use a blue shade for the Home tab
+  const getDspTabsSx = (path: string) => {
+    if (currentProgram !== 'DSP') return undefined;
+    if (path === '/') return { backgroundColor: '#0b5ed7', '&:hover': { backgroundColor: '#0b5ed7' } }; // Home (blue)
+    if (path === '/cd') return { backgroundColor: '#08519c', '&:hover': { backgroundColor: '#08519c' } }; // SCC
+    if (path === '/mrs') return { backgroundColor: '#2171b5', '&:hover': { backgroundColor: '#2171b5' } }; // MRS
+    return undefined;
+  };
+
   return (
     <AppBar 
       position="sticky" 
@@ -121,7 +132,7 @@ const Header: React.FC = () => {
               type="button"
               selected={isSelected(tab.path)}
               onClick={(e) => handleNavigation(tab.path, e)}
-              sx={getLandingSx(tab.path)}
+              sx={getLandingSx(tab.path) || getDspTabsSx(tab.path)}
             >
               {tab.label}
             </PillButton>
