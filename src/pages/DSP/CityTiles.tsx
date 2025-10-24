@@ -383,7 +383,7 @@ const CityTile: React.FC<CityTileProps> = ({ city, onOpen }) => {
                 letterSpacing: 0.2,
               })}
             >
-              Resolution Percentage
+              Resolution Re-Open Percentage
             </Typography>
           </Box>
 
@@ -608,12 +608,7 @@ const CityTiles: React.FC = () => {
                 />
               </Box>
 
-              {/* Action row */}
-              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                <PillButton onClick={() => setConsolidatedOpen(true)} variant="contained">
-                  Category Wise
-                </PillButton>
-              </Box>
+              {/* Action row removed per requirement: no Category Wise tab */}
             </CardContent>
           </Paper>
         </Grid>
