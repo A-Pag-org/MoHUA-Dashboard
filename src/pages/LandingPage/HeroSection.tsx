@@ -579,7 +579,7 @@ const HeroSection: React.FC = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ width: 14, height: 14, borderRadius: '50%', background: DSP_COLORS.UNSATISFACTORY, boxShadow: `0 0 8px ${DSP_COLORS.UNSATISFACTORY}40` }} />
                 <Typography variant="body2" sx={{ color: '#ffffff', fontWeight: 600 }}>
-                  Unsatisfactory (<50%)
+                  Unsatisfactory (&lt;50%)
                 </Typography>
               </Box>
             </Box>
