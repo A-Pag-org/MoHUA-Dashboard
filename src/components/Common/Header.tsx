@@ -66,32 +66,28 @@ const Header: React.FC = () => {
     }
   }, [currentProgram]);
 
-  // Apply color accents for landing page program buttons
-  const getLandingSx = (path: string) => {
-    if (!isLandingPage) return undefined;
-    if (path === '/dsp') return { backgroundColor: '#08306b', '&:hover': { backgroundColor: '#08306b' } };
-    if (path === '/cd') return { backgroundColor: '#08519c', '&:hover': { backgroundColor: '#08519c' } };
-    if (path === '/mrs') return { backgroundColor: '#2171b5', '&:hover': { backgroundColor: '#2171b5' } };
-    return undefined;
-  };
-
-  // Apply color accents for tabs when inside the DSP section
-  // - Match SCC and MRS colors to landing page
-  // - Use a blue shade for the Home tab
-  const getDspTabsSx = (path: string) => {
-    if (currentProgram !== 'DSP') return undefined;
-    if (path === '/') return { backgroundColor: '#0b5ed7', '&:hover': { backgroundColor: '#0b5ed7' } }; // Home (blue)
-    if (path === '/cd') return { backgroundColor: '#08519c', '&:hover': { backgroundColor: '#08519c' } }; // SCC
-    if (path === '/mrs') return { backgroundColor: '#2171b5', '&:hover': { backgroundColor: '#2171b5' } }; // MRS
-    return undefined;
+  // Unified color accents for tabs by destination path (consistent across pages)
+  const getTabSx = (path: string) => {
+    switch (path) {
+      case '/': // Home
+        return { backgroundColor: '#0b5ed7', '&:hover': { backgroundColor: '#0b5ed7' } };
+      case '/dsp': // DSP
+        return { backgroundColor: '#08306b', '&:hover': { backgroundColor: '#08306b' } };
+      case '/cd': // SCC (C&D)
+        return { backgroundColor: '#08519c', '&:hover': { backgroundColor: '#08519c' } };
+      case '/mrs': // MRS
+        return { backgroundColor: '#2171b5', '&:hover': { backgroundColor: '#2171b5' } };
+      default:
+        return undefined;
+    }
   };
 
   return (
-    <AppBar 
-      position="sticky" 
-      sx={{ 
+    <AppBar
+      position="sticky"
+      sx={{
         background: isLandingPage
-          ? '#D5D5D5'
+          ? '#0b5ed7' // Match Home tab color
           : 'linear-gradient(135deg, rgba(7, 14, 28, 0.85) 0%, rgba(16, 27, 42, 0.85) 100%)',
         boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
         top: 0,
@@ -114,7 +110,7 @@ const Header: React.FC = () => {
               variant="h5"
               component="div"
               sx={{
-                color: isLandingPage ? '#000000' : '#ffffff',
+                color: '#ffffff',
                 fontWeight: 800,
                 letterSpacing: '0.25px',
                 textShadow: '0 1px 2px rgba(0,0,0,0.25)'
@@ -126,9 +122,9 @@ const Header: React.FC = () => {
               variant="subtitle2"
               component="div"
               sx={{
-                color: isLandingPage ? '#000000' : '#ffffff',
+                color: '#ffffff',
                 fontWeight: 500,
-                opacity: isLandingPage ? 0.9 : 0.85,
+                opacity: 0.85,
                 letterSpacing: '0.2px'
               }}
             >
@@ -146,7 +142,7 @@ const Header: React.FC = () => {
               type="button"
               selected={isSelected(tab.path)}
               onClick={(e) => handleNavigation(tab.path, e)}
-              sx={getLandingSx(tab.path) || getDspTabsSx(tab.path)}
+              sx={getTabSx(tab.path)}
             >
               {tab.label}
             </PillButton>
