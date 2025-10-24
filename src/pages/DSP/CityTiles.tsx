@@ -785,11 +785,11 @@ const CityTiles: React.FC = () => {
       }}>
         <Paper sx={{
           borderRadius: '16px',
-          background: (theme) => theme.palette.mode === 'dark' ? 'rgba(16, 27, 42, 0.85)' : 'rgba(255, 255, 255, 0.92)',
+          background: 'rgba(16, 27, 42, 0.92)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          border: (theme) => theme.palette.mode === 'dark' ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(0, 0, 0, 0.1)',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+          border: '1px solid rgba(255, 255, 255, 0.28)',
+          boxShadow: '0 10px 28px rgba(0,0,0,0.25)',
           px: 4,
           py: 2,
         }}>
@@ -800,12 +800,9 @@ const CityTiles: React.FC = () => {
                 height: 16, 
                 borderRadius: '50%', 
                 background: DSP_COLORS.SATISFACTORY,
-                boxShadow: `0 0 8px ${DSP_COLORS.SATISFACTORY}40`,
+                boxShadow: `0 0 10px ${DSP_COLORS.SATISFACTORY}80`,
               }} />
-              <Typography variant="body2" sx={(theme) => ({ 
-                color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
-                fontWeight: 600,
-              })}>
+              <Typography variant="body2" sx={{ color: '#ffffff', fontWeight: 700 }}>
                 Satisfactory (≥90%)
               </Typography>
             </Box>
@@ -815,12 +812,9 @@ const CityTiles: React.FC = () => {
                 height: 16, 
                 borderRadius: '50%', 
                 background: DSP_COLORS.AVERAGE,
-                boxShadow: `0 0 8px ${DSP_COLORS.AVERAGE}40`,
+                boxShadow: `0 0 10px ${DSP_COLORS.AVERAGE}80`,
               }} />
-              <Typography variant="body2" sx={(theme) => ({ 
-                color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
-                fontWeight: 600,
-              })}>
+              <Typography variant="body2" sx={{ color: '#ffffff', fontWeight: 700 }}>
                 Average (50-89%)
               </Typography>
             </Box>
@@ -830,12 +824,9 @@ const CityTiles: React.FC = () => {
                 height: 16, 
                 borderRadius: '50%', 
                 background: DSP_COLORS.UNSATISFACTORY,
-                boxShadow: `0 0 8px ${DSP_COLORS.UNSATISFACTORY}40`,
+                boxShadow: `0 0 10px ${DSP_COLORS.UNSATISFACTORY}80`,
               }} />
-              <Typography variant="body2" sx={(theme) => ({ 
-                color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
-                fontWeight: 600,
-              })}>
+              <Typography variant="body2" sx={{ color: '#ffffff', fontWeight: 700 }}>
                 Unsatisfactory (&lt;50%)
               </Typography>
             </Box>
