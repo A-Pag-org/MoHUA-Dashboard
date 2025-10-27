@@ -324,7 +324,6 @@ interface CityTileProps {
 
 const CityTile: React.FC<CityTileProps> = ({ city, onOpen }) => {
   const resolutionColor = getResolutionColor(city.resolutionPercentage);
-  const status = getResolutionStatus(city.resolutionPercentage);
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -340,8 +339,8 @@ const CityTile: React.FC<CityTileProps> = ({ city, onOpen }) => {
             gap: 1.25,
           }}
         >
-          {/* Header with city name and status */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          {/* Header with city name and compact gauge (replacing status chip) */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 1 }}>
             <Typography
               variant="h6"
               sx={(theme) => ({
@@ -367,10 +366,23 @@ const CityTile: React.FC<CityTileProps> = ({ city, onOpen }) => {
             >
               {city.cityName}
             </Typography>
-            <StatusChip label={status} status={status} size="small" />
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 64 }}>
+              <CircularProgressIndicator percentage={city.resolutionPercentage} color={resolutionColor} size={52} />
+              <Typography
+                variant="caption"
+                sx={(theme) => ({
+                  mt: 0.25,
+                  color: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.78)',
+                  fontWeight: 600,
+                  letterSpacing: 0.2,
+                })}
+              >
+                Resolution rate
+              </Typography>
+            </Box>
           </Box>
 
-          {/* Gauge */}
+          {/* Main gauge */}
           <Box sx={{ textAlign: 'center' }}>
             <CircularProgressIndicator percentage={city.resolutionPercentage} color={resolutionColor} size={74} />
             <Typography
