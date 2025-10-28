@@ -263,12 +263,12 @@ const ProgramLeaderboard: React.FC<{
         )}
         {program === 'C&D' && (
           <>
-            <Typography sx={headerStyles}>Malba Collected Vs Target (MT)</Typography>
+            <Typography sx={headerStyles}>Total Malba Collected Vs Target</Typography>
           </>
         )}
         {program === 'MRS' && (
           <>
-            <Typography sx={headerStyles}>Coverage %</Typography>
+            <Typography sx={headerStyles}>Percentage of the Total Road Length Covered by MRS</Typography>
           </>
         )}
       </Box>
@@ -451,8 +451,8 @@ const LeaderboardTile: React.FC<LeaderboardTileProps> = ({ city }) => {
           {city.program === 'DSP'
             ? 'Percentage Resolved Vs Raised'
             : city.program === 'C&D'
-            ? 'Number of SCCs Set up Vs Target'
-            : 'Number of Active MRS units Vs Target'}
+            ? 'Total Malba Collected Vs Target'
+            : 'Percentage of the Total Road Length Covered by MRS'}
         </Typography>
 
         {/* Footer with metric info */}
